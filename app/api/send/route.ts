@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { resend, FROM_EMAIL } from "@/lib/resend";
+import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { generateNewsletterHTML } from "@/lib/newsletterTemplate";
 import { sendSchema } from "@/lib/validators";
 
@@ -45,13 +45,14 @@ export async function POST(req: Request) {
       slice.map(async (c) => {
         try {
           const html = generateNewsletterHTML(content, c.email);
-          const result = await resend.emails.send({
+          const result = await getResend().emails.send({
             from: FROM_EMAIL,
             to: c.email,
             subject,
             html,
           });
           if (result.error) {
+            console.error("Resend error for", c.email, result.error);
             failures.push(`${c.email}: ${result.error.message}`);
           } else {
             sent++;

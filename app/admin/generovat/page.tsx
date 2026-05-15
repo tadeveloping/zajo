@@ -107,6 +107,9 @@ export default function GenerovatPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Odoslanie zlyhalo");
+      if (data.failures?.length) {
+        throw new Error(`Odoslané ${data.sent}/${data.total}. Chyby: ${data.failures.join(" | ")}`);
+      }
       alert(`Odoslané ${data.sent} ľuďom!`);
       router.push("/admin");
     } catch (e) {
