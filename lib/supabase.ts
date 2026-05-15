@@ -1,11 +1,38 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+let _public: SupabaseClient | null = null;
+let _admin: SupabaseClient | null = null;
 
-export const supabasePublic = createClient(url, anonKey);
+export function getSupabasePublic(): SupabaseClient {
+  if (!_public) {
+    _public = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+  }
+  return _public;
+}
 
-export const supabaseAdmin = createClient(url, serviceKey, {
-  auth: { autoRefreshToken: false, persistSession: false },
-});
+export function getSupabaseAdmin(): SupabaseClient {
+  if (!_admin) {
+    _admin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+  }
+  return _admin;
+}
+
+function lazyProxy(getter: () => SupabaseClient): SupabaseClient {
+  return new Proxy({} as SupabaseClient, {
+    get: (_, prop) => {
+      const client = getter();
+      const value = (client as unknown as Record<string | symbol, unknown>)[prop];
+      return typeof value === "function" ? (value as Function).bind(client) : value;
+    },
+  });
+}
+
+export const supabasePublic = lazyProxy(getSupabasePublic);
+export const supabaseAdmin = lazyProxy(getSupabaseAdmin);
