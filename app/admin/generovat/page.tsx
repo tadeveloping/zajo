@@ -195,7 +195,7 @@ export default function GenerovatPage() {
 
               <div className="grid gap-2 mb-4">
                 {listings.map((l, i) => (
-                  <label key={i} className={`flex items-start gap-3 rounded-lg p-4 cursor-pointer border transition ${selected.has(i) ? "bg-panel border-accent/50" : "bg-panel/40 border-border opacity-60"}`}>
+                  <label key={i} className={`flex items-center gap-3 rounded-lg p-4 cursor-pointer border transition ${selected.has(i) ? "bg-panel border-accent/50" : "bg-panel/40 border-border opacity-60"}`}>
                     <input
                       type="checkbox"
                       checked={selected.has(i)}
@@ -204,13 +204,13 @@ export default function GenerovatPage() {
                         e.target.checked ? next.add(i) : next.delete(i);
                         setSelected(next);
                       }}
-                      className="mt-0.5 accent-orange-500"
+                      className="shrink-0 accent-orange-500 w-4 h-4"
                     />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold text-white text-sm truncate">{l.title}</div>
+                    <div className="flex-1 overflow-hidden">
+                      <div className="font-bold text-white text-sm">{l.title}</div>
                       <div className="text-muted text-xs mt-0.5">{l.location}{l.area ? ` · ${l.area}` : ""}</div>
                     </div>
-                    <div className="text-accent font-semibold text-sm whitespace-nowrap">{l.price}</div>
+                    <div className="text-accent font-semibold text-sm shrink-0">{l.price}</div>
                   </label>
                 ))}
               </div>
