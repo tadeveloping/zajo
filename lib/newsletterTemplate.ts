@@ -82,9 +82,13 @@ function buildGrid(properties: NewsletterProperty[]): string {
 }
 
 export function generateNewsletterHTML(content: NewsletterContent, recipientEmail: string): string {
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://zajo-five.vercel.app").replace(/\/$/, "");
-  // Gmail proxies external images — must use an absolute hosted URL, not data: URIs (Gmail strips those)
-  const logoSrc = `${appUrl}/logo-v2.png`;
+  // VERCEL_URL is auto-set to the current deployment's domain (where /logo-v2.png actually exists),
+  // so the logo URL stays valid even before the branch is merged to main.
+  const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || vercelUrl || "https://zajo-five.vercel.app").replace(/\/$/, "");
+  const logoHost = (vercelUrl || appUrl).replace(/\/$/, "");
+  // Gmail proxies external images — must use an absolute hosted URL on a domain that actually has the file
+  const logoSrc = `${logoHost}/logo-v2.png`;
   const unsubscribeUrl = appUrl
     ? `${appUrl}/odhlasit?email=${encodeURIComponent(recipientEmail)}`
     : `/odhlasit?email=${encodeURIComponent(recipientEmail)}`;
