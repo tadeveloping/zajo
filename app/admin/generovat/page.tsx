@@ -502,10 +502,9 @@ function buildPreviewHtml(c: NewsletterContent): string {
 
   return `<!DOCTYPE html><html><body style="margin:0;padding:40px 0;background:#ECEAE5;font-family:Arial,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#FFF;border-radius:12px;box-shadow:0 4px 32px rgba(0,0,0,0.1);overflow:hidden;">
-    <div style="background:linear-gradient(90deg,#E0882C,#C97520);padding:20px 32px;border-radius:12px 12px 0 0;">
-      <div style="background:#FFF;display:inline-block;padding:8px 14px;border-radius:6px;">
-        <span style="font-size:20px;font-weight:800;color:#1C1917;font-family:Georgia,serif;line-height:1;">ZAJO Reality</span>
-      </div>
+    <div style="background:linear-gradient(90deg,#E0882C,#C97520);padding:20px 32px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:20px;font-weight:800;color:#FFF;font-family:Georgia,serif;line-height:1;">ZAJO Reality</span>
+      <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.90);font-family:Arial,sans-serif;">${esc(c.month)}</span>
     </div>
     <div style="padding:44px 32px;">
       <p style="font-size:10px;font-weight:800;color:#E0882C;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 18px;">■ VÝBER DOPORUČENÝCH NEHNUTEĽNOSTÍ</p>

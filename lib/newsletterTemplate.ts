@@ -105,10 +105,13 @@ export function generateNewsletterHTML(content: NewsletterContent, recipientEmai
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:600px;box-shadow:0 4px 32px rgba(0,0,0,0.10);border-radius:12px;">
 
 <!-- HEADER -->
-<tr><td style="background:linear-gradient(90deg,#E0882C 0%,#C97520 100%);border-radius:12px 12px 0 0;padding:22px 32px;">
-  <table cellpadding="0" cellspacing="0" border="0"><tr>
-    <td style="background:#FFFFFF;padding:8px 14px;border-radius:6px;line-height:0;">
+<tr><td style="background:linear-gradient(90deg,#E0882C 0%,#C97520 100%);border-radius:12px 12px 0 0;padding:20px 32px;">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+    <td style="vertical-align:middle;">
       <img src="${logoSrc}" alt="ZAJO Reality" width="144" height="140" style="display:block;width:72px;height:70px;border:0;"/>
+    </td>
+    <td align="right" style="vertical-align:middle;">
+      <span style="font-family:'Inter',Arial,Helvetica,sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,0.90);letter-spacing:0.5px;">${esc(content.month)}</span>
     </td>
   </tr></table>
 </td></tr>
