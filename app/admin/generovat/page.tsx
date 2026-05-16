@@ -461,7 +461,7 @@ function RecipientCount() {
 function buildPreviewHtml(c: NewsletterContent): string {
   const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const safeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/<(?!\/?(?:strong|br)\b)[^>]*>/gi, "");
-  const LOGO_URL = "https://zajo-five.vercel.app/logo.png?v=2";
+  const LOGO_URL = "https://zajo-five.vercel.app/logo-v2.png";
 
   const PLACEHOLDERS = [
     "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&h=360&fit=crop",
