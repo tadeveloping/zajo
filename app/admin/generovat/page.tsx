@@ -50,9 +50,12 @@ export default function GenerovatPage() {
   const [step, setStep] = useState<Step>(1);
 
   const [listings, setListings] = useState<Listing[]>([]);
+  const [selected, setSelected] = useState<Set<number>>(new Set());
   const [scrapeSource, setScrapeSource] = useState<"live" | "mock" | null>(null);
   const [scraping, setScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState<string | null>(null);
+  const [showManual, setShowManual] = useState(false);
+  const [manual, setManual] = useState<Listing>({ title: "", price: "", location: "Trenčín a okolie", area: "", url: "https://www.zajoreality.sk" });
 
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState<NewsletterContent | null>(null);
@@ -71,6 +74,7 @@ export default function GenerovatPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Scrape zlyhal");
       setListings(data.listings);
+      setSelected(new Set(data.listings.map((_: Listing, i: number) => i)));
       setScrapeSource(data.source);
     } catch (e) {
       setScrapeError(e instanceof Error ? e.message : "Chyba");
@@ -79,6 +83,17 @@ export default function GenerovatPage() {
     }
   }
 
+  function addManualListing() {
+    if (!manual.title || !manual.price) return;
+    const next = [...listings, { ...manual }];
+    setListings(next);
+    setSelected((prev) => new Set([...prev, next.length - 1]));
+    setManual({ title: "", price: "", location: "Trenčín a okolie", area: "", url: "https://www.zajoreality.sk" });
+    setShowManual(false);
+  }
+
+  const selectedListings = listings.filter((_, i) => selected.has(i));
+
   async function handleGenerate() {
     setGenerating(true);
     setGenError(null);
@@ -86,7 +101,7 @@ export default function GenerovatPage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listings }),
+        body: JSON.stringify({ listings: selectedListings }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Generovanie zlyhalo");
@@ -165,22 +180,85 @@ export default function GenerovatPage() {
                   Scraping zlyhal — používame ukážkové dáta. Môžeš pokračovať.
                 </div>
               )}
-              <div className="grid gap-3 mb-6">
+
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm text-muted">
+                  Vybrané: <span className="text-white font-bold">{selected.size}</span> / {listings.length}
+                  {selected.size !== 6 && <span className="text-yellow-400 ml-2">(odporúčané: 6)</span>}
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => setSelected(new Set(listings.map((_, i) => i)))} className="text-xs text-muted hover:text-white underline">Vybrať všetky</button>
+                  <span className="text-border">|</span>
+                  <button onClick={() => setSelected(new Set())} className="text-xs text-muted hover:text-white underline">Zrušiť výber</button>
+                </div>
+              </div>
+
+              <div className="grid gap-2 mb-4">
                 {listings.map((l, i) => (
-                  <div key={i} className="bg-panel border border-border rounded-lg p-4">
-                    <div className="flex justify-between gap-4">
-                      <div>
-                        <div className="font-bold text-white">{l.title}</div>
-                        <div className="text-muted text-xs mt-1">{l.location} · {l.area}</div>
-                      </div>
-                      <div className="text-accent font-semibold whitespace-nowrap">{l.price}</div>
+                  <label key={i} className={`flex items-start gap-3 rounded-lg p-4 cursor-pointer border transition ${selected.has(i) ? "bg-panel border-accent/50" : "bg-panel/40 border-border opacity-60"}`}>
+                    <input
+                      type="checkbox"
+                      checked={selected.has(i)}
+                      onChange={(e) => {
+                        const next = new Set(selected);
+                        e.target.checked ? next.add(i) : next.delete(i);
+                        setSelected(next);
+                      }}
+                      className="mt-0.5 accent-orange-500"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-white text-sm truncate">{l.title}</div>
+                      <div className="text-muted text-xs mt-0.5">{l.location}{l.area ? ` · ${l.area}` : ""}</div>
                     </div>
-                  </div>
+                    <div className="text-accent font-semibold text-sm whitespace-nowrap">{l.price}</div>
+                  </label>
                 ))}
               </div>
+
+              {/* Manual add */}
+              {showManual ? (
+                <div className="bg-panel border border-accent/40 rounded-lg p-4 mb-4 space-y-3">
+                  <div className="text-sm font-semibold text-white mb-1">Pridať vlastný inzerát</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="col-span-2">
+                      <label className="text-xs text-muted block mb-1">Názov nehnuteľnosti *</label>
+                      <input value={manual.title} onChange={e => setManual(m => ({ ...m, title: e.target.value }))} placeholder="napr. 3-izbový byt, Trenčín centrum" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted block mb-1">Cena *</label>
+                      <input value={manual.price} onChange={e => setManual(m => ({ ...m, price: e.target.value }))} placeholder="napr. 145 000 €" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted block mb-1">Plocha</label>
+                      <input value={manual.area} onChange={e => setManual(m => ({ ...m, area: e.target.value }))} placeholder="napr. 72 m²" />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted block mb-1">Lokalita</label>
+                      <input value={manual.location} onChange={e => setManual(m => ({ ...m, location: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted block mb-1">URL inzerátu</label>
+                      <input value={manual.url} onChange={e => setManual(m => ({ ...m, url: e.target.value }))} placeholder="https://www.zajoreality.sk/..." />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="text-xs text-muted block mb-1">URL fotky (nepovinné)</label>
+                      <input value={manual.imageUrl || ""} onChange={e => setManual(m => ({ ...m, imageUrl: e.target.value || undefined }))} placeholder="https://..." />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-1">
+                    <button onClick={addManualListing} disabled={!manual.title || !manual.price} className="px-4 py-2 rounded-md bg-accent hover:bg-accentHover disabled:opacity-40 transition text-sm font-semibold">Pridať</button>
+                    <button onClick={() => setShowManual(false)} className="px-4 py-2 rounded-md border border-border hover:border-accent transition text-sm">Zrušiť</button>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={() => setShowManual(true)} className="w-full mb-4 py-2.5 rounded-lg border border-dashed border-border hover:border-accent text-muted hover:text-white transition text-sm">
+                  + Pridať vlastný inzerát (starší alebo iný)
+                </button>
+              )}
+
               <div className="flex justify-between">
                 <button onClick={handleScrape} className="px-4 py-2 rounded-md border border-border hover:border-accent transition text-sm">Znova načítať</button>
-                <button onClick={() => setStep(2)} className="px-6 py-2.5 rounded-md bg-accent hover:bg-accentHover transition font-semibold">Pokračovať →</button>
+                <button onClick={() => setStep(2)} disabled={selected.size === 0} className="px-6 py-2.5 rounded-md bg-accent hover:bg-accentHover disabled:opacity-50 transition font-semibold">Pokračovať →</button>
               </div>
             </>
           )}
@@ -249,24 +327,31 @@ export default function GenerovatPage() {
                   {content.properties.map((p, i) => (
                     <div key={i} className="bg-panel border border-border rounded-lg p-4">
                       <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <div className="font-bold text-sm text-white">{p.title}</div>
+                        <div className="flex-1 min-w-0 mr-3">
+                          <div className="font-bold text-sm text-white truncate">{p.title}</div>
                           <div className="text-accent text-sm font-semibold">{p.price}</div>
                           <div className="text-muted text-xs mt-0.5">{p.location}{p.area ? ` · ${p.area}` : ""}</div>
                         </div>
-                        <div className="shrink-0">
-                          <label className="text-xs text-muted block mb-1">Badge</label>
-                          <select
-                            value={p.badge || "—"}
-                            onChange={(e) => {
-                              const next = [...content.properties];
-                              next[i] = { ...next[i], badge: e.target.value === "—" ? null : e.target.value as typeof p.badge };
-                              setContent({ ...content, properties: next });
-                            }}
-                            className="text-xs w-36"
-                          >
-                            {BADGE_OPTIONS.map((b) => <option key={b} value={b}>{b}</option>)}
-                          </select>
+                        <div className="flex items-start gap-2 shrink-0">
+                          <div>
+                            <label className="text-xs text-muted block mb-1">Badge</label>
+                            <select
+                              value={p.badge || "—"}
+                              onChange={(e) => {
+                                const next = [...content.properties];
+                                next[i] = { ...next[i], badge: e.target.value === "—" ? null : e.target.value as typeof p.badge };
+                                setContent({ ...content, properties: next });
+                              }}
+                              className="text-xs w-36"
+                            >
+                              {BADGE_OPTIONS.map((b) => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                          </div>
+                          <button
+                            onClick={() => setContent({ ...content, properties: content.properties.filter((_, j) => j !== i) })}
+                            className="mt-5 p-1.5 rounded text-muted hover:text-red-400 hover:bg-red-950/30 transition"
+                            title="Odstrániť"
+                          >✕</button>
                         </div>
                       </div>
                     </div>
@@ -417,10 +502,10 @@ function buildPreviewHtml(c: NewsletterContent): string {
 
   return `<!DOCTYPE html><html><body style="margin:0;padding:40px 0;background:#ECEAE5;font-family:Arial,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#FFF;border-radius:12px;box-shadow:0 4px 32px rgba(0,0,0,0.1);overflow:hidden;">
-    <div style="background:linear-gradient(90deg,#E0882C,#C97520);height:4px;"></div>
-    <div style="padding:22px 32px 0;border-bottom:1px solid #E3E1DC;display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;">
-      <span style="font-size:20px;font-weight:800;color:#1C1917;font-family:Georgia,serif;">ZAJO Reality</span>
-      <span style="font-size:11px;color:#888;">${c.edition}. vydanie · ${esc(c.month)}</span>
+    <div style="background:linear-gradient(90deg,#E0882C,#C97520);padding:20px 32px;border-radius:12px 12px 0 0;">
+      <div style="background:#FFF;display:inline-block;padding:8px 14px;border-radius:6px;">
+        <span style="font-size:20px;font-weight:800;color:#1C1917;font-family:Georgia,serif;line-height:1;">ZAJO Reality</span>
+      </div>
     </div>
     <div style="padding:44px 32px;">
       <p style="font-size:10px;font-weight:800;color:#E0882C;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 18px;">■ VÝBER DOPORUČENÝCH NEHNUTEĽNOSTÍ</p>

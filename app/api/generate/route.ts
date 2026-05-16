@@ -10,7 +10,7 @@ const SYSTEM = `Si asistent pre realitku ZAJO Reality (Trenčín, Slovensko).
 Tvojou úlohou je vyplniť newsletter šablónu na základe dodaných nehnuteľností.
 
 PRAVIDLÁ:
-- properties[]: zahrň presne tie nehnuteľnosti čo dostaneš (zachovaj url a imageUrl z dát)
+- properties[]: zahrň PRESNE 6 nehnuteľností. Vyber najzaujímavejšie zo vstupu. Zachovaj url a imageUrl z dát presne.
 - imageUrl: VŽDY skopíruj presne z poskytnutých dát — nikdy nevymýšľaj vlastný
 - tip: vyber relevantný typ (rada/novinky/trh) podľa aktuálnej situácie na trhu
 - tip.body smie obsahovať <strong> a <br/> HTML tagy
