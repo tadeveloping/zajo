@@ -461,6 +461,7 @@ function RecipientCount() {
 function buildPreviewHtml(c: NewsletterContent): string {
   const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const safeHtml = (s: string) => s.replace(/&/g, "&amp;").replace(/<(?!\/?(?:strong|br)\b)[^>]*>/gi, "");
+  const LOGO_URL = "https://zajo-five.vercel.app/logo.png?v=2";
 
   const PLACEHOLDERS = [
     "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&h=360&fit=crop",
@@ -503,7 +504,7 @@ function buildPreviewHtml(c: NewsletterContent): string {
   return `<!DOCTYPE html><html><body style="margin:0;padding:40px 0;background:#ECEAE5;font-family:Arial,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#FFF;border-radius:12px;box-shadow:0 4px 32px rgba(0,0,0,0.1);overflow:hidden;">
     <div style="background:linear-gradient(90deg,#E0882C,#C97520);padding:20px 32px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;">
-      <span style="font-size:20px;font-weight:800;color:#FFF;font-family:Georgia,serif;line-height:1;">ZAJO Reality</span>
+      <img src="${LOGO_URL}" alt="ZAJO Reality" style="height:60px;width:auto;display:block;"/>
       <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.90);font-family:Arial,sans-serif;">${esc(c.month)}</span>
     </div>
     <div style="padding:44px 32px;">
