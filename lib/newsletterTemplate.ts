@@ -79,7 +79,7 @@ function buildGrid(properties: NewsletterProperty[]): string {
 }
 
 export function generateNewsletterHTML(content: NewsletterContent, recipientEmail: string): string {
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://zajo-five.vercel.app").replace(/\/$/, "");
   // Email clients block data: URLs — use hosted logo when APP_URL is set
   const logoSrc = appUrl ? `${appUrl}/logo.png` : `data:image/png;base64,${LOGO_B64}`;
   const unsubscribeUrl = appUrl
