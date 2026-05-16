@@ -4,24 +4,35 @@ export interface Listing {
   location: string;
   area: string;
   url: string;
-  description?: string;
+  imageUrl?: string;
 }
 
-export interface NewsletterListing {
+export interface NewsletterProperty {
   title: string;
   price: string;
   location: string;
-  area: string;
-  description: string;
+  area?: string;
+  rooms?: string;
+  imageUrl: string;
   url: string;
+  badge?: "NOVÉ" | "ZNÍŽENÁ CENA" | "REZERVOVANÉ" | null;
+}
+
+export interface NewsletterTip {
+  type: "rada" | "novinky" | "trh";
+  title: string;
+  body: string;
 }
 
 export interface NewsletterContent {
-  subject: string;
+  edition: 1 | 2;
   greeting: string;
-  listings: NewsletterListing[];
-  tip: string;
-  cta: string;
+  intro: string;
+  tip: NewsletterTip;
+  properties: NewsletterProperty[];
+  ctaText: string;
+  ctaUrl: string;
+  month: string;
 }
 
 export interface Contact {

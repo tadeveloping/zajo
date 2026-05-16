@@ -21,24 +21,35 @@ export const listingSchema = z.object({
   location: z.string(),
   area: z.string(),
   url: z.string(),
-  description: z.string().optional(),
+  imageUrl: z.string().optional(),
+});
+
+export const newsletterPropertySchema = z.object({
+  title: z.string(),
+  price: z.string(),
+  location: z.string(),
+  area: z.string().optional(),
+  rooms: z.string().optional(),
+  imageUrl: z.string(),
+  url: z.string(),
+  badge: z.enum(["NOVÉ", "ZNÍŽENÁ CENA", "REZERVOVANÉ"]).nullable().optional(),
+});
+
+export const newsletterTipSchema = z.object({
+  type: z.enum(["rada", "novinky", "trh"]),
+  title: z.string(),
+  body: z.string(),
 });
 
 export const newsletterContentSchema = z.object({
-  subject: z.string(),
+  edition: z.union([z.literal(1), z.literal(2)]),
   greeting: z.string(),
-  listings: z.array(
-    z.object({
-      title: z.string(),
-      price: z.string(),
-      location: z.string(),
-      area: z.string(),
-      description: z.string(),
-      url: z.string(),
-    })
-  ),
-  tip: z.string(),
-  cta: z.string(),
+  intro: z.string(),
+  tip: newsletterTipSchema,
+  properties: z.array(newsletterPropertySchema),
+  ctaText: z.string(),
+  ctaUrl: z.string(),
+  month: z.string(),
 });
 
 export const sendSchema = z.object({
