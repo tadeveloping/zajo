@@ -81,8 +81,10 @@ function buildGrid(properties: NewsletterProperty[]): string {
   return rows.join("");
 }
 
-export function generateNewsletterHTML(content: NewsletterContent, recipientEmail: string, logoSrc = `cid:zajo-logo`): string {
+export function generateNewsletterHTML(content: NewsletterContent, recipientEmail: string): string {
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://zajo-five.vercel.app").replace(/\/$/, "");
+  // Gmail proxies external images — must use an absolute hosted URL, not data: URIs (Gmail strips those)
+  const logoSrc = `${appUrl}/logo-v2.png`;
   const unsubscribeUrl = appUrl
     ? `${appUrl}/odhlasit?email=${encodeURIComponent(recipientEmail)}`
     : `/odhlasit?email=${encodeURIComponent(recipientEmail)}`;

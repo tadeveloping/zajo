@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { readFileSync } from "fs";
-import { join } from "path";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { generateNewsletterHTML } from "@/lib/newsletterTemplate";
@@ -38,19 +36,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Žiadni odberatelia" }, { status: 400 });
   }
 
-  // Read logo once; embed as inline CID attachment so Gmail shows it regardless of CDN
-  let logoAttachment: { filename: string; content: string; content_id: string } | undefined;
-  try {
-    const logoBuffer = readFileSync(join(process.cwd(), "public/logo-v2.png"));
-    logoAttachment = {
-      filename: "logo.png",
-      content: logoBuffer.toString("base64"),
-      content_id: "zajo-logo",
-    };
-  } catch {
-    // logo file missing — fall back to no attachment (broken img is acceptable fallback)
-  }
-
   let sent = 0;
   const failures: string[] = [];
 
@@ -65,7 +50,6 @@ export async function POST(req: Request) {
             to: c.email,
             subject,
             html,
-            ...(logoAttachment ? { attachments: [logoAttachment] } : {}),
           });
           if (result.error) {
             console.error("Resend error for", c.email, result.error);
