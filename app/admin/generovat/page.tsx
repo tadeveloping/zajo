@@ -392,25 +392,27 @@ function buildPreviewHtml(c: NewsletterContent): string {
   const card = (p: NewsletterContent["properties"][0], idx: number) => {
     const img = p.imageUrl || PLACEHOLDERS[idx % PLACEHOLDERS.length];
     const badge = p.badge
-      ? `<div style="background:${p.badge === "ZNÍŽENÁ CENA" ? "#1C1917" : "#E0882C"};height:28px;box-sizing:border-box;padding:0 18px;display:flex;align-items:center;"><span style="font-family:Arial;font-size:9px;font-weight:800;color:#FFF;letter-spacing:2.5px;text-transform:uppercase;">${esc(p.badge)}</span></div>`
-      : `<div style="height:28px;"></div>`;
+      ? `<div style="background:${p.badge === "ZNÍŽENÁ CENA" ? "#1C1917" : "#E0882C"};height:28px;box-sizing:border-box;padding:0 18px;display:flex;align-items:center;flex-shrink:0;"><span style="font-family:Arial;font-size:9px;font-weight:800;color:#FFF;letter-spacing:2.5px;text-transform:uppercase;">${esc(p.badge)}</span></div>`
+      : `<div style="height:28px;flex-shrink:0;"></div>`;
     const meta = [p.area, p.rooms].filter(Boolean).join(" · ");
-    return `<div style="background:#FFF;border-radius:8px;border:1px solid #E3E1DC;overflow:hidden;width:274px;display:inline-block;vertical-align:top;">
-      <img src="${esc(img)}" width="274" height="180" style="display:block;width:274px;height:180px;object-fit:cover;"/>
+    return `<div style="background:#FFF;border-radius:8px;border:1px solid #E3E1DC;overflow:hidden;flex:1;display:flex;flex-direction:column;min-width:0;">
+      <img src="${esc(img)}" width="274" height="180" style="display:block;width:100%;height:180px;object-fit:cover;flex-shrink:0;"/>
       ${badge}
-      <div style="padding:16px;">
-        <div style="font-family:Arial;font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">${esc(p.title)}</div>
-        <div style="font-family:Arial;font-size:18px;font-weight:800;color:#E0882C;margin-bottom:6px;">${esc(p.price)}</div>
-        ${meta ? `<div style="font-family:Arial;font-size:11px;color:#888;margin-bottom:4px;">${esc(meta)}</div>` : ""}
-        <div style="font-family:Arial;font-size:11px;color:#888;margin-bottom:12px;">📍 ${esc(p.location)}</div>
-        <a href="${esc(p.url)}" style="background:#E0882C;color:#FFF;font-family:Arial;font-size:9px;font-weight:800;padding:8px 16px;text-decoration:none;border-radius:3px;text-transform:uppercase;letter-spacing:1.5px;">Zobraziť →</a>
+      <div style="padding:16px;flex:1;display:flex;flex-direction:column;">
+        <div style="flex:1;">
+          <div style="font-family:Arial;font-size:14px;font-weight:700;color:#1C1917;margin-bottom:6px;">${esc(p.title)}</div>
+          <div style="font-family:Arial;font-size:18px;font-weight:800;color:#E0882C;margin-bottom:6px;">${esc(p.price)}</div>
+          ${meta ? `<div style="font-family:Arial;font-size:11px;color:#888;margin-bottom:4px;">${esc(meta)}</div>` : ""}
+          <div style="font-family:Arial;font-size:11px;color:#888;margin-bottom:12px;">📍 ${esc(p.location)}</div>
+        </div>
+        <div><a href="${esc(p.url)}" style="display:inline-block;background:#E0882C;color:#FFF;font-family:Arial;font-size:9px;font-weight:800;padding:8px 16px;text-decoration:none;border-radius:3px;text-transform:uppercase;letter-spacing:1.5px;">Zobraziť →</a></div>
       </div>
     </div>`;
   };
 
   const rows: string[] = [];
   for (let i = 0; i < c.properties.length; i += 2) {
-    rows.push(`<div style="padding:0 20px 14px;"><div style="display:flex;gap:12px;">${card(c.properties[i], i)}${c.properties[i + 1] ? card(c.properties[i + 1], i + 1) : ""}</div></div>`);
+    rows.push(`<div style="padding:0 20px 14px;"><div style="display:flex;gap:12px;align-items:stretch;">${card(c.properties[i], i)}${c.properties[i + 1] ? card(c.properties[i + 1], i + 1) : '<div style="flex:1;"></div>'}</div></div>`);
   }
 
   return `<!DOCTYPE html><html><body style="margin:0;padding:40px 0;background:#ECEAE5;font-family:Arial,sans-serif;">

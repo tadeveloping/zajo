@@ -54,13 +54,16 @@ function extractImage($el: Cheerio<AnyNode>, $: CheerioAPI): string | undefined 
     imgEl.attr("data-image") ||
     "";
 
-  // Also check srcset — take the first URL
-  if (!raw) {
-    const srcset = imgEl.attr("srcset") || imgEl.attr("data-srcset") || "";
-    if (srcset) {
-      const first = srcset.split(",")[0].trim().split(" ")[0];
-      if (first && !first.startsWith("data:") && first.length > 10) return absUrl(first);
-    }
+  // srcset — pick the LARGEST available
+  const srcset = imgEl.attr("srcset") || imgEl.attr("data-srcset") || "";
+  if (!raw && srcset) {
+    const best = bestFromSrcset(srcset);
+    if (best) return toFullRes(absUrl(best));
+  }
+  // If we have a raw src but also srcset, prefer the largest srcset entry
+  if (raw && srcset) {
+    const best = bestFromSrcset(srcset);
+    if (best) return toFullRes(absUrl(best));
   }
 
   // Also check for background-image in style attribute

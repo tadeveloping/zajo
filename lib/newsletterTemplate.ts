@@ -53,11 +53,14 @@ function buildPropertyCard(p: NewsletterProperty, idx: number): string {
     style="background:#FFFFFF;border-radius:8px;overflow:hidden;border:1px solid #E3E1DC;box-shadow:0 2px 12px rgba(0,0,0,0.07);height:100%;">
     <tr><td style="padding:0;line-height:0;"><img src="${esc(img)}" alt="${esc(p.title)}" width="274" height="180" style="display:block;width:274px;height:180px;object-fit:cover;border:0;"/></td></tr>
     ${badgeHtml}
-    <tr><td style="padding:16px 16px 20px 16px;">
+    <tr><td style="padding:16px 16px 8px 16px;">
       <h3 style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#1C1917;margin:0 0 7px 0;line-height:1.3;">${esc(p.title)}</h3>
       <p style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:19px;font-weight:800;color:#E0882C;margin:0 0 8px 0;line-height:1;">${esc(p.price)}</p>
       ${meta ? `<p style="font-family:'Inter',Arial,Helvetica,sans-serif;font-size:11px;color:#888888;margin:0 0 6px 0;">${meta}</p>` : ""}
-      <p style="font-family:'Inter',Arial,Helvetica,sans-serif;font-size:11px;color:#888888;margin:0 0 14px 0;">&#128205; ${esc(p.location)}</p>
+      <p style="font-family:'Inter',Arial,Helvetica,sans-serif;font-size:11px;color:#888888;margin:0 0 0 0;">&#128205; ${esc(p.location)}</p>
+    </td></tr>
+    <tr><td style="height:100%;padding:0;"></td></tr>
+    <tr><td style="padding:12px 16px 20px 16px;">
       <a href="${esc(p.url)}" style="display:inline-block;background:#E0882C;color:#FFFFFF;font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:9px;font-weight:800;letter-spacing:1.5px;text-decoration:none;padding:8px 16px;border-radius:3px;text-transform:uppercase;">Zobraziť &#8594;</a>
     </td></tr>
   </table>`;
