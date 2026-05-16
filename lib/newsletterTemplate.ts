@@ -85,7 +85,7 @@ export function generateNewsletterHTML(content: NewsletterContent, recipientEmai
   const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://zajo-five.vercel.app").replace(/\/$/, "");
   // Serve logo from GitHub raw CDN: no Vercel deployment protection, public, cached,
   // works for Gmail's image proxy on any branch / before merge to main.
-  const logoSrc = "https://raw.githubusercontent.com/tadeveloping/zajo/claude/create-nextjs-newsletter-FJKjS/public/logo-v2.png";
+  const logoSrc = "https://raw.githubusercontent.com/tadeveloping/zajo/claude/create-nextjs-newsletter-FJKjS/public/logo-v3.png";
   const unsubscribeUrl = appUrl
     ? `${appUrl}/odhlasit?email=${encodeURIComponent(recipientEmail)}`
     : `/odhlasit?email=${encodeURIComponent(recipientEmail)}`;
@@ -106,10 +106,10 @@ export function generateNewsletterHTML(content: NewsletterContent, recipientEmai
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:600px;box-shadow:0 4px 32px rgba(0,0,0,0.10);border-radius:12px;">
 
 <!-- HEADER -->
-<tr><td style="background:linear-gradient(90deg,#E0882C 0%,#C97520 100%);border-radius:12px 12px 0 0;padding:20px 32px;">
+<tr><td style="background:#F7911D;border-radius:12px 12px 0 0;padding:12px 32px;">
   <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
     <td style="vertical-align:middle;">
-      <img src="${logoSrc}" alt="ZAJO Reality" width="144" height="140" style="display:block;width:72px;height:70px;border:0;"/>
+      <img src="${logoSrc}" alt="ZAJO Reality" width="80" height="80" style="display:block;width:80px;height:80px;border:0;border-radius:6px;"/>
     </td>
     <td align="right" style="vertical-align:middle;">
       <span style="font-family:'Inter',Arial,Helvetica,sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,0.90);letter-spacing:0.5px;">${esc(content.month)}</span>
