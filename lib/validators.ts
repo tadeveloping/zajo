@@ -30,7 +30,7 @@ export const newsletterPropertySchema = z.object({
   location: z.string(),
   area: z.string().nullable().optional(),
   rooms: z.string().nullable().optional(),
-  imageUrl: z.string(),
+  imageUrl: z.string().nullable().optional(),
   url: z.string(),
   badge: z.enum(["NOVÉ", "ZNÍŽENÁ CENA", "REZERVOVANÉ"]).nullable().optional(),
 });
