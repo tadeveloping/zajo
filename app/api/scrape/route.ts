@@ -25,6 +25,23 @@ function absUrl(href: string): string {
   return `${BASE}${href.startsWith("/") ? "" : "/"}${href}`;
 }
 
+function toFullRes(url: string): string {
+  return url.replace(/-\d+x\d+(\.[a-z]+)$/i, "$1");
+}
+
+function bestFromSrcset(srcset: string): string | undefined {
+  const entries = srcset
+    .split(",")
+    .map((s) => {
+      const parts = s.trim().split(/\s+/);
+      return { u: parts[0], w: parseInt(parts[1] || "0") };
+    })
+    .filter(({ u }) => u && !u.startsWith("data:"));
+  if (!entries.length) return undefined;
+  entries.sort((a, b) => b.w - a.w);
+  return entries[0].u;
+}
+
 function extractImage($el: Cheerio<AnyNode>, $: CheerioAPI): string | undefined {
   const imgEl = $el.find("img").first();
   const raw =
@@ -59,7 +76,7 @@ function extractImage($el: Cheerio<AnyNode>, $: CheerioAPI): string | undefined 
   if (bgImg) return bgImg;
 
   if (!raw || raw.startsWith("data:") || raw.length < 10) return undefined;
-  return absUrl(raw);
+  return toFullRes(absUrl(raw));
 }
 
 function extractPrice($el: Cheerio<AnyNode>, $: CheerioAPI): string {
@@ -74,38 +91,51 @@ function extractPrice($el: Cheerio<AnyNode>, $: CheerioAPI): string {
   return price;
 }
 
-/** Fetch an individual listing page and extract the main property image */
+/** Fetch an individual listing page and extract the main property image (full-res) */
 async function fetchListingImage(url: string): Promise<string | undefined> {
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": UA },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(6000),
     });
     if (!res.ok) return undefined;
     const html = await res.text();
     const $ = load(html);
 
-    // Common selectors for main property photo on detail pages
-    const candidates = [
-      // Open Graph image — most reliable
-      $("meta[property='og:image']").attr("content"),
-      // Main gallery image selectors
-      $(".gallery img, .property-gallery img, .slider img, .swiper-slide img, .owl-item img").first().attr("src"),
-      $(".wp-post-image, .attachment-full, .size-full").first().attr("src"),
-      $("img.hero, img.main-image, img.featured").first().attr("src"),
-      // Widest img on page — likely the hero
-      ...$("img")
-        .toArray()
-        .map((el) => {
-          const w = parseInt($(el).attr("width") || "0");
-          return w > 400 ? $(el).attr("src") : undefined;
-        })
-        .filter(Boolean),
-    ].filter(Boolean) as string[];
+    // 1. Open Graph image — usually high quality
+    const og = $("meta[property='og:image']").attr("content");
+    if (og && !og.startsWith("data:")) return toFullRes(absUrl(og));
 
-    for (const c of candidates) {
-      if (c && !c.startsWith("data:") && c.length > 10) return absUrl(c);
-    }
+    // 2. Largest img found via srcset on the page
+    let bestSrcset: string | undefined;
+    $("img[srcset], img[data-srcset]").each((_, el) => {
+      if (bestSrcset) return;
+      const ss = $(el).attr("srcset") || $(el).attr("data-srcset") || "";
+      const candidate = bestFromSrcset(ss);
+      if (candidate) bestSrcset = toFullRes(absUrl(candidate));
+    });
+    if (bestSrcset) return bestSrcset;
+
+    // 3. Gallery / slider selectors — prefer data-src (lazy) over src (may be tiny placeholder)
+    const galEl = $(".gallery img, .property-gallery img, .swiper-slide img, .owl-item img, .slider img, [class*='gallery'] img").first();
+    const galSrc = galEl.attr("data-src") || galEl.attr("data-lazy-src") || galEl.attr("src");
+    if (galSrc && !galSrc.startsWith("data:")) return toFullRes(absUrl(galSrc));
+
+    // 4. WordPress featured image classes
+    const wpImg = $(".wp-post-image, .attachment-full, .size-full, img.featured-image").first();
+    const wpSrc = wpImg.attr("src");
+    if (wpSrc && !wpSrc.startsWith("data:")) return toFullRes(absUrl(wpSrc));
+
+    // 5. Widest img by width attribute
+    let widest: { w: number; src: string } | undefined;
+    $("img").each((_, el) => {
+      const w = parseInt($(el).attr("width") || "0");
+      const src = $(el).attr("src") || "";
+      if (w > (widest?.w ?? 200) && !src.startsWith("data:") && src.length > 10) {
+        widest = { w, src: toFullRes(absUrl(src)) };
+      }
+    });
+    if (widest) return widest.src;
   } catch {
     // timeout or network error — skip
   }
