@@ -79,8 +79,12 @@ function buildGrid(properties: NewsletterProperty[]): string {
 }
 
 export function generateNewsletterHTML(content: NewsletterContent, recipientEmail: string): string {
-  const logoSrc = `data:image/png;base64,${LOGO_B64}`;
-  const unsubscribeUrl = `/odhlasit?email=${encodeURIComponent(recipientEmail)}`;
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "").replace(/\/$/, "");
+  // Email clients block data: URLs — use hosted logo when APP_URL is set
+  const logoSrc = appUrl ? `${appUrl}/logo.png` : `data:image/png;base64,${LOGO_B64}`;
+  const unsubscribeUrl = appUrl
+    ? `${appUrl}/odhlasit?email=${encodeURIComponent(recipientEmail)}`
+    : `/odhlasit?email=${encodeURIComponent(recipientEmail)}`;
   const tipIcon = TIP_ICONS[content.tip.type] || "&#128161;";
   const tipLabel = TIP_LABELS[content.tip.type] || "TIP";
   const count = content.properties.length;
