@@ -46,7 +46,7 @@ function buildPropertyCard(p: NewsletterProperty, idx: number): string {
     ? `<tr><td style="background:${p.badge === "ZNÍŽENÁ CENA" ? "#1C1917" : "#E0882C"};padding:6px 18px;height:28px;line-height:1;"><span style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:9px;font-weight:800;color:#FFFFFF;letter-spacing:2.5px;text-transform:uppercase;">${esc(p.badge)}</span></td></tr>`
     : `<tr><td style="height:28px;padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>`;
 
-  const meta = [p.area ? `<strong>${esc(p.area)}</strong>` : null, p.rooms ? `<strong>${esc(p.rooms)}</strong>` : null]
+  const meta = [p.area ? `<strong>${esc(String(p.area))}</strong>` : null, p.rooms ? `<strong>${esc(String(p.rooms))}</strong>` : null]
     .filter(Boolean)
     .join("&nbsp;·&nbsp;");
 

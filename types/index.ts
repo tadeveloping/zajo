@@ -11,8 +11,8 @@ export interface NewsletterProperty {
   title: string;
   price: string;
   location: string;
-  area?: string;
-  rooms?: string;
+  area?: string | null;
+  rooms?: string | null;
   imageUrl: string;
   url: string;
   badge?: "NOVÉ" | "ZNÍŽENÁ CENA" | "REZERVOVANÉ" | null;
