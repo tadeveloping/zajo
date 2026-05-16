@@ -392,7 +392,7 @@ function buildPreviewHtml(c: NewsletterContent): string {
   const card = (p: NewsletterContent["properties"][0], idx: number) => {
     const img = p.imageUrl || PLACEHOLDERS[idx % PLACEHOLDERS.length];
     const badge = p.badge
-      ? `<div style="background:${p.badge === "ZNÍŽENÁ CENA" ? "#1C1917" : "#E0882C"};padding:6px 18px;"><span style="font-family:Arial;font-size:9px;font-weight:800;color:#FFF;letter-spacing:2.5px;text-transform:uppercase;">${esc(p.badge)}</span></div>`
+      ? `<div style="background:${p.badge === "ZNÍŽENÁ CENA" ? "#1C1917" : "#E0882C"};height:28px;box-sizing:border-box;padding:0 18px;display:flex;align-items:center;"><span style="font-family:Arial;font-size:9px;font-weight:800;color:#FFF;letter-spacing:2.5px;text-transform:uppercase;">${esc(p.badge)}</span></div>`
       : `<div style="height:28px;"></div>`;
     const meta = [p.area, p.rooms].filter(Boolean).join(" · ");
     return `<div style="background:#FFF;border-radius:8px;border:1px solid #E3E1DC;overflow:hidden;width:274px;display:inline-block;vertical-align:top;">
