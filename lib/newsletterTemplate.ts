@@ -82,13 +82,10 @@ function buildGrid(properties: NewsletterProperty[]): string {
 }
 
 export function generateNewsletterHTML(content: NewsletterContent, recipientEmail: string): string {
-  // VERCEL_URL is auto-set to the current deployment's domain (where /logo-v2.png actually exists),
-  // so the logo URL stays valid even before the branch is merged to main.
-  const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || vercelUrl || "https://zajo-five.vercel.app").replace(/\/$/, "");
-  const logoHost = (vercelUrl || appUrl).replace(/\/$/, "");
-  // Gmail proxies external images — must use an absolute hosted URL on a domain that actually has the file
-  const logoSrc = `${logoHost}/logo-v2.png`;
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://zajo-five.vercel.app").replace(/\/$/, "");
+  // Serve logo from GitHub raw CDN: no Vercel deployment protection, public, cached,
+  // works for Gmail's image proxy on any branch / before merge to main.
+  const logoSrc = "https://raw.githubusercontent.com/tadeveloping/zajo/claude/create-nextjs-newsletter-FJKjS/public/logo-v2.png";
   const unsubscribeUrl = appUrl
     ? `${appUrl}/odhlasit?email=${encodeURIComponent(recipientEmail)}`
     : `/odhlasit?email=${encodeURIComponent(recipientEmail)}`;
