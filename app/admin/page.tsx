@@ -65,28 +65,18 @@ export default async function AdminPage() {
           paddingBottom: '28px',
           borderBottom: '1px solid rgba(200,119,58,0.15)',
         }}>
-          {/* Logo + title */}
+          {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{
-              width: '44px', height: '44px', borderRadius: '12px',
-              background: 'linear-gradient(135deg, rgba(200,119,58,0.25), rgba(200,119,58,0.08))',
-              border: '1px solid rgba(200,119,58,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              {/* Zajo logo mark — simplified Z */}
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M5 6h14L5 18h14" stroke="#c8773a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.18em', color: '#c8773a', textTransform: 'uppercase', marginBottom: '3px' }}>
-                Zajo Reality
-              </div>
-              <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#f5f0ea', margin: 0, letterSpacing: '-0.02em' }}>
-                Admin panel
-              </h1>
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-v3.png"
+              alt="Zajo Reality"
+              style={{ height: '42px', width: 'auto', display: 'block' }}
+            />
+            <div style={{ width: '1px', height: '32px', background: 'rgba(255,255,255,0.1)' }} />
+            <h1 style={{ fontSize: '16px', fontWeight: 700, color: '#8a8279', margin: 0, letterSpacing: '-0.01em' }}>
+              Admin panel
+            </h1>
           </div>
 
           {/* Nav */}
