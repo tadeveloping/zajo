@@ -444,10 +444,7 @@
 
 <script>
   const CONFIG = {
-    AIRTABLE_TOKEN:     'VLOZ_SVOJ_TOKEN_SEM',
-    AIRTABLE_BASE_ID:   'VLOZ_BASE_ID_SEM',
-    AIRTABLE_TABLE:     'Kontakt',
-    FORMSPREE_ENDPOINT: 'VLOZ_FORMSPREE_ID_SEM'
+    API_BASE: 'https://zajo.vercel.app',
   };
 
   const formData = { interest:null, property:null, timeline:null, message:'', name:'', phone:'', email:'', callback:null };
@@ -516,37 +513,26 @@
     const btn = document.getElementById('btn-submit');
     btn.disabled = true; btn.textContent = 'Odosielam…';
 
-    const payload = {
-      fields: {
-        'Meno':         formData.name,
-        'Telefon':      formData.phone,
-        'Email':        formData.email,
-        'Zaujem':       formData.interest,
-        'Nehnutelnost': formData.property,
-        'Horizont':     formData.timeline,
-        'Sprava':       formData.message,
-        'Zavolame':     formData.callback,
-        'Score':        score,
-        'Zdroj':        'Landing - Kontakt'
-      }
+    const apiPayload = {
+      name:         formData.name,
+      phone:        formData.phone || null,
+      email:        formData.email || null,
+      zaujem:       formData.interest || null,
+      nehnutelnost: formData.property || null,
+      horizont:     formData.timeline || null,
+      sprava:       formData.message || null,
+      zavolame:     !!formData.callback,
+      score:        score,
+      source:       'cally',
     };
 
     try {
-      const res = await fetch(`https://api.airtable.com/v0/${CONFIG.AIRTABLE_BASE_ID}/${encodeURIComponent(CONFIG.AIRTABLE_TABLE)}`, {
+      await fetch(`${CONFIG.API_BASE}/api/leads/cally`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${CONFIG.AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiPayload),
       });
-      if (!res.ok) throw new Error('Airtable error');
-    } catch {
-      try {
-        await fetch(`https://formspree.io/f/${CONFIG.FORMSPREE_ENDPOINT}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...formData, score })
-        });
-      } catch {}
-    }
+    } catch { /* silent — show success anyway */ }
 
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
     document.querySelector('.progress-bar').style.display = 'none';

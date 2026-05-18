@@ -4,23 +4,34 @@ import { supabaseAdmin } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 async function getStats() {
-  const [{ count: total }, { count: subscribed }, { count: issuesCount }, { data: recent }] =
-    await Promise.all([
-      supabaseAdmin.from("contacts").select("*", { count: "exact", head: true }),
-      supabaseAdmin.from("contacts").select("*", { count: "exact", head: true }).eq("subscribed", true),
-      supabaseAdmin.from("issues").select("*", { count: "exact", head: true }),
-      supabaseAdmin
-        .from("issues")
-        .select("id,subject,sent_at,recipient_count")
-        .order("sent_at", { ascending: false })
-        .limit(3),
-    ]);
+  const [
+    { count: total },
+    { count: subscribed },
+    { count: issuesCount },
+    { data: recent },
+    { count: leadsPredajNew },
+    { count: leadsOcenenieNew },
+    { count: leadsCallyNew },
+  ] = await Promise.all([
+    supabaseAdmin.from("contacts").select("*", { count: "exact", head: true }),
+    supabaseAdmin.from("contacts").select("*", { count: "exact", head: true }).eq("subscribed", true),
+    supabaseAdmin.from("issues").select("*", { count: "exact", head: true }),
+    supabaseAdmin
+      .from("issues")
+      .select("id,subject,sent_at,recipient_count")
+      .order("sent_at", { ascending: false })
+      .limit(3),
+    supabaseAdmin.from("leads_predaj").select("id", { count: "exact", head: true }).eq("status", "novy"),
+    supabaseAdmin.from("leads_ocenenie").select("id", { count: "exact", head: true }).eq("status", "novy"),
+    supabaseAdmin.from("leads_cally").select("id", { count: "exact", head: true }).eq("status", "novy"),
+  ]);
 
   return {
     total: total ?? 0,
     subscribed: subscribed ?? 0,
     issuesCount: issuesCount ?? 0,
     recent: recent ?? [],
+    newLeads: (leadsPredajNew ?? 0) + (leadsOcenenieNew ?? 0) + (leadsCallyNew ?? 0),
   };
 }
 
@@ -34,7 +45,7 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
 }
 
 export default async function AdminPage() {
-  let stats = { total: 0, subscribed: 0, issuesCount: 0, recent: [] as Array<{ id: string; subject: string; sent_at: string; recipient_count: number }> };
+  let stats = { total: 0, subscribed: 0, issuesCount: 0, recent: [] as Array<{ id: string; subject: string; sent_at: string; recipient_count: number }>, newLeads: 0 };
   let dbError: string | null = null;
   try {
     stats = await getStats();
@@ -50,6 +61,12 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-bold mt-2">Newsletter Admin</h1>
         </div>
         <div className="flex gap-3">
+          <Link
+            href="/admin/crm"
+            className="px-5 py-2.5 rounded-md border border-border text-white hover:border-accent transition text-sm font-semibold"
+          >
+            CRM Leady
+          </Link>
           <Link
             href="/admin/kontakty"
             className="px-5 py-2.5 rounded-md border border-border text-white hover:border-accent transition text-sm font-semibold"
@@ -71,10 +88,17 @@ export default async function AdminPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
         <StatCard label="Kontakty celkovo" value={stats.total} />
         <StatCard label="Prihlásení" value={stats.subscribed} />
         <StatCard label="Odoslané newslettre" value={stats.issuesCount} />
+        <Link href="/admin/crm" className="block">
+          <div className="bg-panel border border-border rounded-lg p-6 hover:border-accent transition h-full">
+            <div className="text-muted text-xs uppercase tracking-widest font-semibold">Nové CRM leady</div>
+            <div className="text-4xl font-bold mt-3 text-white">{stats.newLeads}</div>
+            <div className="text-accent text-xs mt-2 font-semibold">→ Otvoriť CRM</div>
+          </div>
+        </Link>
       </div>
 
       <section>

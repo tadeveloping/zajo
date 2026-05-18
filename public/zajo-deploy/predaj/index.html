@@ -581,10 +581,7 @@
 
 <script>
 const CONFIG = {
-  AIRTABLE_TOKEN:   'VLOZ_SVOJ_TOKEN_SEM',
-  AIRTABLE_BASE_ID: 'VLOZ_BASE_ID_SEM',
-  AIRTABLE_TABLE:   'Predaj',
-  FORMSPREE_ENDPOINT: 'VLOZ_FORMSPREE_ID_SEM'
+  API_BASE: 'https://zajo.vercel.app',
 };
 
 const form = document.getElementById('leadForm');
@@ -630,45 +627,27 @@ function validate() {
   return ok;
 }
 
-async function submitToAirtable(data) {
-  const res = await fetch(`https://api.airtable.com/v0/${CONFIG.AIRTABLE_BASE_ID}/${encodeURIComponent(CONFIG.AIRTABLE_TABLE)}`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${CONFIG.AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: {
-      'Meno': data.meno, 'Telefon': data.telefon, 'Email': data.email,
-      'Typ': data.typ, 'Lokalita': data.lokalita,
-      'Casovy ramec': data.casovyRamec, 'Sprava': data.sprava,
-      'Zdroj': 'Landing - Predaj'
-    }})
-  });
-  if (!res.ok) throw new Error('Airtable error');
-}
-
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!validate()) return;
   btn.classList.add('loading'); btn.disabled = true;
-  const data = {
-    meno:         document.getElementById('meno').value.trim(),
-    telefon:      document.getElementById('telefon').value.trim(),
-    email:        document.getElementById('email').value.trim(),
-    typ:          document.getElementById('typ').value,
-    lokalita:     document.getElementById('lokalita').value.trim(),
-    casovyRamec:  document.getElementById('casovyRamec').value,
-    sprava:       document.getElementById('sprava').value.trim(),
+  const payload = {
+    name:         document.getElementById('meno').value.trim(),
+    phone:        document.getElementById('telefon').value.trim(),
+    email:        document.getElementById('email').value.trim() || null,
+    typ:          document.getElementById('typ').value || null,
+    lokalita:     document.getElementById('lokalita').value.trim() || null,
+    casovy_ramec: document.getElementById('casovyRamec').value || null,
+    sprava:       document.getElementById('sprava').value.trim() || null,
+    source:       'landing_page',
   };
   try {
-    await submitToAirtable(data);
-    // Ak zaškrtol newsletter súhlas — ulož aj do Newsletter tabuľky
-    if (document.getElementById('nlSuhlas').checked && data.email) {
-      await fetch(`https://api.airtable.com/v0/${CONFIG.AIRTABLE_BASE_ID}/Newsletter`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${CONFIG.AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: { Meno: data.meno, Email: data.email, Zdroj: 'Predaj formulár' } })
-      }).catch(() => {});
-    }
-  }
-  catch { try { await fetch(`https://formspree.io/f/${CONFIG.FORMSPREE_ENDPOINT}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch {} }
+    await fetch(`${CONFIG.API_BASE}/api/leads/predaj`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch { /* silent — show success anyway */ }
   document.querySelector('.form-fields').classList.add('hide');
   document.getElementById('successState').classList.add('show');
   btn.classList.remove('loading'); btn.disabled = false;
