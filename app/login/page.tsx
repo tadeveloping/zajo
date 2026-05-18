@@ -20,14 +20,17 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     })
     setLoading(false)
-    if (error) {
+    if (error || !data.session) {
       setError('Nesprávny email alebo heslo.')
     } else {
+      const token = data.session.access_token
+      const maxAge = data.session.expires_in ?? 3600
+      document.cookie = `sb-access-token=${token}; path=/; max-age=${maxAge}; SameSite=Lax`
       window.location.href = '/admin'
     }
   }

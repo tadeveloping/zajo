@@ -12,6 +12,7 @@ export function LogoutButton() {
 
   async function handleLogout() {
     await supabase.auth.signOut()
+    document.cookie = 'sb-access-token=; path=/; max-age=0'
     router.push('/login')
   }
 
