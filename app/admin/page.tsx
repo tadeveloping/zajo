@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
+import { LogoutButton } from "./components/LogoutButton";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,7 @@ export default async function AdminPage() {
           >
             Generovať newsletter →
           </Link>
+          <LogoutButton />
         </div>
       </header>
 

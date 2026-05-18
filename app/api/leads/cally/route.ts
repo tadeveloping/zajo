@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { leadCallySchema } from '@/lib/validators'
+import { sendLeadNotification } from '@/lib/leadNotification'
 
 export const runtime = 'nodejs'
 
@@ -40,5 +41,19 @@ export async function POST(req: Request) {
     .single()
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500, headers: CORS_HEADERS })
+
+  const crmUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'}/admin/crm`
+  sendLeadNotification({
+    name: data.name,
+    phone: data.phone,
+    email: data.email,
+    source: data.source ?? 'cally',
+    type: 'cally',
+    message: data.sprava,
+    score: data.score,
+    leadId: data.id,
+    crmUrl,
+  }).catch(err => console.error('lead notification failed', err))
+
   return NextResponse.json(data, { status: 201, headers: CORS_HEADERS })
 }

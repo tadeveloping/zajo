@@ -1,7 +1,37 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { LeadPredaj, LeadOcenenie, LeadCally, LeadStatus, LeadScore } from '@/types'
+
+interface LeadNote {
+  id: string
+  created_at: string
+  lead_id: string
+  lead_type: string
+  content: string
+  author_email?: string | null
+}
+
+function formatRelativeTime(dateStr: string): string {
+  const now = Date.now()
+  const then = new Date(dateStr).getTime()
+  const diffMs = now - then
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMin < 1) return 'práve teraz'
+  if (diffMin < 60) return `pred ${diffMin} min.`
+  if (diffHours < 24) return `pred ${diffHours} hod.`
+  if (diffDays === 1) return 'včera'
+  if (diffDays < 7) return `pred ${diffDays} dňami`
+
+  const d = new Date(dateStr)
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  return `${dd}. ${mm}. ${yyyy}`
+}
 
 const STATUS_LABELS: Record<LeadStatus, string> = {
   novy: 'Nový',
@@ -30,7 +60,11 @@ type Tab = 'vsetky' | 'predaj' | 'ocenenie' | 'cally'
 type AnyLead = (LeadPredaj & { _type: 'predaj' }) | (LeadOcenenie & { _type: 'ocenenie' }) | (LeadCally & { _type: 'cally' })
 
 function fmtDate(s: string) {
-  return new Date(s).toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  return formatRelativeTime(s)
+}
+
+function fmtDateFull(s: string) {
+  return new Date(s).toLocaleDateString('sk-SK', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 }
 
 function StatusBadge({ status }: { status: LeadStatus }) {
@@ -63,6 +97,10 @@ export default function CrmPage() {
   const [detailStatus, setDetailStatus] = useState<LeadStatus>('novy')
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState<AnyLead | null>(null)
+  const [leadNotes, setLeadNotes] = useState<LeadNote[]>([])
+  const [newNoteText, setNewNoteText] = useState('')
+  const [savingNote, setSavingNote] = useState(false)
+  const [notesLoading, setNotesLoading] = useState(false)
 
   const loadAll = useCallback(async () => {
     setLoading(true)
@@ -96,14 +134,49 @@ export default function CrmPage() {
     loadAll()
   }, [loadAll])
 
-  function openDetail(lead: AnyLead) {
+  async function openDetail(lead: AnyLead) {
     setSelectedLead(lead)
     setDetailNotes(lead.notes ?? '')
     setDetailStatus(lead.status)
+    setNewNoteText('')
+    setLeadNotes([])
+    setNotesLoading(true)
+    try {
+      const res = await fetch(`/api/notes?lead_id=${lead.id}&lead_type=${lead._type}`)
+      if (res.ok) {
+        const data = await res.json()
+        setLeadNotes(data)
+      }
+    } catch {}
+    finally { setNotesLoading(false) }
   }
 
   function closeDetail() {
     setSelectedLead(null)
+    setLeadNotes([])
+    setNewNoteText('')
+  }
+
+  async function addNote() {
+    if (!selectedLead || !newNoteText.trim()) return
+    setSavingNote(true)
+    try {
+      const res = await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lead_id: selectedLead.id,
+          lead_type: selectedLead._type,
+          content: newNoteText.trim(),
+        }),
+      })
+      if (res.ok) {
+        const note = await res.json()
+        setLeadNotes(prev => [...prev, note])
+        setNewNoteText('')
+      }
+    } catch {}
+    finally { setSavingNote(false) }
   }
 
   async function saveStatus(status: LeadStatus) {
@@ -358,6 +431,12 @@ export default function CrmPage() {
           onNotesSave={saveNotes}
           onDelete={() => setConfirmDelete(selectedLead)}
           onClose={closeDetail}
+          leadNotes={leadNotes}
+          notesLoading={notesLoading}
+          newNoteText={newNoteText}
+          onNewNoteTextChange={setNewNoteText}
+          onAddNote={addNote}
+          savingNote={savingNote}
         />
       )}
 
@@ -458,6 +537,12 @@ function DetailPanel({
   onNotesSave,
   onDelete,
   onClose,
+  leadNotes,
+  notesLoading,
+  newNoteText,
+  onNewNoteTextChange,
+  onAddNote,
+  savingNote,
 }: {
   lead: AnyLead
   notes: string
@@ -468,6 +553,12 @@ function DetailPanel({
   onNotesSave: () => void
   onDelete: () => void
   onClose: () => void
+  leadNotes: LeadNote[]
+  notesLoading: boolean
+  newNoteText: string
+  onNewNoteTextChange: (v: string) => void
+  onAddNote: () => void
+  savingNote: boolean
 }) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
@@ -541,20 +632,52 @@ function DetailPanel({
           </div>
         </div>
 
-        {/* Notes */}
+        {/* Notes history */}
         <div className="mb-6">
           <label className="text-xs uppercase tracking-widest text-muted font-semibold block mb-2">
-            Poznámky
+            História poznámok
           </label>
-          <textarea
-            value={notes}
-            onChange={e => onNotesChange(e.target.value)}
-            onBlur={onNotesSave}
-            placeholder="Pridaj poznámku..."
-            rows={4}
-            className="w-full bg-panel2 border border-border rounded-md px-3 py-2 text-sm text-white placeholder:text-muted resize-none focus:outline-none focus:border-accent transition"
-          />
-          {saving && <div className="text-xs text-muted mt-1">Ukladám...</div>}
+          {notesLoading ? (
+            <div className="text-xs text-muted py-2">Načítavam...</div>
+          ) : leadNotes.length === 0 ? (
+            <div className="text-xs text-muted py-2 bg-panel2 border border-border rounded-md px-3">
+              Zatiaľ žiadne poznámky.
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-48 overflow-y-auto mb-3">
+              {leadNotes.map(note => (
+                <div key={note.id} className="bg-panel2 border border-border rounded-md px-3 py-2">
+                  <div className="text-xs text-muted mb-1" title={fmtDateFull(note.created_at)}>
+                    {formatRelativeTime(note.created_at)}
+                  </div>
+                  <div className="text-sm text-soft leading-relaxed whitespace-pre-wrap">{note.content}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="mt-2">
+            <textarea
+              value={newNoteText}
+              onChange={e => onNewNoteTextChange(e.target.value)}
+              placeholder="Pridať poznámku..."
+              rows={3}
+              className="w-full bg-panel2 border border-border rounded-md px-3 py-2 text-sm text-white placeholder:text-muted resize-none focus:outline-none focus:border-accent transition"
+              onKeyDown={e => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  e.preventDefault()
+                  onAddNote()
+                }
+              }}
+            />
+            <button
+              onClick={onAddNote}
+              disabled={savingNote || !newNoteText.trim()}
+              className="mt-2 px-4 py-2 rounded-md bg-accent hover:bg-accentHover disabled:opacity-40 text-white text-xs font-semibold transition"
+            >
+              {savingNote ? 'Ukladám...' : 'Pridať poznámku'}
+            </button>
+            <div className="text-xs text-muted mt-1">Ctrl+Enter na odoslanie</div>
+          </div>
         </div>
 
         {/* Delete */}
