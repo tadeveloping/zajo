@@ -1,0 +1,44 @@
+import { NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
+import { leadPredajSchema } from '@/lib/validators'
+
+export const runtime = 'nodejs'
+
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 200, headers: CORS_HEADERS })
+}
+
+export async function GET() {
+  const { data, error } = await supabaseAdmin
+    .from('leads_predaj')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json(data)
+}
+
+export async function POST(req: Request) {
+  let body: unknown
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Neplatný JSON' }, { status: 400, headers: CORS_HEADERS })
+  }
+  const parsed = leadPredajSchema.safeParse(body)
+  if (!parsed.success)
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400, headers: CORS_HEADERS })
+  const { data, error } = await supabaseAdmin
+    .from('leads_predaj')
+    .insert(parsed.data)
+    .select()
+    .single()
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500, headers: CORS_HEADERS })
+  return NextResponse.json(data, { status: 201, headers: CORS_HEADERS })
+}

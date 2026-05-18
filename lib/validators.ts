@@ -60,3 +60,44 @@ export const sendSchema = z.object({
 export const generateSchema = z.object({
   listings: z.array(listingSchema).min(1),
 });
+
+export const leadPredajSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  typ: z.string().optional().nullable(),
+  lokalita: z.string().optional().nullable(),
+  casovy_ramec: z.string().optional().nullable(),
+  sprava: z.string().optional().nullable(),
+  source: z.string().optional().default('landing_page'),
+})
+
+export const leadOceneniaSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  typ_nehnutelnosti: z.string().optional().nullable(),
+  lokalita: z.string().optional().nullable(),
+  rozloha: z.string().optional().nullable(),
+  stav_nehnutelnosti: z.string().optional().nullable(),
+  doplnujuce_info: z.string().optional().nullable(),
+  source: z.string().optional().default('landing_page'),
+})
+
+export const leadCallySchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  zaujem: z.string().optional().nullable(),
+  nehnutelnost: z.string().optional().nullable(),
+  horizont: z.string().optional().nullable(),
+  sprava: z.string().optional().nullable(),
+  zavolame: z.boolean().optional().default(false),
+  score: z.enum(['HOT', 'WARM', 'COLD']).optional().default('COLD'),
+  source: z.string().optional().default('cally'),
+})
+
+export const updateLeadStatusSchema = z.object({
+  status: z.enum(['novy', 'kontaktovany', 'stretnutie', 'v_procese', 'uzavrety']),
+  notes: z.string().optional().nullable(),
+})

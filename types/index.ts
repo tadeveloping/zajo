@@ -52,3 +52,54 @@ export interface Issue {
   sent_at: string;
   recipient_count: number;
 }
+
+export type LeadStatus = 'novy' | 'kontaktovany' | 'stretnutie' | 'v_procese' | 'uzavrety'
+export type LeadScore = 'HOT' | 'WARM' | 'COLD'
+
+export interface LeadPredaj {
+  id: string
+  created_at: string
+  name: string
+  email: string | null
+  phone: string | null
+  typ: string | null
+  lokalita: string | null
+  casovy_ramec: string | null
+  sprava: string | null
+  status: LeadStatus
+  notes: string | null
+  source: string | null
+}
+
+export interface LeadOcenenie {
+  id: string
+  created_at: string
+  name: string
+  email: string | null
+  phone: string | null
+  typ_nehnutelnosti: string | null
+  lokalita: string | null
+  rozloha: string | null
+  stav_nehnutelnosti: string | null
+  doplnujuce_info: string | null
+  status: LeadStatus
+  notes: string | null
+  source: string | null
+}
+
+export interface LeadCally {
+  id: string
+  created_at: string
+  name: string
+  email: string | null
+  phone: string | null
+  zaujem: string | null
+  nehnutelnost: string | null
+  horizont: string | null
+  sprava: string | null
+  zavolame: boolean
+  score: LeadScore
+  status: LeadStatus
+  notes: string | null
+  source: string | null
+}
