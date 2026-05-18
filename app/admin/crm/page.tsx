@@ -13,24 +13,13 @@ interface LeadNote {
 }
 
 function formatRelativeTime(dateStr: string): string {
-  const now = Date.now()
-  const then = new Date(dateStr).getTime()
-  const diffMs = now - then
-  const diffMin = Math.floor(diffMs / 60000)
-  const diffHours = Math.floor(diffMs / 3600000)
-  const diffDays = Math.floor(diffMs / 86400000)
-
-  if (diffMin < 1) return 'práve teraz'
-  if (diffMin < 60) return `pred ${diffMin} min.`
-  if (diffHours < 24) return `pred ${diffHours} hod.`
-  if (diffDays === 1) return 'včera'
-  if (diffDays < 7) return `pred ${diffDays} dňami`
-
   const d = new Date(dateStr)
   const dd = String(d.getDate()).padStart(2, '0')
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const yyyy = d.getFullYear()
-  return `${dd}. ${mm}. ${yyyy}`
+  const hh = String(d.getHours()).padStart(2, '0')
+  const min = String(d.getMinutes()).padStart(2, '0')
+  return `${dd}. ${mm}. ${yyyy} ${hh}:${min}`
 }
 
 const STATUS_LABELS: Record<LeadStatus, string> = {
