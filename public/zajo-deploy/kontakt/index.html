@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zajo reality — Kontaktný formulár</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root {
+    --zajo-orange: #E8711A;
+    --zajo-orange-light: #F5923D;
+    --zajo-dark: #141210;
+    --zajo-darker: #0D0B09;
+    --zajo-gray: #1E1C19;
+    --zajo-gray-light: #2A2722;
+    --zajo-gray-border: #332F2A;
+    --zajo-text: #F2EDE7;
+    --zajo-text-muted: #8A8279;
+    --zajo-cream: #C4B9A8;
+    --zajo-green: #5CB85C;
+    --radius: 14px;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    background: var(--zajo-darker);
+    color: var(--zajo-text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* ── Subtle architectural background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% -20%, rgba(232,113,26,0.08) 0%, transparent 55%),
+      repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(232,113,26,0.018) 48px, rgba(232,113,26,0.018) 50px),
+      repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(232,113,26,0.012) 48px, rgba(232,113,26,0.012) 50px);
+    background-size: auto, auto, auto;
+    background-position: center, center, center;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.02;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1200'%3E%3Cg fill='none' stroke='%23E8711A' stroke-opacity='.22' stroke-width='3'%3E%3Cpath d='M120 980V470l345-245 255 185 250-175 390 278v467'/%3E%3Cpath d='M86 983h1302'/%3E%3Cpath d='M465 225v760'/%3E%3Cpath d='M720 410v575'/%3E%3Cpath d='M970 235v750'/%3E%3Cpath d='M1245 515v470'/%3E%3Cpath d='M255 395 465 245l255 185'/%3E%3Cpath d='M815 345 970 235l280 200'/%3E%3Cpath d='M275 660h255'/%3E%3Cpath d='M1045 670h248'/%3E%3C/g%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: cover, auto;
+    background-position: center, center;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { width: 100%; max-width: 440px; padding: 0 20px; position: relative; z-index: 1; }
+
+  /* ── Header ── */
+  .header { text-align: center; padding: 18px 0 16px; }
+
+  .logo-wrap {
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .logo-wrap img {
+    width: 78px;
+    height: auto;
+    display: block;
+    border-radius: 14px;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    filter: none;
+  }
+
+  .header-sub {
+    font-family: 'IBM Plex Sans', 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--zajo-text-muted);
+    margin: 2px auto 0;
+    max-width: 290px;
+    line-height: 1.55;
+  }
+
+  /* ── Progress ── */
+  .progress-bar { display: flex; gap: 6px; margin-bottom: 24px; }
+
+  .progress-step {
+    flex: 1; height: 3px; background: var(--zajo-gray-border);
+    border-radius: 3px; overflow: hidden; transition: background 400ms var(--ease-out);
+  }
+
+  .progress-step.active, .progress-step.done { background: var(--zajo-orange); }
+
+  /* ── Steps ── */
+  .step { display: none; animation: stepIn 500ms var(--ease-out) forwards; }
+  .step.active { display: block; }
+
+  @keyframes stepIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-label {
+    font-family: 'IBM Plex Sans', 'Manrope', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(196,185,168,0.84);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .step-title {
+    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-size: 31px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+    margin-bottom: 18px;
+    color: var(--zajo-text);
+    text-wrap: balance;
+  }
+
+  /* ── Options ── */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    background: rgba(30,28,25,0.92);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .option:hover { background: rgba(42,39,34,0.96); border-color: rgba(232,113,26,0.34); transform: translateY(-1px); }
+  }
+
+  .option:active { transform: scale(0.98); }
+
+  .option.selected {
+    border-color: rgba(232,113,26,0.85);
+    background: linear-gradient(180deg, rgba(232,113,26,0.18), rgba(232,113,26,0.07));
+    box-shadow: 0 0 0 1px rgba(232,113,26,0.26), 0 16px 34px rgba(232,113,26,0.12);
+    transform: translateY(-2px);
+  }
+
+  .option-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: var(--zajo-darker); border: 1px solid var(--zajo-gray-border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 200ms var(--ease-out);
+  }
+
+  .option-icon svg {
+    width: 20px; height: 20px; stroke: var(--zajo-cream); fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke 200ms var(--ease-out);
+  }
+
+  .option.selected .option-icon { background: var(--zajo-orange); border-color: var(--zajo-orange); }
+  .option.selected .option-icon svg { stroke: white; }
+  .option.selected .option-label { color: white; }
+  .option.selected .option-desc { color: rgba(242,237,231,0.84); }
+
+  .option-label { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+  .option-desc { font-size: 12px; color: var(--zajo-text-muted); margin-top: 4px; line-height: 1.45; }
+
+  /* ── Chips ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .chip {
+    padding: 14px 22px; background: var(--zajo-gray);
+    border: 1.5px solid var(--zajo-gray-border); border-radius: 50px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: all 200ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent; user-select: none;
+    color: var(--zajo-text); font-family: inherit;
+  }
+
+  .chip:active { transform: scale(0.96); }
+
+  .chip.selected {
+    background: var(--zajo-orange); border-color: var(--zajo-orange);
+    color: white; box-shadow: 0 6px 18px rgba(232,113,26,0.28);
+  }
+
+  /* ── Inputs ── */
+  .form-group { margin-bottom: 16px; }
+
+  .form-label {
+    display: block;
+    font-family: 'IBM Plex Sans', 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--zajo-text-muted);
+    margin-bottom: 8px;
+  }
+
+  .privacy-note {
+    margin-top: 14px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(138,130,121,0.9);
+  }
+
+  .form-input {
+    width: 100%; padding: 16px 18px;
+    background: var(--zajo-gray); border: 1.5px solid var(--zajo-gray-border);
+    border-radius: var(--radius); color: var(--zajo-text);
+    font-size: 16px; font-family: inherit; outline: none;
+    transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    -webkit-appearance: none;
+  }
+
+  .form-input::placeholder { color: #5A5550; }
+  .form-input:focus { border-color: var(--zajo-orange); box-shadow: 0 0 0 3px rgba(232,113,26,0.1); }
+  textarea.form-input { resize: none; min-height: 100px; line-height: 1.5; }
+
+  /* ── Buttons ── */
+  .btn-next {
+    width: 100%; padding: 18px; background: var(--zajo-orange); color: white;
+    border: none; border-radius: var(--radius);
+    font-size: 16px; font-weight: 600; font-family: inherit;
+    cursor: pointer; margin-top: 28px;
+    transition: all 200ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: -0.01em;
+    box-shadow: 0 4px 20px rgba(232,113,26,0.2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn-next:hover { background: var(--zajo-orange-light); box-shadow: 0 6px 28px rgba(232,113,26,0.3); }
+  }
+
+  .btn-next:active { transform: scale(0.97); }
+  .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-back {
+    display: block; margin: 16px auto 0; background: none; border: none;
+    color: var(--zajo-text-muted); font-size: 14px; font-family: inherit;
+    cursor: pointer; padding: 8px 16px; transition: color 200ms;
+  }
+
+  @media (hover: hover) { .btn-back:hover { color: var(--zajo-text); } }
+
+  /* ── Success ── */
+  .success { display: none; text-align: center; padding: 32px 0 40px; animation: stepIn 600ms var(--ease-out) forwards; }
+  .success.show { display: block; }
+
+  .success-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--zajo-green);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 32px rgba(92,184,92,0.25);
+    animation: popIn 500ms var(--ease-out) 200ms both;
+  }
+
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .success-icon svg { width: 32px; height: 32px; stroke: white; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  .success-title { font-family: 'Manrope', 'Segoe UI', sans-serif; font-size: 30px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+  .success-text { font-size: 15px; color: var(--zajo-text-muted); line-height: 1.6; max-width: 300px; margin: 0 auto; }
+
+  .success-card {
+    background: var(--zajo-gray); border: 1px solid var(--zajo-gray-border);
+    border-radius: var(--radius); padding: 20px; margin-top: 20px; text-align: left;
+  }
+
+  .success-card-title { font-size: 11px; color: var(--zajo-cream); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 12px; }
+
+  .success-card-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--zajo-gray-border); font-size: 14px; }
+  .success-card-row:last-child { border: none; }
+  .success-card-label { color: var(--zajo-text-muted); }
+  .success-card-value { font-weight: 500; text-align: right; max-width: 60%; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; padding: 40px 0 32px; font-size: 12px; color: #4A4540; }
+  .footer a { color: var(--zajo-cream); text-decoration: none; transition: color 200ms; }
+  @media (hover: hover) { .footer a:hover { color: var(--zajo-orange); } }
+
+  @media (max-width: 480px) {
+    .logo-wrap img { width: 72px; border-radius: 12px; }
+    .step-title { font-size: 28px; }
+    .header { padding-top: 14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step, .success-icon, .success { animation-duration: 0.01ms !important; }
+    .option, .chip, .btn-next { transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="header-sub">Ďakujeme za zavolanie.<br>Vyplňte krátky formulár a ozveme sa vám.</div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step active" id="prog-1"></div>
+    <div class="progress-step" id="prog-2"></div>
+    <div class="progress-step" id="prog-3"></div>
+    <div class="progress-step" id="prog-4"></div>
+  </div>
+
+  <div class="step active" id="step-1">
+    <div class="step-label">Krok 1 zo 4</div>
+    <div class="step-title">Čo riešite?</div>
+    <div class="options" id="interest-options">
+      <div class="option" data-value="kúpa" onclick="selectOption(this, 'interest')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><path d="M21 21H3"/><path d="M3 7l9-4 9 4"/><path d="M6 7v9"/><path d="M18 7v9"/><path d="M9 21v-6h6v6"/></svg></div>
+        <div><div class="option-label">Kúpa nehnuteľnosti</div><div class="option-desc">Hľadám byt, dom alebo pozemok</div></div>
+      </div>
+      <div class="option" data-value="predaj" onclick="selectOption(this, 'interest')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><path d="M18 8a8 8 0 00-14 5.5A8 8 0 0018 16"/><path d="M3 10h11"/><path d="M3 14h11"/></svg></div>
+        <div><div class="option-label">Predaj nehnuteľnosti</div><div class="option-desc">Chcem predať svoju nehnuteľnosť</div></div>
+      </div>
+      <div class="option" data-value="ocenenie" onclick="selectOption(this, 'interest')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><g transform="translate(3,2)"><path d="M9 1H2v7l7.29 7.29a1 1 0 001.42 0l5.58-5.58a1 1 0 000-1.42L9 1z"/><circle cx="5.5" cy="5.5" r="1"/></g></svg></div>
+        <div><div class="option-label">Ocenenie nehnuteľnosti</div><div class="option-desc">Chcem zistiť trhovú hodnotu</div></div>
+      </div>
+      <div class="option" data-value="iné" onclick="selectOption(this, 'interest')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>
+        <div><div class="option-label">Mám otázku</div><div class="option-desc">Potrebujem poradiť alebo informáciu</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" id="step-2">
+    <div class="step-label">Krok 2 zo 4</div>
+    <div class="step-title">Aký typ nehnuteľnosti?</div>
+    <div class="options" id="property-options">
+      <div class="option" data-value="byt" onclick="selectOption(this, 'property')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 6h.01M16 6h.01M8 10h.01M16 10h.01"/></svg></div>
+        <div><div class="option-label">Byt</div></div>
+      </div>
+      <div class="option" data-value="dom" onclick="selectOption(this, 'property')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2V9.5z"/><path d="M9 22V12h6v10"/></svg></div>
+        <div><div class="option-label">Dom</div></div>
+      </div>
+      <div class="option" data-value="pozemok" onclick="selectOption(this, 'property')">
+        <div class="option-icon"><svg viewBox="0 0 24 24"><path d="M2 22L12 2l10 20H2z"/><path d="M12 18h.01"/></svg></div>
+        <div><div class="option-label">Pozemok</div></div>
+      </div>
+    </div>
+    <div style="margin-top: 28px;">
+      <div class="step-label">Časový horizont</div>
+      <div class="step-title" style="font-size:20px; margin-bottom:16px;">Kedy to plánujete?</div>
+      <div class="chips" id="timeline-chips">
+        <div class="chip" data-value="ihneď" onclick="selectChip(this)">Čo najskôr</div>
+        <div class="chip" data-value="1-3 mesiace" onclick="selectChip(this)">1–3 mesiace</div>
+        <div class="chip" data-value="3-6 mesiacov" onclick="selectChip(this)">3–6 mesiacov</div>
+        <div class="chip" data-value="len sa rozhliadam" onclick="selectChip(this)">Len sa rozhliadam</div>
+      </div>
+    </div>
+    <button class="btn-next" id="btn-step2" disabled onclick="goToStep(3)">Pokračovať ďalej</button>
+    <button class="btn-back" onclick="goToStep(1)">← Späť</button>
+  </div>
+
+  <div class="step" id="step-3">
+    <div class="step-label">Krok 3 zo 4</div>
+    <div class="step-title">Vaša správa</div>
+    <div class="form-group">
+      <label class="form-label">Napíšte nám čo potrebujete (voliteľné)</label>
+      <textarea class="form-input" id="message" placeholder="Napr. Mám záujem o 3-izbový byt v centre Trenčína..." rows="4"></textarea>
+    </div>
+    <button class="btn-next" onclick="goToStep(4)">Prejsť na kontaktné údaje</button>
+    <button class="btn-back" onclick="goToStep(formData.interest === 'iné' ? 1 : 2)">← Späť</button>
+  </div>
+
+  <div class="step" id="step-4">
+    <div class="step-label">Krok 4 zo 4</div>
+    <div class="step-title">Vaše kontaktné údaje</div>
+    <div class="form-group">
+      <label class="form-label">Meno a priezvisko</label>
+      <input class="form-input" type="text" id="name" placeholder="Ján Novák" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Telefón</label>
+      <input class="form-input" type="tel" id="phone" placeholder="+421 9XX XXX XXX" autocomplete="tel">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email (voliteľné)</label>
+      <input class="form-input" type="email" id="email" placeholder="jan@email.sk" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kedy vám môžeme zavolať späť?</label>
+      <div class="chips" id="callback-chips">
+        <div class="chip" data-value="dnes" onclick="selectCallbackChip(this)">Dnes</div>
+        <div class="chip" data-value="zajtra" onclick="selectCallbackChip(this)">Zajtra</div>
+        <div class="chip" data-value="kedykoľvek" onclick="selectCallbackChip(this)">Kedykoľvek</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:10px;margin-top:4px;margin-bottom:4px;">
+      <input type="checkbox" id="gdprSuhlas" style="-webkit-appearance:none;appearance:none;width:16px;height:16px;flex-shrink:0;margin-top:2px;border:1.5px solid var(--zajo-gray-border);border-radius:4px;background:var(--zajo-gray);cursor:pointer;position:relative;transition:background 120ms,border-color 120ms;" onclick="validateStep4()">
+      <label for="gdprSuhlas" style="font-size:12px;color:var(--zajo-text-muted);line-height:1.5;cursor:pointer;">Súhlasím so <a href="#" style="color:var(--zajo-cream);text-decoration:underline;">spracovaním osobných údajov</a></label>
+    </div>
+    <div class="privacy-note">Vaše údaje použijeme len na spätné kontaktovanie k vašej požiadavke.</div>
+    <button class="btn-next" id="btn-submit" disabled onclick="submitForm()">Odoslať žiadosť</button>
+    <button class="btn-back" onclick="goToStep(3)">← Späť</button>
+  </div>
+
+  <div class="success" id="success-screen">
+    <div class="success-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="success-title">Ďakujeme!</div>
+    <div class="success-text">Vaša správa bola odoslaná. Ozveme sa vám čo najskôr.</div>
+    <div class="success-card">
+      <div class="success-card-title">Súhrn</div>
+      <div id="summary-rows"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Zajo reality · Dolný Šianec 1, 911 48 Trenčín<br>
+    <a href="https://www.zajoreality.sk" target="_blank">zajoreality.sk</a>
+  </div>
+</div>
+
+<script>
+  const CONFIG = {
+    API_BASE: 'https://zajo-five.vercel.app',
+  };
+
+  const formData = { interest:null, property:null, timeline:null, message:'', name:'', phone:'', email:'', callback:null };
+  let currentStep = 1;
+
+  function selectOption(el, field) {
+    el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    formData[field] = el.dataset.value;
+    if (field === 'interest') {
+      setTimeout(() => goToStep(formData.interest === 'iné' ? 3 : 2), 300);
+    }
+    validateStep2();
+  }
+
+  function selectChip(el) {
+    document.querySelectorAll('#timeline-chips .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    formData.timeline = el.dataset.value;
+    validateStep2();
+  }
+
+  function selectCallbackChip(el) {
+    document.querySelectorAll('#callback-chips .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    formData.callback = el.dataset.value;
+    validateStep4();
+  }
+
+  function validateStep2() {
+    document.getElementById('btn-step2').disabled = !(formData.property && formData.timeline);
+  }
+
+  function validateStep4() {
+    const n = document.getElementById('name').value.trim();
+    const p = document.getElementById('phone').value.trim();
+    const gdpr = document.getElementById('gdprSuhlas').checked;
+    document.getElementById('btn-submit').disabled = !(n && p && gdpr);
+  }
+
+  function goToStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const step = document.getElementById('step-' + n);
+    if (step) { step.classList.remove('active'); void step.offsetWidth; step.classList.add('active'); }
+    for (let i = 1; i <= 4; i++) {
+      const p = document.getElementById('prog-' + i);
+      p.classList.remove('active','done');
+      if (i < n) p.classList.add('done');
+      if (i === n) p.classList.add('active');
+    }
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function submitForm() {
+    formData.name = document.getElementById('name').value.trim();
+    formData.phone = document.getElementById('phone').value.trim();
+    formData.email = document.getElementById('email').value.trim();
+    formData.message = document.getElementById('message').value.trim();
+
+    let score = 'COLD';
+    if (formData.timeline === 'ihneď' || formData.timeline === '1-3 mesiace') {
+      score = (formData.interest === 'predaj' || formData.interest === 'kúpa') ? 'HOT' : 'WARM';
+    } else if (formData.timeline === '3-6 mesiacov') score = 'WARM';
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true; btn.textContent = 'Odosielam…';
+
+    const apiPayload = {
+      name:         formData.name,
+      phone:        formData.phone || null,
+      email:        formData.email || null,
+      zaujem:       formData.interest || null,
+      nehnutelnost: formData.property || null,
+      horizont:     formData.timeline || null,
+      sprava:       formData.message || null,
+      zavolame:     !!formData.callback,
+      score:        score,
+      source:       'cally',
+    };
+
+    try {
+      await fetch(`${CONFIG.API_BASE}/api/leads/cally`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiPayload),
+      });
+    } catch { /* silent — show success anyway */ }
+
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.querySelector('.progress-bar').style.display = 'none';
+    const labels = { 'kúpa':'Kúpa','predaj':'Predaj','ocenenie':'Ocenenie','iné':'Otázka' };
+    const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : '—';
+    document.getElementById('summary-rows').innerHTML = `
+      <div class="success-card-row"><span class="success-card-label">Záujem</span><span class="success-card-value">${labels[formData.interest]||cap(formData.interest)}</span></div>
+      <div class="success-card-row"><span class="success-card-label">Nehnuteľnosť</span><span class="success-card-value">${cap(formData.property)}</span></div>
+      <div class="success-card-row"><span class="success-card-label">Horizont</span><span class="success-card-value">${cap(formData.timeline)}</span></div>
+      <div class="success-card-row"><span class="success-card-label">Zavoláme</span><span class="success-card-value">${cap(formData.callback)}</span></div>`;
+    document.getElementById('success-screen').classList.add('show');
+  }
+
+  document.getElementById('name').addEventListener('input', validateStep4);
+  document.getElementById('phone').addEventListener('input', validateStep4);
+  document.getElementById('gdprSuhlas').addEventListener('change', validateStep4);
+</script>
+</body>
+</html>

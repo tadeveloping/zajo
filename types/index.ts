@@ -4,24 +4,35 @@ export interface Listing {
   location: string;
   area: string;
   url: string;
-  description?: string;
+  imageUrl?: string;
 }
 
-export interface NewsletterListing {
+export interface NewsletterProperty {
   title: string;
   price: string;
   location: string;
-  area: string;
-  description: string;
+  area?: string | null;
+  rooms?: string | null;
+  imageUrl?: string | null;
   url: string;
+  badge?: "NOVÉ" | "ZNÍŽENÁ CENA" | "REZERVOVANÉ" | null;
+}
+
+export interface NewsletterTip {
+  type: "rada" | "novinky" | "trh";
+  title: string;
+  body: string;
 }
 
 export interface NewsletterContent {
-  subject: string;
+  edition: 1 | 2;
   greeting: string;
-  listings: NewsletterListing[];
-  tip: string;
-  cta: string;
+  intro: string;
+  tip: NewsletterTip;
+  properties: NewsletterProperty[];
+  ctaText: string;
+  ctaUrl: string;
+  month: string;
 }
 
 export interface Contact {
@@ -40,4 +51,55 @@ export interface Issue {
   html_content: string;
   sent_at: string;
   recipient_count: number;
+}
+
+export type LeadStatus = 'novy' | 'kontaktovany' | 'stretnutie' | 'v_procese' | 'uzavrety'
+export type LeadScore = 'HOT' | 'WARM' | 'COLD'
+
+export interface LeadPredaj {
+  id: string
+  created_at: string
+  name: string
+  email: string | null
+  phone: string | null
+  typ: string | null
+  lokalita: string | null
+  casovy_ramec: string | null
+  sprava: string | null
+  status: LeadStatus
+  notes: string | null
+  source: string | null
+}
+
+export interface LeadOcenenie {
+  id: string
+  created_at: string
+  name: string
+  email: string | null
+  phone: string | null
+  typ_nehnutelnosti: string | null
+  lokalita: string | null
+  rozloha: string | null
+  stav_nehnutelnosti: string | null
+  doplnujuce_info: string | null
+  status: LeadStatus
+  notes: string | null
+  source: string | null
+}
+
+export interface LeadCally {
+  id: string
+  created_at: string
+  name: string
+  email: string | null
+  phone: string | null
+  zaujem: string | null
+  nehnutelnost: string | null
+  horizont: string | null
+  sprava: string | null
+  zavolame: boolean
+  score: LeadScore
+  status: LeadStatus
+  notes: string | null
+  source: string | null
 }

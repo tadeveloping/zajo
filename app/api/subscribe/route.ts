@@ -5,12 +5,22 @@ import { subscribeSchema } from "@/lib/validators";
 
 export const runtime = "nodejs";
 
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS });
+}
+
 export async function POST(req: Request) {
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Neplatný JSON" }, { status: 400 });
+    return NextResponse.json({ error: "Neplatný JSON" }, { status: 400, headers: CORS });
   }
 
   const parsed = subscribeSchema.safeParse(body);
@@ -29,7 +39,7 @@ export async function POST(req: Request) {
     .maybeSingle();
 
   if (existing) {
-    return NextResponse.json({ error: "Email už existuje" }, { status: 409 });
+    return NextResponse.json({ error: "Email už existuje" }, { status: 409, headers: CORS });
   }
 
   const { error: insertErr } = await supabaseAdmin.from("contacts").insert({
@@ -40,7 +50,7 @@ export async function POST(req: Request) {
     subscribed: true,
   });
   if (insertErr) {
-    return NextResponse.json({ error: insertErr.message }, { status: 500 });
+    return NextResponse.json({ error: insertErr.message }, { status: 500, headers: CORS });
   }
 
   try {
@@ -68,5 +78,5 @@ export async function POST(req: Request) {
     console.error("welcome email failed", e);
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true }, { headers: CORS });
 }
