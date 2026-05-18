@@ -439,6 +439,7 @@ function LeadRow({
         )}
       </td>
       <td className="px-4 py-3 text-muted text-xs max-w-[180px] truncate">{info}</td>
+      <td className="px-4 py-3 text-muted text-xs whitespace-nowrap">{utmLabel}</td>
       <td className="px-4 py-3">
         <StatusBadge status={lead.status} />
       </td>
@@ -496,6 +497,20 @@ function DetailPanel({
           <Field label="Email" value={lead.email} />
           <Field label="Zdroj" value={lead.source} />
           <Field label="Dátum" value={fmtDate(lead.created_at)} />
+          {lead.utm_source && (
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted min-w-[80px] flex-shrink-0">UTM zdroj:</span>
+              <span className="text-soft">
+                {lead.utm_source === 'facebook' ? '📘 Facebook' : lead.utm_source === 'instagram' ? '📷 Instagram' : lead.utm_source}
+              </span>
+            </div>
+          )}
+          {lead.utm_campaign && (
+            <div className="flex gap-2 text-sm">
+              <span className="text-muted min-w-[80px] flex-shrink-0">Kampaň:</span>
+              <span className="text-soft">{lead.utm_campaign}</span>
+            </div>
+          )}
         </div>
 
         {/* Type-specific fields */}
