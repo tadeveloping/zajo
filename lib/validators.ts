@@ -70,6 +70,8 @@ export const leadPredajSchema = z.object({
   casovy_ramec: z.string().optional().nullable(),
   sprava: z.string().optional().nullable(),
   source: z.string().optional().default('landing_page'),
+  utm_source: z.string().optional().nullable(),
+  utm_campaign: z.string().optional().nullable(),
 })
 
 export const leadOceneniaSchema = z.object({
@@ -82,6 +84,8 @@ export const leadOceneniaSchema = z.object({
   stav_nehnutelnosti: z.string().optional().nullable(),
   doplnujuce_info: z.string().optional().nullable(),
   source: z.string().optional().default('landing_page'),
+  utm_source: z.string().optional().nullable(),
+  utm_campaign: z.string().optional().nullable(),
 })
 
 export const leadCallySchema = z.object({
@@ -95,6 +99,8 @@ export const leadCallySchema = z.object({
   zavolame: z.boolean().optional().default(false),
   score: z.enum(['HOT', 'WARM', 'COLD']).optional().default('COLD'),
   source: z.string().optional().default('cally'),
+  utm_source: z.string().optional().nullable(),
+  utm_campaign: z.string().optional().nullable(),
 })
 
 export const updateLeadStatusSchema = z.object({

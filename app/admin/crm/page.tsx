@@ -197,6 +197,16 @@ export default function CrmPage() {
   const visible = getVisibleLeads()
   const hotCount = callyLeads.filter(l => l.score === 'HOT').length
 
+  function getUtmSourceLabel(utm: string | null): string {
+    if (!utm) return '—'
+    if (utm === 'facebook') return '📘 Facebook'
+    if (utm === 'instagram') return '📷 Instagram'
+    return utm
+  }
+
+  const facebookCount = visible.filter(l => l.utm_source === 'facebook').length
+  const instagramCount = visible.filter(l => l.utm_source === 'instagram').length
+
   const tabLabel = (t: Tab) => {
     const count = t === 'predaj' ? counts.predaj : t === 'ocenenie' ? counts.ocenenie : t === 'cally' ? counts.cally : counts.total
     return count > 0 ? (
@@ -230,7 +240,7 @@ export default function CrmPage() {
       </header>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         <div className="bg-panel border border-border rounded-lg p-4">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">Celkom</div>
           <div className="text-2xl font-bold mt-1">{allLeads.length}</div>
@@ -248,6 +258,14 @@ export default function CrmPage() {
           <div className="text-2xl font-bold mt-1 text-green-300">
             {allLeads.filter(l => l.status === 'uzavrety').length}
           </div>
+        </div>
+        <div className="bg-panel border border-border rounded-lg p-4">
+          <div className="text-muted text-xs uppercase tracking-widest font-semibold">📘 Facebook</div>
+          <div className="text-2xl font-bold mt-1 text-blue-400">{facebookCount}</div>
+        </div>
+        <div className="bg-panel border border-border rounded-lg p-4">
+          <div className="text-muted text-xs uppercase tracking-widest font-semibold">📷 Instagram</div>
+          <div className="text-2xl font-bold mt-1 text-pink-300">{instagramCount}</div>
         </div>
       </div>
 
@@ -307,6 +325,7 @@ export default function CrmPage() {
                   <th className="px-4 py-3 font-semibold">Kontakt</th>
                   <th className="px-4 py-3 font-semibold">Typ</th>
                   <th className="px-4 py-3 font-semibold">Info</th>
+                  <th className="px-4 py-3 font-semibold">Zdroj</th>
                   <th className="px-4 py-3 font-semibold">Status</th>
                   <th className="px-4 py-3 font-semibold">Dátum</th>
                 </tr>
@@ -318,6 +337,7 @@ export default function CrmPage() {
                     lead={lead}
                     onClick={() => openDetail(lead)}
                     isSelected={selectedLead?.id === lead.id}
+                    utmLabel={getUtmSourceLabel(lead.utm_source)}
                   />
                 ))}
               </tbody>
@@ -376,10 +396,12 @@ function LeadRow({
   lead,
   onClick,
   isSelected,
+  utmLabel,
 }: {
   lead: AnyLead
   onClick: () => void
   isSelected: boolean
+  utmLabel: string
 }) {
   const typeLabel = lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Cally'
   const typeColor = lead._type === 'predaj' ? 'text-green-300' : lead._type === 'ocenenie' ? 'text-yellow-300' : 'text-purple-300'

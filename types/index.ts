@@ -69,6 +69,8 @@ export interface LeadPredaj {
   status: LeadStatus
   notes: string | null
   source: string | null
+  utm_source: string | null
+  utm_campaign: string | null
 }
 
 export interface LeadOcenenie {
@@ -85,6 +87,8 @@ export interface LeadOcenenie {
   status: LeadStatus
   notes: string | null
   source: string | null
+  utm_source: string | null
+  utm_campaign: string | null
 }
 
 export interface LeadCally {
@@ -102,4 +106,6 @@ export interface LeadCally {
   status: LeadStatus
   notes: string | null
   source: string | null
+  utm_source: string | null
+  utm_campaign: string | null
 }

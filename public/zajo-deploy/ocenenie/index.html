@@ -942,6 +942,10 @@ const CONFIG = {
 let currentStep = 1;
 let selectedType = null;
 
+function getUtm(key) {
+  return new URLSearchParams(window.location.search).get(key) || null;
+}
+
 // ── Type selection ──
 function selectType(btn) {
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
@@ -1117,6 +1121,8 @@ async function submitForm() {
       stav_nehnutelnosti: data.Stav || null,
       doplnujuce_info:    [data.Izby ? 'Izby: ' + data.Izby : null, data.Konstrukcia ? 'Konštrukcia: ' + data.Konstrukcia : null, data.Dovod ? 'Dôvod: ' + data.Dovod : null].filter(Boolean).join('; ') || null,
       source:             'landing_page',
+      utm_source:         getUtm('utm_source'),
+      utm_campaign:       getUtm('utm_campaign'),
     };
     await fetch(`${CONFIG.API_BASE}/api/leads/ocenenie`, {
       method: 'POST',

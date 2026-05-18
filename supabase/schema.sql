@@ -92,3 +92,11 @@ create index leads_cally_score_idx on leads_cally(score);
 alter table leads_predaj enable row level security;
 alter table leads_ocenenie enable row level security;
 alter table leads_cally enable row level security;
+
+-- UTM tracking columns
+alter table leads_predaj add column if not exists utm_source text;
+alter table leads_predaj add column if not exists utm_campaign text;
+alter table leads_ocenenie add column if not exists utm_source text;
+alter table leads_ocenenie add column if not exists utm_campaign text;
+alter table leads_cally add column if not exists utm_source text;
+alter table leads_cally add column if not exists utm_campaign text;

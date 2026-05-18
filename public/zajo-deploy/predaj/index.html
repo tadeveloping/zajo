@@ -587,6 +587,10 @@ const CONFIG = {
 const form = document.getElementById('leadForm');
 const btn  = document.getElementById('submitBtn');
 
+function getUtm(key) {
+  return new URLSearchParams(window.location.search).get(key) || null;
+}
+
 function validate() {
   let ok = true;
   const fields = [
@@ -640,6 +644,8 @@ form.addEventListener('submit', async (e) => {
     casovy_ramec: document.getElementById('casovyRamec').value || null,
     sprava:       document.getElementById('sprava').value.trim() || null,
     source:       'landing_page',
+    utm_source:   getUtm('utm_source'),
+    utm_campaign: getUtm('utm_campaign'),
   };
   try {
     await fetch(`${CONFIG.API_BASE}/api/leads/predaj`, {
