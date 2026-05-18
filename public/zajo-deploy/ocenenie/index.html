@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bezplatné ocenenie nehnuteľnosti — Zajo Reality</title>
+<meta name="description" content="Zistite reálnu trhovú cenu vašej nehnuteľnosti do 24 hodín. Zadarmo, bez záväzkov. Trenčiansky kraj.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--
+  ================================================================
+  ZAJO REALITY — Ocenenie nehnuteľnosti (multi-step wizard)
+  ================================================================
+  NASTAVENIE PRED SPUSTENÍM:
+  1. Airtable — airtable.com (zadarmo)
+     - Vytvor Base "Zajo Leady"
+     - Tabuľka "Ocenenie" s poľami:
+       Meno, Telefon, Email, Typ, Adresa, IzBy, Plocha,
+       Stav, Konstrukcia, Poschodie, PocetPoschodiDom,
+       Balkon, Terasa, Pivnica, Zahrada, Parkovanie, Garaz,
+       VymeraPozemku, Dovod, Poznamka, Datum (Created time)
+     - Personal Access Token: airtable.com/create/tokens
+  2. Formspree — formspree.io (záloha, ak Airtable zlyhá)
+  ================================================================
+-->
+<style>
+:root {
+  --navy:       #0F172A;
+  --gold:       #F59E0B;
+  --gold-dark:  #D97706;
+  --gold-light: #FEF3C7;
+  --white:      #FFFFFF;
+  --gray-50:    #F8FAFC;
+  --gray-100:   #F1F5F9;
+  --gray-300:   #CBD5E1;
+  --gray-400:   #94A3B8;
+  --gray-600:   #475569;
+  --gray-700:   #334155;
+  --green:      #059669;
+  --ease-out:   cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--navy); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+/* ── NAV — skrytý ── */
+nav { display: none; }
+
+/* HERO LOGO */
+.hero-logo { text-align: center; margin-bottom: 20px; }
+.hero-logo svg { height: 62px; width: auto; display: block; margin: 0 auto; }
+.hero-logo-tel {
+  display: block; margin-top: 8px;
+  font-size: 0.8rem; font-weight: 500; color: rgba(255,255,255,0.55);
+  text-decoration: none; letter-spacing: 0.04em;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(150deg, #060E1A 0%, #0F172A 60%, #1a2744 100%);
+  padding: 28px 24px 0;
+  text-align: center;
+  position: relative; overflow: visible;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(245,158,11,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: -5%; right: -5%;
+  width: 110%; height: 80px;
+  background: var(--white);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(245,158,11,0.14);
+  border: 1px solid rgba(245,158,11,0.32);
+  color: var(--gold); font-size: 0.78rem; font-weight: 700;
+  padding: 6px 16px; border-radius: 99px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 22px;
+  animation: fadeUp .5s var(--ease-out) both;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.9rem, 5vw, 3.4rem);
+  font-weight: 700; color: var(--white);
+  line-height: 1.1; letter-spacing: -.02em;
+  max-width: 680px; margin: 0 auto 18px;
+  animation: fadeUp .5s 60ms var(--ease-out) both;
+}
+.hero h1 em { font-style: normal; color: var(--gold); }
+
+.hero-sub {
+  font-size: 1.05rem; color: rgba(255,255,255,.65);
+  max-width: 460px; margin: 0 auto 36px; line-height: 1.65;
+  animation: fadeUp .5s 120ms var(--ease-out) both;
+}
+
+.trust-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; margin-bottom: 44px;
+  animation: fadeUp .5s 180ms var(--ease-out) both;
+}
+.trust-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.82); font-size: .8rem; font-weight: 500;
+  padding: 6px 14px; border-radius: 99px;
+}
+.trust-chip svg { color: var(--gold); flex-shrink: 0; }
+
+/* ── WIZARD CARD ── */
+.wizard-wrap {
+  max-width: 620px; margin: 0 auto;
+  animation: fadeUp .5s 240ms var(--ease-out) both;
+  position: relative; z-index: 2;
+}
+
+.wizard-card {
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 -12px 60px rgba(0,0,0,.35);
+  overflow: hidden;
+  position: relative; z-index: 1;
+}
+
+/* Progress bar */
+.wizard-progress {
+  height: 4px; background: var(--gray-100);
+  position: relative;
+}
+.wizard-progress-fill {
+  height: 100%; background: var(--gold);
+  border-radius: 99px;
+  transition: width 400ms var(--ease-out);
+}
+
+/* Step header */
+.wizard-header {
+  padding: 28px 32px 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+@media (max-width:480px) { .wizard-header { padding: 20px 18px 0; } }
+
+.step-indicator {
+  font-size: .75rem; font-weight: 700; color: var(--gray-400);
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.step-indicator span { color: var(--gold); }
+
+.wizard-back {
+  display: none; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  font-size: .82rem; font-weight: 600; color: var(--gray-600);
+  padding: 6px 0;
+  transition: color 180ms var(--ease-out);
+}
+.wizard-back:hover { color: var(--navy); }
+.wizard-back svg { transition: transform 180ms var(--ease-out); }
+.wizard-back:hover svg { transform: translateX(-3px); }
+.wizard-back.show { display: flex; }
+
+.wizard-body { padding: 20px 32px 32px; }
+@media (max-width:480px) { .wizard-body { padding: 16px 18px 24px; } }
+
+.wizard-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; font-weight: 700; color: var(--navy);
+  margin-bottom: 6px;
+}
+.wizard-sub { font-size: .875rem; color: var(--gray-600); margin-bottom: 24px; }
+
+/* ── STEP 1: Type selector ── */
+.type-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  margin-bottom: 8px;
+}
+@media (max-width:400px) { .type-grid { grid-template-columns: 1fr; } }
+
+.type-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 20px 12px;
+  border: 2px solid var(--gray-200, #E2E8F0);
+  border-radius: 14px; background: var(--gray-50);
+  cursor: pointer;
+  transition: border-color 200ms var(--ease-out), background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  -webkit-appearance: none; font-family: 'Inter', sans-serif;
+}
+@media (hover: hover) {
+  .type-btn:hover { border-color: var(--gold); background: var(--gold-light); box-shadow: 0 4px 16px rgba(245,158,11,.15); }
+}
+.type-btn:active { transform: scale(.97); }
+.type-btn.selected { border-color: var(--gold); background: var(--gold-light); box-shadow: 0 4px 20px rgba(245,158,11,.2); }
+
+.type-icon {
+  width: 48px; height: 48px;
+  background: rgba(245,158,11,.12); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-dark);
+}
+.type-btn.selected .type-icon { background: var(--gold); color: var(--navy); }
+
+.type-label { font-size: .9rem; font-weight: 700; color: var(--navy); }
+
+/* ── FORM FIELDS (step 2) ── */
+.form-section-title {
+  font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--gold-dark);
+  margin: 20px 0 12px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--gold-light);
+}
+.form-section-title:first-child { margin-top: 0; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width:480px) { .form-grid { grid-template-columns: 1fr; } }
+.form-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width:480px) { .form-grid.thirds { grid-template-columns: 1fr 1fr; } }
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+
+label {
+  font-size: .78rem; font-weight: 600;
+  color: var(--gray-700); letter-spacing: .02em;
+}
+
+input[type=text], input[type=tel], input[type=email],
+input[type=number], select, textarea {
+  font-family: 'Inter', sans-serif; font-size: .875rem;
+  color: var(--navy); background: var(--gray-50);
+  border: 1.5px solid #E2E8F0; border-radius: 9px;
+  padding: 10px 12px; outline: none; width: 100%;
+  -webkit-appearance: none;
+  transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold); background: var(--white);
+  box-shadow: 0 0 0 3px rgba(245,158,11,.12);
+}
+input.error, select.error { border-color: #EF4444; }
+.field-error { font-size: .72rem; color: #EF4444; display: none; }
+.field-error.show { display: block; }
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 34px; cursor: pointer;
+}
+
+textarea { resize: vertical; min-height: 72px; }
+
+/* Toggle YES/NO + extra */
+.toggle-row {
+  display: flex; align-items: center; gap: 0;
+  border: 1.5px solid #E2E8F0; border-radius: 9px;
+  overflow: hidden; background: var(--gray-50);
+}
+.toggle-opt {
+  flex: 1; padding: 10px 0;
+  text-align: center; font-size: .82rem; font-weight: 600;
+  cursor: pointer; color: var(--gray-600);
+  transition: background 180ms var(--ease-out), color 180ms var(--ease-out);
+  user-select: none;
+  border: none; background: transparent; font-family: 'Inter', sans-serif;
+}
+.toggle-opt + .toggle-opt { border-left: 1.5px solid #E2E8F0; }
+.toggle-opt.active { background: var(--gold); color: var(--navy); }
+
+.extras-row {
+  display: none; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-top: 8px;
+}
+.extras-row.show { display: grid; }
+@media (max-width:400px) { .extras-row { grid-template-columns: 1fr; } }
+
+/* ── STEP 3: Kontakt ── */
+/* reuses .form-grid, .form-group etc. */
+
+/* ── SUBMIT BUTTON ── */
+.wizard-btn {
+  width: 100%; background: var(--gold); color: var(--navy);
+  font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
+  padding: 15px 24px; border: none; border-radius: 12px; cursor: pointer;
+  margin-top: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 180ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  position: relative;
+}
+@media (hover: hover) { .wizard-btn:hover { background: var(--gold-dark); box-shadow: 0 8px 24px rgba(245,158,11,.35); } }
+.wizard-btn:active { transform: scale(.97); }
+.wizard-btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(15,23,42,.2); border-top-color: var(--navy);
+  border-radius: 50%; animation: spin .6s linear infinite; display: none;
+}
+.wizard-btn.loading .btn-text { display: none; }
+.wizard-btn.loading .spinner { display: block; }
+
+.form-note {
+  text-align: center; font-size: .72rem; color: var(--gray-400);
+  margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+
+/* ── Consent checkboxes ── */
+.consent-row {
+  display: flex; flex-direction: column; gap: 6px; margin-top: 12px;
+}
+.consent-item {
+  display: flex; align-items: flex-start; gap: 6px; cursor: pointer;
+}
+.consent-item input[type=checkbox] {
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px;
+  border: 1px solid var(--gray-400); border-radius: 2px;
+  background: var(--white); cursor: pointer; position: relative;
+  transition: background 120ms, border-color 120ms;
+}
+.consent-item input[type=checkbox]:checked {
+  background: var(--gray-400); border-color: var(--gray-400);
+}
+.consent-item input[type=checkbox]:checked::after {
+  content: '';
+  position: absolute; top: 1px; left: 3px;
+  width: 4px; height: 7px;
+  border: 1.5px solid var(--white); border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+.consent-item span {
+  font-size: .66rem; font-weight: 300; color: var(--gray-400); line-height: 1.4;
+}
+
+/* ── SUCCESS ── */
+.success-view { display: none; text-align: center; padding: 48px 32px; }
+.success-view.show { display: block; }
+.success-icon {
+  width: 68px; height: 68px; background: #D1FAE5; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; animation: popIn .4s var(--ease-out) both;
+}
+.success-icon svg { color: var(--green); }
+.success-view h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; color: var(--navy); margin-bottom: 10px;
+}
+.success-view p { font-size: .9rem; color: var(--gray-600); line-height: 1.65; }
+
+/* ── HOW IT WORKS ── */
+.how {
+  padding: 72px 24px;
+  max-width: 840px; margin: 0 auto; text-align: center;
+}
+.section-eyebrow {
+  font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+}
+.section-h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700;
+  color: var(--navy); letter-spacing: -.02em; margin-bottom: 44px;
+}
+.steps { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; }
+@media (min-width: 600px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 28px; } }
+.step-num {
+  width: 42px; height: 42px; background: var(--gold-light); border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 1.15rem;
+  font-weight: 700; color: var(--gold-dark); margin-bottom: 12px;
+}
+.steps h3 { font-size: .95rem; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.steps p  { font-size: .84rem; color: var(--gray-600); line-height: 1.6; }
+
+/* ── SOCIAL PROOF ── */
+.proof { background: var(--gray-50); padding: 64px 24px; }
+.proof-inner { max-width: 860px; margin: 0 auto; text-align: center; }
+.stats { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; margin-bottom: 44px; }
+.stat-n { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.stat-n span { color: var(--gold); }
+.stat-l { font-size: .85rem; color: var(--gray-600); }
+.reviews { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 600px) { .reviews { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+.review-card {
+  background: var(--white); border: 1px solid #E2E8F0;
+  border-radius: 14px; padding: 20px; text-align: left;
+  transition: box-shadow 200ms var(--ease-out);
+}
+@media (hover: hover) { .review-card:hover { box-shadow: 0 6px 20px rgba(15,23,42,.08); } }
+.stars { color: var(--gold); font-size: .85rem; letter-spacing: 1px; margin-bottom: 8px; }
+.review-card blockquote { font-size: .84rem; color: var(--gray-700); line-height: 1.6; font-style: italic; margin-bottom: 12px; }
+.review-card cite { font-size: .78rem; font-weight: 700; color: var(--navy); font-style: normal; display: block; }
+.review-loc { font-size: .73rem; color: var(--gray-400); }
+
+/* ── FOOTER ── */
+footer { background: var(--navy); color: rgba(255,255,255,.45); text-align: center; padding: 26px 24px; font-size: .78rem; }
+footer a { color: rgba(255,255,255,.55); text-decoration: none; }
+footer a:hover { color: var(--gold); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+@keyframes spin   { to { transform: rotate(360deg); } }
+@keyframes popIn  { from { opacity:0; transform: scale(.75); } to { opacity:1; transform: scale(1); } }
+@keyframes slideIn { from { opacity:0; transform: translateX(24px); } to { opacity:1; transform: translateX(0); } }
+
+.step-enter { animation: slideIn 280ms var(--ease-out) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="122.5 40.5 349.5 338" aria-label="Zajo Reality"><path fill="#F59E0B" fill-rule="nonzero" d="M 213.902344 332.1875 L 208.460938 316.855469 L 208.460938 313.875 L 213.296875 313.875 L 213.296875 303.425781 L 207.078125 303.425781 L 207.078125 332.1875 L 202.152344 332.1875 L 202.152344 299.191406 L 215.238281 299.191406 C 217.226562 299.191406 218.21875 300.199219 218.21875 302.214844 L 218.21875 314.222656 C 218.21875 316.179688 217.242188 317.1875 215.28125 317.242188 L 213.597656 317.242188 L 219.039062 332.011719 L 219.039062 332.1875 Z M 267.386719 209.125 C 267.734375 209.109375 268.03125 209.375 268.042969 209.714844 C 268.054688 210.050781 267.78125 210.335938 267.429688 210.351562 C 267.082031 210.363281 266.785156 210.101562 266.773438 209.761719 C 266.761719 209.421875 267.035156 209.136719 267.386719 209.125 Z M 358.402344 126.726562 L 358.402344 150.214844 L 339.746094 150.214844 L 339.746094 118.546875 Z M 241.382812 140.777344 L 241.382812 133.183594 L 325.867188 105.765625 L 325.867188 195.519531 L 331.015625 200.339844 L 331.015625 105.789062 L 388.21875 130.9375 L 388.21875 150.214844 L 411.976562 150.214844 L 406.828125 145.066406 L 393.367188 145.066406 L 393.367188 127.582031 L 328.59375 99.105469 L 236.234375 129.722656 L 236.234375 145.066406 L 187.726562 145.066406 L 182.574219 150.214844 L 236.234375 150.214844 L 236.234375 173.890625 L 241.382812 169.066406 Z M 221.429688 123.277344 L 329.339844 86.871094 L 408.171875 121.503906 L 408.171875 127.414062 L 329.253906 92.742188 L 221.429688 129.117188 Z M 169.167969 266.0625 L 201.410156 175.671875 L 169.167969 175.671875 L 169.167969 158.816406 L 223.664062 158.816406 L 223.664062 169.617188 L 188.808594 266.988281 L 235.488281 266.988281 L 256.503906 158.652344 L 276.140625 158.652344 L 283.703125 197.902344 C 280.9375 199.058594 278.148438 201.65625 276.808594 202.691406 C 278.421875 200.613281 280.992188 194.976562 279.191406 191.539062 C 275.621094 193.355469 273.230469 202.980469 270.585938 206.042969 C 268.609375 207.613281 265.808594 204.691406 260.921875 211.851562 C 260.429688 212.570312 260.683594 212.796875 261.179688 213.578125 C 262.265625 215.28125 263.316406 214.582031 264.90625 216.070312 C 264.296875 218.074219 262.609375 218.542969 261.011719 219.921875 C 252.933594 226.894531 254.433594 234.078125 253.289062 235.867188 C 253.054688 236.234375 251.019531 237.011719 250.625 238.511719 C 250.125 240.421875 250.980469 241.140625 252.171875 241.476562 C 252.671875 241.621094 253.230469 241.699219 253.777344 241.757812 C 254.519531 241.839844 254.84375 242.019531 255.167969 241.71875 C 255.296875 241.597656 255.429688 241.402344 255.585938 241.089844 C 255.832031 240.601562 255.949219 240.054688 255.964844 239.410156 C 256.027344 239.253906 256.101562 239.292969 256.1875 239.410156 C 256.351562 240.140625 256.335938 240.8125 256.101562 241.375 C 256.058594 241.476562 256.011719 241.574219 255.957031 241.664062 C 255.761719 242.082031 255.941406 242.238281 256.160156 242.363281 C 256.246094 242.410156 256.332031 242.460938 256.414062 242.511719 C 257.253906 243.003906 257.421875 243.175781 259.207031 243.300781 C 262.386719 243.527344 276.296875 243.21875 278.292969 241.933594 C 278.179688 238.867188 276.003906 239.132812 273.1875 238.175781 C 273.378906 235.988281 274.015625 234.304688 272.714844 231.957031 C 272 230.664062 270.765625 229.695312 268.972656 229.253906 C 267.941406 229.003906 267.867188 228.210938 269.132812 228.578125 C 270.058594 228.847656 270.8125 229.214844 271.4375 229.695312 C 273.035156 230.921875 273.179688 232.402344 274.421875 233.894531 C 275.980469 235.765625 278.046875 234.421875 276.652344 232.277344 C 276.457031 231.972656 276.25 231.722656 276.152344 231.582031 C 275.378906 230.460938 274.726562 229.613281 274.21875 228.875 C 273.046875 227.179688 272.621094 226.058594 273.140625 223.476562 C 273.5625 218.667969 273.984375 213.859375 274.402344 209.046875 C 275.707031 207.957031 281.519531 205.253906 284.390625 201.46875 L 300.199219 283.519531 L 300.199219 283.84375 L 281.707031 283.84375 L 277.941406 260.117188 L 254.539062 260.117188 L 250.777344 283.84375 L 169.167969 283.84375 Z M 425.382812 271.960938 C 425.382812 275.667969 424.402344 278.507812 422.4375 280.46875 C 420.472656 282.433594 417.691406 283.414062 414.089844 283.414062 L 373.503906 283.414062 C 366.085938 283.414062 362.378906 279.597656 362.378906 271.960938 L 362.378906 169.84375 C 362.378906 162.207031 366.085938 158.386719 373.503906 158.386719 L 414.089844 158.386719 C 417.691406 158.386719 420.472656 159.371094 422.4375 161.332031 C 424.402344 163.296875 425.382812 166.132812 425.382812 169.84375 Z M 406.726562 174.425781 L 381.035156 174.425781 L 381.035156 267.378906 L 406.726562 267.378906 Z M 358.402344 272.390625 C 358.402344 280.027344 354.582031 283.84375 346.945312 283.84375 L 311.433594 283.84375 C 307.835938 283.84375 305.054688 282.863281 303.089844 280.898438 C 301.125 278.9375 300.144531 276.097656 300.144531 272.390625 L 300.144531 244.078125 L 318.800781 244.078125 L 318.800781 267.808594 L 339.746094 267.808594 L 339.746094 158.816406 L 358.402344 158.816406 Z M 234.550781 332.1875 L 234.550781 299.191406 L 248.113281 299.191406 L 248.113281 303.554688 L 239.476562 303.554688 L 239.476562 313.183594 L 246.902344 313.183594 L 246.902344 317.460938 L 239.476562 317.460938 L 239.476562 327.824219 L 248.242188 327.824219 L 248.242188 332.1875 Z M 275.933594 332.1875 L 274.941406 325.925781 L 268.765625 325.925781 L 267.769531 332.1875 L 262.890625 332.1875 L 262.890625 332.101562 L 269.28125 299.148438 L 274.464844 299.148438 L 280.8125 332.101562 L 280.8125 332.1875 Z M 271.832031 306.792969 L 269.414062 321.691406 L 274.25 321.691406 Z M 296.066406 332.1875 L 296.066406 299.191406 L 300.988281 299.191406 L 300.988281 327.78125 L 309.023438 327.78125 L 309.023438 332.1875 Z M 324.535156 332.1875 L 324.535156 299.191406 L 329.457031 299.191406 L 329.457031 332.1875 Z M 354.902344 303.554688 L 354.902344 332.1875 L 349.980469 332.1875 L 349.980469 303.554688 L 344.582031 303.554688 L 344.582031 299.191406 L 360.34375 299.191406 L 360.34375 303.554688 Z M 385.878906 320.050781 L 385.878906 332.1875 L 380.910156 332.1875 L 380.910156 320.050781 L 374.390625 299.367188 L 374.390625 299.191406 L 379.484375 299.191406 L 383.414062 313.53125 L 387.34375 299.191406 L 392.398438 299.191406 L 392.398438 299.367188 Z"/></svg></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="122.5 40.5 349.5 338" aria-label="Zajo Reality"><path fill="#F59E0B" fill-rule="nonzero" d="M 213.902344 332.1875 L 208.460938 316.855469 L 208.460938 313.875 L 213.296875 313.875 L 213.296875 303.425781 L 207.078125 303.425781 L 207.078125 332.1875 L 202.152344 332.1875 L 202.152344 299.191406 L 215.238281 299.191406 C 217.226562 299.191406 218.21875 300.199219 218.21875 302.214844 L 218.21875 314.222656 C 218.21875 316.179688 217.242188 317.1875 215.28125 317.242188 L 213.597656 317.242188 L 219.039062 332.011719 L 219.039062 332.1875 Z M 267.386719 209.125 C 267.734375 209.109375 268.03125 209.375 268.042969 209.714844 C 268.054688 210.050781 267.78125 210.335938 267.429688 210.351562 C 267.082031 210.363281 266.785156 210.101562 266.773438 209.761719 C 266.761719 209.421875 267.035156 209.136719 267.386719 209.125 Z M 358.402344 126.726562 L 358.402344 150.214844 L 339.746094 150.214844 L 339.746094 118.546875 Z M 241.382812 140.777344 L 241.382812 133.183594 L 325.867188 105.765625 L 325.867188 195.519531 L 331.015625 200.339844 L 331.015625 105.789062 L 388.21875 130.9375 L 388.21875 150.214844 L 411.976562 150.214844 L 406.828125 145.066406 L 393.367188 145.066406 L 393.367188 127.582031 L 328.59375 99.105469 L 236.234375 129.722656 L 236.234375 145.066406 L 187.726562 145.066406 L 182.574219 150.214844 L 236.234375 150.214844 L 236.234375 173.890625 L 241.382812 169.066406 Z M 221.429688 123.277344 L 329.339844 86.871094 L 408.171875 121.503906 L 408.171875 127.414062 L 329.253906 92.742188 L 221.429688 129.117188 Z M 169.167969 266.0625 L 201.410156 175.671875 L 169.167969 175.671875 L 169.167969 158.816406 L 223.664062 158.816406 L 223.664062 169.617188 L 188.808594 266.988281 L 235.488281 266.988281 L 256.503906 158.652344 L 276.140625 158.652344 L 283.703125 197.902344 C 280.9375 199.058594 278.148438 201.65625 276.808594 202.691406 C 278.421875 200.613281 280.992188 194.976562 279.191406 191.539062 C 275.621094 193.355469 273.230469 202.980469 270.585938 206.042969 C 268.609375 207.613281 265.808594 204.691406 260.921875 211.851562 C 260.429688 212.570312 260.683594 212.796875 261.179688 213.578125 C 262.265625 215.28125 263.316406 214.582031 264.90625 216.070312 C 264.296875 218.074219 262.609375 218.542969 261.011719 219.921875 C 252.933594 226.894531 254.433594 234.078125 253.289062 235.867188 C 253.054688 236.234375 251.019531 237.011719 250.625 238.511719 C 250.125 240.421875 250.980469 241.140625 252.171875 241.476562 C 252.671875 241.621094 253.230469 241.699219 253.777344 241.757812 C 254.519531 241.839844 254.84375 242.019531 255.167969 241.71875 C 255.296875 241.597656 255.429688 241.402344 255.585938 241.089844 C 255.832031 240.601562 255.949219 240.054688 255.964844 239.410156 C 256.027344 239.253906 256.101562 239.292969 256.1875 239.410156 C 256.351562 240.140625 256.335938 240.8125 256.101562 241.375 C 256.058594 241.476562 256.011719 241.574219 255.957031 241.664062 C 255.761719 242.082031 255.941406 242.238281 256.160156 242.363281 C 256.246094 242.410156 256.332031 242.460938 256.414062 242.511719 C 257.253906 243.003906 257.421875 243.175781 259.207031 243.300781 C 262.386719 243.527344 276.296875 243.21875 278.292969 241.933594 C 278.179688 238.867188 276.003906 239.132812 273.1875 238.175781 C 273.378906 235.988281 274.015625 234.304688 272.714844 231.957031 C 272 230.664062 270.765625 229.695312 268.972656 229.253906 C 267.941406 229.003906 267.867188 228.210938 269.132812 228.578125 C 270.058594 228.847656 270.8125 229.214844 271.4375 229.695312 C 273.035156 230.921875 273.179688 232.402344 274.421875 233.894531 C 275.980469 235.765625 278.046875 234.421875 276.652344 232.277344 C 276.457031 231.972656 276.25 231.722656 276.152344 231.582031 C 275.378906 230.460938 274.726562 229.613281 274.21875 228.875 C 273.046875 227.179688 272.621094 226.058594 273.140625 223.476562 C 273.5625 218.667969 273.984375 213.859375 274.402344 209.046875 C 275.707031 207.957031 281.519531 205.253906 284.390625 201.46875 L 300.199219 283.519531 L 300.199219 283.84375 L 281.707031 283.84375 L 277.941406 260.117188 L 254.539062 260.117188 L 250.777344 283.84375 L 169.167969 283.84375 Z M 425.382812 271.960938 C 425.382812 275.667969 424.402344 278.507812 422.4375 280.46875 C 420.472656 282.433594 417.691406 283.414062 414.089844 283.414062 L 373.503906 283.414062 C 366.085938 283.414062 362.378906 279.597656 362.378906 271.960938 L 362.378906 169.84375 C 362.378906 162.207031 366.085938 158.386719 373.503906 158.386719 L 414.089844 158.386719 C 417.691406 158.386719 420.472656 159.371094 422.4375 161.332031 C 424.402344 163.296875 425.382812 166.132812 425.382812 169.84375 Z M 406.726562 174.425781 L 381.035156 174.425781 L 381.035156 267.378906 L 406.726562 267.378906 Z M 358.402344 272.390625 C 358.402344 280.027344 354.582031 283.84375 346.945312 283.84375 L 311.433594 283.84375 C 307.835938 283.84375 305.054688 282.863281 303.089844 280.898438 C 301.125 278.9375 300.144531 276.097656 300.144531 272.390625 L 300.144531 244.078125 L 318.800781 244.078125 L 318.800781 267.808594 L 339.746094 267.808594 L 339.746094 158.816406 L 358.402344 158.816406 Z M 234.550781 332.1875 L 234.550781 299.191406 L 248.113281 299.191406 L 248.113281 303.554688 L 239.476562 303.554688 L 239.476562 313.183594 L 246.902344 313.183594 L 246.902344 317.460938 L 239.476562 317.460938 L 239.476562 327.824219 L 248.242188 327.824219 L 248.242188 332.1875 Z M 275.933594 332.1875 L 274.941406 325.925781 L 268.765625 325.925781 L 267.769531 332.1875 L 262.890625 332.1875 L 262.890625 332.101562 L 269.28125 299.148438 L 274.464844 299.148438 L 280.8125 332.101562 L 280.8125 332.1875 Z M 271.832031 306.792969 L 269.414062 321.691406 L 274.25 321.691406 Z M 296.066406 332.1875 L 296.066406 299.191406 L 300.988281 299.191406 L 300.988281 327.78125 L 309.023438 327.78125 L 309.023438 332.1875 Z M 324.535156 332.1875 L 324.535156 299.191406 L 329.457031 299.191406 L 329.457031 332.1875 Z M 354.902344 303.554688 L 354.902344 332.1875 L 349.980469 332.1875 L 349.980469 303.554688 L 344.582031 303.554688 L 344.582031 299.191406 L 360.34375 299.191406 L 360.34375 303.554688 Z M 385.878906 320.050781 L 385.878906 332.1875 L 380.910156 332.1875 L 380.910156 320.050781 L 374.390625 299.367188 L 374.390625 299.191406 L 379.484375 299.191406 L 383.414062 313.53125 L 387.34375 299.191406 L 392.398438 299.191406 L 392.398438 299.367188 Z"/></svg>
+  </div>
+
+  <h1>Za koľko môžete predať svoju <em>nehnuteľnosť</em>?</h1>
+  <p class="hero-sub">Zistite reálnu predajnú cenu — bezplatne a do 24 hodín.</p>
+
+  <div class="trust-row">
+    <div class="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Výsledok do 24 hodín</div>
+    <div class="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>100% zadarmo</div>
+    <div class="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Bez záväzkov</div>
+    <div class="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Trenčiansky kraj</div>
+  </div>
+
+  <!-- WIZARD -->
+  <div class="wizard-wrap" id="wizard">
+    <div class="wizard-card">
+      <div class="wizard-progress"><div class="wizard-progress-fill" id="progressFill" style="width:33%"></div></div>
+
+      <div class="wizard-header">
+        <span class="step-indicator">Krok <span id="stepNum">1</span> z 3</span>
+        <button class="wizard-back" id="backBtn" aria-label="Späť">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Späť
+        </button>
+      </div>
+
+      <div class="wizard-body">
+
+        <!-- ══ STEP 1 ══ -->
+        <div id="step1">
+          <div class="wizard-title">Aký typ nehnuteľnosti chcete oceniť?</div>
+          <div class="wizard-sub">Vyberte typ — formulár sa prispôsobí automaticky.</div>
+
+          <div class="type-grid">
+            <button class="type-btn" data-type="Byt" onclick="selectType(this)">
+              <div class="type-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              </div>
+              <span class="type-label">Byt</span>
+            </button>
+            <button class="type-btn" data-type="Dom" onclick="selectType(this)">
+              <div class="type-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <span class="type-label">Dom</span>
+            </button>
+            <button class="type-btn" data-type="Pozemok" onclick="selectType(this)">
+              <div class="type-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l4-8 4 4 3-5 4 9"/><line x1="3" y1="21" x2="21" y2="21"/></svg>
+              </div>
+              <span class="type-label">Pozemok</span>
+            </button>
+          </div>
+          <button class="wizard-btn" id="step1Next" onclick="goStep(2)" disabled>
+            <span class="btn-text">Pokračovať →</span>
+          </button>
+        </div>
+
+        <!-- ══ STEP 2 ══ -->
+        <div id="step2" style="display:none">
+          <div class="wizard-title" id="step2Title">Detaily nehnuteľnosti</div>
+          <div class="wizard-sub">Čím viac informácií, tým presnejšie ocenenie.</div>
+
+          <!-- BYT fields -->
+          <div id="fieldsByt" style="display:none">
+            <p class="form-section-title">Základné informácie</p>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="adresaByt">Adresa nehnuteľnosti *</label>
+                <input type="text" id="adresaByt" placeholder="Ulica, číslo, mesto">
+                <span class="field-error" id="err-adresaByt">Vyplňte adresu</span>
+              </div>
+              <div class="form-group">
+                <label for="izbByt">Počet izieb *</label>
+                <select id="izbByt">
+                  <option value="">— Vybrať —</option>
+                  <option>1</option><option>2</option><option>3</option>
+                  <option>4</option><option>5 a viac</option>
+                </select>
+                <span class="field-error" id="err-izbByt">Vyberte počet izieb</span>
+              </div>
+              <div class="form-group">
+                <label for="plochaByt">Úžitková plocha (m²) *</label>
+                <input type="number" id="plochaByt" placeholder="napr. 65" min="10" max="1000">
+                <span class="field-error" id="err-plochaByt">Vyplňte plochu</span>
+              </div>
+            </div>
+
+            <p class="form-section-title">Stav a konštrukcia</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="stavByt">Stav nehnuteľnosti *</label>
+                <select id="stavByt">
+                  <option value="">— Vybrať —</option>
+                  <option>Novostavba</option>
+                  <option>Po rekonštrukcii</option>
+                  <option>Čiastočná rekonštrukcia</option>
+                  <option>Pôvodný stav</option>
+                  <option>Zlý stav</option>
+                </select>
+                <span class="field-error" id="err-stavByt">Vyberte stav</span>
+              </div>
+              <div class="form-group">
+                <label for="konstrByt">Konštrukcia</label>
+                <select id="konstrByt">
+                  <option value="">— Vybrať —</option>
+                  <option>Tehlová</option><option>Panelová</option>
+                  <option>Monolitická</option><option>Iná</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="poschByt">Poschodie</label>
+                <select id="poschByt">
+                  <option value="">— Vybrať —</option>
+                  <option>Prízemie</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option>
+                  <option>5</option><option>6</option><option>7</option><option>8</option>
+                  <option>9</option><option>10 a viac</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="celkPoschByt">Celk. počet poschodí</label>
+                <select id="celkPoschByt">
+                  <option value="">— Vybrať —</option>
+                  <option>1</option><option>2</option><option>3</option><option>4</option>
+                  <option>5</option><option>6</option><option>7</option><option>8</option>
+                  <option>9</option><option>10 a viac</option>
+                </select>
+              </div>
+            </div>
+
+            <p class="form-section-title">Príslušenstvo</p>
+            <div class="form-grid">
+              <!-- Balkón/Lodžia -->
+              <div class="form-group">
+                <label>Balkón / Lodžia</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="balkonByt" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="balkonByt" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="balkonByt" value="">
+                <div class="extras-row" id="ex-balkonByt">
+                  <div class="form-group"><label>Počet</label><input type="number" id="balkonBytPocet" placeholder="1" min="1" max="5"></div>
+                  <div class="form-group"><label>Výmera (m²)</label><input type="number" id="balkonBytVymera" placeholder="8" min="1"></div>
+                </div>
+              </div>
+              <!-- Terasa -->
+              <div class="form-group">
+                <label>Terasa</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="terasaByt" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="terasaByt" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="terasaByt" value="">
+                <div class="extras-row" id="ex-terasaByt">
+                  <div class="form-group"><label>Počet</label><input type="number" id="terasaBytPocet" placeholder="1" min="1"></div>
+                  <div class="form-group"><label>Výmera (m²)</label><input type="number" id="terasaBytVymera" placeholder="15" min="1"></div>
+                </div>
+              </div>
+              <!-- Pivnica -->
+              <div class="form-group">
+                <label>Pivnica</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="pivnicaByt" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="pivnicaByt" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="pivnicaByt" value="">
+                <div class="extras-row" id="ex-pivnicaByt" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="pivnicaBytPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+              <!-- Záhrada -->
+              <div class="form-group">
+                <label>Záhrada</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="zahradaByt" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="zahradaByt" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="zahradaByt" value="">
+                <div class="extras-row" id="ex-zahradaByt" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="zahradaBytPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+              <!-- Parkovanie -->
+              <div class="form-group">
+                <label>Parkovacie miesto</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="parkByt" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="parkByt" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="parkByt" value="">
+                <div class="extras-row" id="ex-parkByt" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="parkBytPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+              <!-- Garáž -->
+              <div class="form-group">
+                <label>Garáž</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="garazByt" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="garazByt" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="garazByt" value="">
+                <div class="extras-row" id="ex-garazByt" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="garazBytPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOM fields -->
+          <div id="fieldsDom" style="display:none">
+            <p class="form-section-title">Základné informácie</p>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="adresaDom">Adresa nehnuteľnosti *</label>
+                <input type="text" id="adresaDom" placeholder="Ulica, číslo, mesto">
+                <span class="field-error" id="err-adresaDom">Vyplňte adresu</span>
+              </div>
+              <div class="form-group">
+                <label for="izbDom">Počet izieb *</label>
+                <select id="izbDom">
+                  <option value="">— Vybrať —</option>
+                  <option>1</option><option>2</option><option>3</option>
+                  <option>4</option><option>5 a viac</option>
+                </select>
+                <span class="field-error" id="err-izbDom">Vyberte počet izieb</span>
+              </div>
+              <div class="form-group">
+                <label for="plochaDom">Úžitková plocha (m²) *</label>
+                <input type="number" id="plochaDom" placeholder="napr. 120" min="20" max="2000">
+                <span class="field-error" id="err-plochaDom">Vyplňte plochu</span>
+              </div>
+              <div class="form-group">
+                <label for="vymeraPozemku">Výmera pozemku (m²)</label>
+                <input type="number" id="vymeraPozemku" placeholder="napr. 600" min="1">
+              </div>
+            </div>
+
+            <p class="form-section-title">Stav a konštrukcia</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="stavDom">Stav nehnuteľnosti *</label>
+                <select id="stavDom">
+                  <option value="">— Vybrať —</option>
+                  <option>Novostavba</option>
+                  <option>Po rekonštrukcii</option>
+                  <option>Čiastočná rekonštrukcia</option>
+                  <option>Pôvodný stav</option>
+                  <option>Zlý stav</option>
+                </select>
+                <span class="field-error" id="err-stavDom">Vyberte stav</span>
+              </div>
+              <div class="form-group">
+                <label for="konstrDom">Konštrukcia</label>
+                <select id="konstrDom">
+                  <option value="">— Vybrať —</option>
+                  <option>Tehlová</option><option>Panelová</option>
+                  <option>Monolitická</option><option>Iná</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="poschDom">Počet poschodí</label>
+                <select id="poschDom">
+                  <option value="">— Vybrať —</option>
+                  <option>1 — prízemie</option>
+                  <option>2 — prízemie + 1. poschodie</option>
+                  <option>3 — prízemie + 2 poschodia</option>
+                </select>
+              </div>
+            </div>
+
+            <p class="form-section-title">Príslušenstvo</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Balkón / Lodžia</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="balkonDom" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="balkonDom" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="balkonDom" value="">
+                <div class="extras-row" id="ex-balkonDom">
+                  <div class="form-group"><label>Počet</label><input type="number" id="balkonDomPocet" placeholder="1" min="1"></div>
+                  <div class="form-group"><label>Výmera (m²)</label><input type="number" id="balkonDomVymera" placeholder="8" min="1"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Terasa</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="terasaDom" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="terasaDom" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="terasaDom" value="">
+                <div class="extras-row" id="ex-terasaDom">
+                  <div class="form-group"><label>Počet</label><input type="number" id="terasaDomPocet" placeholder="1" min="1"></div>
+                  <div class="form-group"><label>Výmera (m²)</label><input type="number" id="terasaDomVymera" placeholder="20" min="1"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Pivnica</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="pivnicaDom" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="pivnicaDom" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="pivnicaDom" value="">
+                <div class="extras-row" id="ex-pivnicaDom" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="pivnicaDomPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Parkovacie miesto</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="parkDom" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="parkDom" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="parkDom" value="">
+                <div class="extras-row" id="ex-parkDom" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="parkDomPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Garáž</label>
+                <div class="toggle-row">
+                  <button type="button" class="toggle-opt" data-field="garazDom" data-val="Nie" onclick="toggle(this)">NIE</button>
+                  <button type="button" class="toggle-opt" data-field="garazDom" data-val="Áno" onclick="toggle(this)">ÁNO</button>
+                </div>
+                <input type="hidden" id="garazDom" value="">
+                <div class="extras-row" id="ex-garazDom" style="grid-template-columns:1fr">
+                  <div class="form-group"><label>Počet</label><input type="number" id="garazDomPocet" placeholder="1" min="1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- POZEMOK fields -->
+          <div id="fieldsPozemok" style="display:none">
+            <p class="form-section-title">Informácie o pozemku</p>
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="adresaPozemok">Adresa / lokalita *</label>
+                <input type="text" id="adresaPozemok" placeholder="Ulica, obec, katastrálne územie">
+                <span class="field-error" id="err-adresaPozemok">Vyplňte adresu</span>
+              </div>
+              <div class="form-group">
+                <label for="vymeraPozemok">Výmera (m²) *</label>
+                <input type="number" id="vymeraPozemok" placeholder="napr. 800" min="1">
+                <span class="field-error" id="err-vymeraPozemok">Vyplňte výmeru</span>
+              </div>
+              <div class="form-group">
+                <label for="typPozemok">Druh pozemku</label>
+                <select id="typPozemok">
+                  <option value="">— Vybrať —</option>
+                  <option>Stavebný</option>
+                  <option>Záhradný</option>
+                  <option>Orná pôda</option>
+                  <option>Les</option>
+                  <option>Iný</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="wizard-btn" id="step2Next" onclick="goStep(3)">
+            <span class="btn-text">Pokračovať →</span>
+          </button>
+        </div>
+
+        <!-- ══ STEP 3 ══ -->
+        <div id="step3" style="display:none">
+          <div class="wizard-title">Kontaktné údaje</div>
+          <div class="wizard-sub">Ozveme sa vám do 24 hodín s výsledkom ocenenia.</div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="meno">Meno a priezvisko *</label>
+              <input type="text" id="meno" placeholder="Ján Novák" autocomplete="name">
+              <span class="field-error" id="err-meno">Vyplňte meno</span>
+            </div>
+            <div class="form-group">
+              <label for="telefon">Telefón *</label>
+              <input type="tel" id="telefon" placeholder="+421 9XX XXX XXX" autocomplete="tel">
+              <span class="field-error" id="err-telefon">Vyplňte telefón</span>
+            </div>
+            <div class="form-group full">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" placeholder="jan@email.sk" autocomplete="email">
+              <span class="field-error" id="err-email">Neplatný e-mail</span>
+            </div>
+            <div class="form-group full">
+              <label for="dovod">Čo plánujete s nehnuteľnosťou?</label>
+              <select id="dovod">
+                <option value="">— Vybrať —</option>
+                <option value="predaj-hned">Predať čo najskôr</option>
+                <option value="predaj-uvaha">Predať, ale ešte sa rozhodujem</option>
+                <option value="len-hodnota">Zatiaľ nič, chcem len vedieť hodnotu</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="consent-row">
+            <label class="consent-item">
+              <input type="checkbox" id="nlSuhlas" name="nlSuhlas">
+              <span>Súhlasím so zasielaním nových ponúk a aktuálnych nehnuteľností priamo na môj email</span>
+            </label>
+            <label class="consent-item">
+              <input type="checkbox" id="gdprSuhlas" name="gdprSuhlas">
+              <span>Súhlasím so <a href="#" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a></span>
+            </label>
+          </div>
+
+          <button class="wizard-btn" id="submitBtn" onclick="submitForm()">
+            <span class="btn-text">Odoslať žiadosť o ocenenie →</span>
+            <div class="spinner"></div>
+          </button>
+          <p class="form-note">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Vaše údaje sú v bezpečí. Nikdy ich neposkytujeme tretím stranám.
+          </p>
+        </div>
+
+        <!-- ══ SUCCESS — predaj ══ -->
+        <div class="success-view" id="successView">
+          <div class="success-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h2>Žiadosť prijatá!</h2>
+          <p>Ďakujeme. Ozveme sa vám <strong>do 24 hodín</strong> s bezplatným odborným ocenením a poradíme vám, ako dostať za nehnuteľnosť čo najlepšiu cenu.</p>
+        </div>
+
+        <!-- ══ SUCCESS — len hodnota ══ -->
+        <div class="success-view" id="successViewInfo" style="display:none">
+          <div class="success-icon" style="background:rgba(245,158,11,0.12)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h2>Žiadosť prijatá!</h2>
+          <p>Radi zistíme hodnotu vašej nehnuteľnosti. Ozveme sa vám <strong>do 24 hodín</strong>.</p>
+          <p style="margin-top:12px; font-size:0.875rem; color:var(--gray-600)">Keď sa rozhodnete predávať, sme tu — pomôžeme vám dostať za nehnuteľnosť čo najlepšiu cenu.</p>
+        </div>
+
+      </div><!-- /wizard-body -->
+    </div><!-- /wizard-card -->
+  </div><!-- /wizard-wrap -->
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <p class="section-eyebrow">Ako to funguje</p>
+  <h2 class="section-h2">Tri kroky k reálnej cene</h2>
+  <div class="steps">
+    <div>
+      <div class="step-num">1</div>
+      <h3>Vyplníte formulár</h3>
+      <p>Základné informácie o nehnuteľnosti. Trvá to menej ako 3 minúty.</p>
+    </div>
+    <div>
+      <div class="step-num">2</div>
+      <h3>Analyzujeme trh</h3>
+      <p>Porovnáme aktuálne predaje v lokalite. Reálne dáta, nie odhady.</p>
+    </div>
+    <div>
+      <div class="step-num">3</div>
+      <h3>Dostanete výsledok</h3>
+      <p>Do 24 hodín vás kontaktujeme s ocenením. Zadarmo, bez záväzkov.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof">
+  <div class="proof-inner">
+    <div class="stats">
+      <div><div class="stat-n">120<span>+</span></div><div class="stat-l">úspešných predajov</div></div>
+      <div><div class="stat-n">24<span>h</span></div><div class="stat-l">priemerný čas odpovede</div></div>
+      <div><div class="stat-n">4.9<span>★</span></div><div class="stat-l">priemerné hodnotenie</div></div>
+    </div>
+    <div class="reviews">
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>„Ocenenie prišlo hneď nasledujúci deň. Cena bola presná — predali sme byt za cenu, ktorú nám odporučili."</blockquote>
+        <cite>Marta K.</cite><div class="review-loc">Trenčín</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>„Nevedeli sme za koľko predávať. Zajo nám poradili a výsledok bol lepší ako sme čakali."</blockquote>
+        <cite>Peter a Jana H.</cite><div class="review-loc">Zlatovce</div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <blockquote>„Profesionálny prístup, rýchla odpoveď. Práve taký maklér, akého som hľadal."</blockquote>
+        <cite>Tomáš B.</cite><div class="review-loc">Trenčianske Teplice</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Zajo Reality · <a href="mailto:info@zajoreality.sk">info@zajoreality.sk</a></p>
+</footer>
+
+<script>
+// ================================================================
+// KONFIGURÁCIA
+// ================================================================
+const CONFIG = {
+  AIRTABLE_TOKEN:     'VLOZ_SVOJ_TOKEN_SEM',
+  AIRTABLE_BASE_ID:   'VLOZ_BASE_ID_SEM',
+  AIRTABLE_TABLE:     'Ocenenie',
+  FORMSPREE_ENDPOINT: 'VLOZ_FORMSPREE_ID_SEM'
+};
+// ================================================================
+
+let currentStep = 1;
+let selectedType = null;
+
+// ── Type selection ──
+function selectType(btn) {
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedType = btn.dataset.type;
+  document.getElementById('step1Next').disabled = false;
+}
+
+// ── Toggle YES/NO ──
+function toggle(btn) {
+  const field = btn.dataset.field;
+  const val   = btn.dataset.val;
+  // Update siblings
+  btn.closest('.toggle-row').querySelectorAll('.toggle-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(field).value = val;
+  // Show/hide extras
+  const extras = document.getElementById('ex-' + field);
+  if (extras) extras.classList.toggle('show', val === 'Áno');
+}
+
+// ── Navigation ──
+function goStep(to) {
+  if (to === 2 && !selectedType) return;
+  if (to === 3 && !validateStep2()) return;
+
+  document.getElementById('step' + currentStep).style.display = 'none';
+  currentStep = to;
+  const el = document.getElementById('step' + currentStep);
+  el.style.display = 'block';
+  el.classList.add('step-enter');
+  setTimeout(() => el.classList.remove('step-enter'), 300);
+
+  // Show correct fields in step 2
+  if (to === 2) {
+    document.getElementById('fieldsByt').style.display    = selectedType === 'Byt'     ? 'block' : 'none';
+    document.getElementById('fieldsDom').style.display    = selectedType === 'Dom'     ? 'block' : 'none';
+    document.getElementById('fieldsPozemok').style.display = selectedType === 'Pozemok' ? 'block' : 'none';
+    document.getElementById('step2Title').textContent =
+      selectedType === 'Byt' ? 'Detaily bytu' :
+      selectedType === 'Dom' ? 'Detaily domu' : 'Detaily pozemku';
+  }
+
+  // Progress & back button
+  const pct = { 1: 33, 2: 66, 3: 100 };
+  document.getElementById('progressFill').style.width = pct[to] + '%';
+  document.getElementById('stepNum').textContent = to;
+  document.getElementById('backBtn').classList.toggle('show', to > 1);
+
+  window.scrollTo({ top: document.getElementById('wizard').offsetTop - 80, behavior: 'smooth' });
+}
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  if (currentStep > 1) goStep(currentStep - 1);
+});
+
+// ── Validation step 2 ──
+function validateStep2() {
+  let ok = true;
+  const checks = {
+    Byt:     [['adresaByt','err-adresaByt', v => v.trim().length > 2],
+              ['izbByt',   'err-izbByt',    v => v !== ''],
+              ['plochaByt','err-plochaByt', v => +v > 0],
+              ['stavByt',  'err-stavByt',   v => v !== '']],
+    Dom:     [['adresaDom','err-adresaDom', v => v.trim().length > 2],
+              ['izbDom',   'err-izbDom',    v => v !== ''],
+              ['plochaDom','err-plochaDom', v => +v > 0],
+              ['stavDom',  'err-stavDom',   v => v !== '']],
+    Pozemok: [['adresaPozemok','err-adresaPozemok', v => v.trim().length > 2],
+              ['vymeraPozemok','err-vymeraPozemok', v => +v > 0]]
+  };
+  (checks[selectedType] || []).forEach(([id, errId, fn]) => {
+    const el  = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!fn(el.value)) { el.classList.add('error'); err.classList.add('show'); ok = false; }
+    else { el.classList.remove('error'); err.classList.remove('show'); }
+  });
+  return ok;
+}
+
+// ── Validation step 3 ──
+function validateStep3() {
+  let ok = true;
+  const meno    = document.getElementById('meno');
+  const telefon = document.getElementById('telefon');
+  const email   = document.getElementById('email');
+  const gdpr    = document.getElementById('gdprSuhlas');
+
+  if (meno.value.trim().length < 2) {
+    meno.classList.add('error'); document.getElementById('err-meno').classList.add('show'); ok = false;
+  } else { meno.classList.remove('error'); document.getElementById('err-meno').classList.remove('show'); }
+
+  if (!/^[\d\s\+\-]{9,}$/.test(telefon.value.trim())) {
+    telefon.classList.add('error'); document.getElementById('err-telefon').classList.add('show'); ok = false;
+  } else { telefon.classList.remove('error'); document.getElementById('err-telefon').classList.remove('show'); }
+
+  if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    email.classList.add('error'); document.getElementById('err-email').classList.add('show'); ok = false;
+  } else { email.classList.remove('error'); document.getElementById('err-email').classList.remove('show'); }
+
+  // GDPR súhlas je povinný
+  let errGdpr = document.getElementById('err-gdprSuhlas');
+  if (!errGdpr) {
+    errGdpr = document.createElement('span');
+    errGdpr.id = 'err-gdprSuhlas';
+    errGdpr.style.cssText = 'font-size:.65rem;color:#ef4444;margin-top:2px;display:none;';
+    gdpr.closest('label').appendChild(errGdpr);
+  }
+  if (!gdpr.checked) {
+    errGdpr.textContent = 'Toto pole je povinné'; errGdpr.style.display = 'block'; ok = false;
+  } else { errGdpr.style.display = 'none'; }
+
+  return ok;
+}
+
+// ── Collect data ──
+function collectData() {
+  const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const base = {
+    Typ:    selectedType,
+    Meno:   g('meno'), Telefon: g('telefon'), Email: g('email'),
+    Dovod:  g('dovod'), Zdroj: 'Landing - Ocenenie'
+  };
+
+  if (selectedType === 'Byt') return { ...base,
+    Adresa: g('adresaByt'), Izby: g('izbByt'), Plocha: g('plochaByt'),
+    Stav: g('stavByt'), Konstrukcia: g('konstrByt'),
+    Poschodie: g('poschByt'), CelkPoschodia: g('celkPoschByt'),
+    Balkon: g('balkonByt') + (g('balkonBytPocet') ? ' ('+g('balkonBytPocet')+'ks, '+g('balkonBytVymera')+'m²)' : ''),
+    Terasa: g('terasaByt') + (g('terasaBytPocet') ? ' ('+g('terasaBytPocet')+'ks, '+g('terasaBytVymera')+'m²)' : ''),
+    Pivnica: g('pivnicaByt') + (g('pivnicaBytPocet') ? ' ('+g('pivnicaBytPocet')+'ks)' : ''),
+    Zahrada: g('zahradaByt') + (g('zahradaBytPocet') ? ' ('+g('zahradaBytPocet')+'ks)' : ''),
+    Parkovanie: g('parkByt') + (g('parkBytPocet') ? ' ('+g('parkBytPocet')+'ks)' : ''),
+    Garaz: g('garazByt') + (g('garazBytPocet') ? ' ('+g('garazBytPocet')+'ks)' : ''),
+  };
+
+  if (selectedType === 'Dom') return { ...base,
+    Adresa: g('adresaDom'), Izby: g('izbDom'), Plocha: g('plochaDom'),
+    Stav: g('stavDom'), Konstrukcia: g('konstrDom'), Poschodia: g('poschDom'),
+    VymeraPozemku: g('vymeraPozemku'),
+    Balkon: g('balkonDom') + (g('balkonDomPocet') ? ' ('+g('balkonDomPocet')+'ks, '+g('balkonDomVymera')+'m²)' : ''),
+    Terasa: g('terasaDom') + (g('terasaDomPocet') ? ' ('+g('terasaDomPocet')+'ks, '+g('terasaDomVymera')+'m²)' : ''),
+    Pivnica: g('pivnicaDom') + (g('pivnicaDomPocet') ? ' ('+g('pivnicaDomPocet')+'ks)' : ''),
+    Parkovanie: g('parkDom') + (g('parkDomPocet') ? ' ('+g('parkDomPocet')+'ks)' : ''),
+    Garaz: g('garazDom') + (g('garazDomPocet') ? ' ('+g('garazDomPocet')+'ks)' : ''),
+  };
+
+  return { ...base,
+    Adresa: g('adresaPozemok'),
+    VymeraPozemku: g('vymeraPozemok'),
+    TypPozemku: g('typPozemok'),
+  };
+}
+
+// ── Submit ──
+async function submitForm() {
+  if (!validateStep3()) return;
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  const data = collectData();
+
+  try {
+    // Ulož do Ocenenie tabuľky
+    const res = await fetch(`https://api.airtable.com/v0/${CONFIG.AIRTABLE_BASE_ID}/${encodeURIComponent(CONFIG.AIRTABLE_TABLE)}`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${CONFIG.AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: data })
+    });
+    if (!res.ok) throw new Error();
+
+    // Ak zaškrtol newsletter súhlas — ulož aj do Newsletter tabuľky
+    if (document.getElementById('nlSuhlas').checked && data.Email) {
+      await fetch(`https://api.airtable.com/v0/${CONFIG.AIRTABLE_BASE_ID}/Newsletter`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${CONFIG.AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: { Meno: data.Meno, Email: data.Email, Zdroj: 'Ocenenie formulár' } })
+      }).catch(() => {}); // tichý fail — ocenenie je dôležitejšie
+    }
+  } catch {
+    try {
+      await fetch(`https://formspree.io/f/${CONFIG.FORMSPREE_ENDPOINT}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+      });
+    } catch { /* silent */ }
+  }
+
+  const dovod = document.getElementById('dovod').value;
+  const isLenHodnota = dovod === 'len-hodnota';
+
+  document.getElementById('step3').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('backBtn').classList.remove('show');
+
+  if (isLenHodnota) {
+    document.getElementById('successViewInfo').style.display = 'flex';
+    document.getElementById('successViewInfo').classList.add('show');
+  } else {
+    document.getElementById('successView').classList.add('show');
+  }
+  btn.classList.remove('loading'); btn.disabled = false;
+  window.scrollTo({ top: document.getElementById('wizard').offsetTop - 80, behavior: 'smooth' });
+}
+
+// Live error clear
+document.addEventListener('input', e => {
+  if (!e.target.matches('input, select')) return;
+  e.target.classList.remove('error');
+  const err = document.getElementById('err-' + e.target.id);
+  if (err) err.classList.remove('show');
+});
+</script>
+</body>
+</html>
