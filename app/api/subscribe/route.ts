@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { resend, FROM_EMAIL } from "@/lib/resend";
 import { subscribeSchema } from "@/lib/validators";
+import { newsletterWelcomeEmail } from "@/lib/emailTemplates";
 
 export const runtime = "nodejs";
 
@@ -54,26 +55,10 @@ export async function POST(req: Request) {
   }
 
   try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
-      subject: "Vitajte — ZAJO Reality",
-      html: `<!DOCTYPE html><html lang="sk"><body style="margin:0;padding:0;background:#0a0a0a;font-family:Arial,sans-serif;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;"><tr><td align="center" style="padding:32px 0;">
-          <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#141414;">
-            <tr><td style="padding:32px;border-bottom:1px solid #2a2a2a;color:#fff;font-family:Georgia,serif;font-size:28px;font-weight:700;">ZAJO Reality</td></tr>
-            <tr><td style="padding:32px;color:#d4d4d4;font-size:15px;line-height:1.7;">
-              Vitajte, ${name.replace(/</g, "&lt;")}!<br><br>
-              Ďakujeme za prihlásenie. Budeme vás informovať o nových nehnuteľnostiach z Trenčína a okolia.<br><br>
-              — Tomáš Zajac, ZAJO Reality
-            </td></tr>
-            <tr><td style="background:#0f0f0f;padding:24px 32px;color:#555;font-size:12px;line-height:1.8;">
-              ZAJO Reality | Dolný Šianec 1, 911 48 Trenčín<br>
-              zajac@zajoreality.sk | 0907 980 436
-            </td></tr>
-          </table>
-        </td></tr></table></body></html>`,
-    });
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
+    const unsubscribeUrl = `${appUrl}/odhlasit?email=${encodeURIComponent(email)}`
+    const { subject, html } = newsletterWelcomeEmail(name, unsubscribeUrl)
+    await resend.emails.send({ from: FROM_EMAIL, to: email, subject, html })
   } catch (e) {
     console.error("welcome email failed", e);
   }

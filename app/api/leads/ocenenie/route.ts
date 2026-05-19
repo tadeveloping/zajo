@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { leadOceneniaSchema } from '@/lib/validators'
 import { sendLeadNotification } from '@/lib/leadNotification'
+import { leadConfirmationEmail } from '@/lib/emailTemplates'
+import { resend, FROM_EMAIL } from '@/lib/resend'
 
 export const runtime = 'nodejs'
 
@@ -44,15 +46,16 @@ export async function POST(req: Request) {
 
   const crmUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'}/admin/crm`
   sendLeadNotification({
-    name: data.name,
-    phone: data.phone,
-    email: data.email,
-    source: data.source ?? 'landing_page',
-    type: 'ocenenie',
-    message: data.doplnujuce_info,
-    leadId: data.id,
-    crmUrl,
+    name: data.name, phone: data.phone, email: data.email,
+    source: data.source ?? 'landing_page', type: 'ocenenie',
+    message: data.doplnujuce_info, leadId: data.id, crmUrl,
   }).catch(err => console.error('lead notification failed', err))
+
+  if (data.email) {
+    const { subject, html } = leadConfirmationEmail(data.name, 'Ocenenie nehnuteľnosti')
+    resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
+      .catch(err => console.error('lead confirmation email failed', err))
+  }
 
   return NextResponse.json(data, { status: 201, headers: CORS_HEADERS })
 }
