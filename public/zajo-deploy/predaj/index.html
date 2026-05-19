@@ -642,10 +642,11 @@ form.addEventListener('submit', async (e) => {
     typ:          document.getElementById('typ').value || null,
     lokalita:     document.getElementById('lokalita').value.trim() || null,
     casovy_ramec: document.getElementById('casovyRamec').value || null,
-    sprava:       document.getElementById('sprava').value.trim() || null,
-    source:       'landing_page',
-    utm_source:   getUtm('utm_source'),
-    utm_campaign: getUtm('utm_campaign'),
+    sprava:           document.getElementById('sprava').value.trim() || null,
+    source:           'landing_page',
+    utm_source:       getUtm('utm_source'),
+    utm_campaign:     getUtm('utm_campaign'),
+    newsletter_opt:   document.getElementById('nlSuhlas').checked,
   };
   try {
     await fetch(`${CONFIG.API_BASE}/api/leads/predaj`, {

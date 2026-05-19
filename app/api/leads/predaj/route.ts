@@ -56,6 +56,19 @@ export async function POST(req: Request) {
     const { subject, html } = leadConfirmationEmail(data.name, 'Predaj nehnuteľnosti')
     resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
       .catch(err => console.error('lead confirmation email failed', err))
+
+    if (parsed.data.newsletter_opt) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
+      supabaseAdmin.from('contacts').upsert(
+        { name: data.name, email: data.email, phone: data.phone ?? null, source: 'predaj_form', subscribed: true },
+        { onConflict: 'email', ignoreDuplicates: true }
+      ).then(async () => {
+        const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
+          data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`
+        )
+        return resend.emails.send({ from: FROM_EMAIL, to: data.email!, subject: ws, html: wh })
+      }).catch(err => console.error('newsletter opt-in failed', err))
+    }
   }
 
   return NextResponse.json(data, { status: 201, headers: CORS_HEADERS })

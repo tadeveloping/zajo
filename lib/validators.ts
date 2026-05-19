@@ -72,6 +72,7 @@ export const leadPredajSchema = z.object({
   source: z.string().optional().default('landing_page'),
   utm_source: z.string().optional().nullable(),
   utm_campaign: z.string().optional().nullable(),
+  newsletter_opt: z.boolean().optional().default(false),
 })
 
 export const leadOceneniaSchema = z.object({
@@ -86,6 +87,7 @@ export const leadOceneniaSchema = z.object({
   source: z.string().optional().default('landing_page'),
   utm_source: z.string().optional().nullable(),
   utm_campaign: z.string().optional().nullable(),
+  newsletter_opt: z.boolean().optional().default(false),
 })
 
 export const leadCallySchema = z.object({
