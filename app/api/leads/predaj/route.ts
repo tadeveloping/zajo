@@ -59,15 +59,18 @@ export async function POST(req: Request) {
 
     if (parsed.data.newsletter_opt) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
-      supabaseAdmin.from('contacts').upsert(
-        { name: data.name, email: data.email, phone: data.phone ?? null, source: 'predaj_form', subscribed: true },
-        { onConflict: 'email', ignoreDuplicates: true }
-      ).then(async () => {
-        const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
-          data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`
-        )
-        return resend.emails.send({ from: FROM_EMAIL, to: data.email!, subject: ws, html: wh })
-      }).catch(err => console.error('newsletter opt-in failed', err))
+      ;(async () => {
+        try {
+          await supabaseAdmin.from('contacts').upsert(
+            { name: data.name, email: data.email, phone: data.phone ?? null, source: 'predaj_form', subscribed: true },
+            { onConflict: 'email', ignoreDuplicates: true }
+          )
+          const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
+            data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`
+          )
+          await resend.emails.send({ from: FROM_EMAIL, to: data.email!, subject: ws, html: wh })
+        } catch (err) { console.error('newsletter opt-in failed', err) }
+      })()
     }
   }
 
