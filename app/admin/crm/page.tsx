@@ -90,6 +90,7 @@ export default function CrmPage() {
   const [newNoteText, setNewNoteText] = useState('')
   const [savingNote, setSavingNote] = useState(false)
   const [notesLoading, setNotesLoading] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const loadAll = useCallback(async () => {
     setLoading(true)
@@ -171,6 +172,7 @@ export default function CrmPage() {
   async function saveStatus(status: LeadStatus) {
     if (!selectedLead) return
     setSaving(true)
+    setSaveError(null)
     const table = selectedLead._type
     try {
       const res = await fetch(`/api/leads/${table}/${selectedLead.id}`, {
@@ -178,10 +180,12 @@ export default function CrmPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, notes: detailNotes }),
       })
-      if (!res.ok) throw new Error('Chyba pri ukladaní')
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err?.error ? JSON.stringify(err.error) : `HTTP ${res.status}`)
+      }
       const updated = await res.json()
       setDetailStatus(status)
-      // Update local state
       if (table === 'predaj') {
         setPredajLeads(prev => prev.map(l => l.id === updated.id ? updated : l))
       } else if (table === 'ocenenie') {
@@ -190,10 +194,9 @@ export default function CrmPage() {
         setCallyLeads(prev => prev.map(l => l.id === updated.id ? updated : l))
       }
       setSelectedLead({ ...updated, _type: table } as AnyLead)
-      // Refresh counts
       fetch('/api/leads/count').then(r => r.json()).then(setCounts).catch(() => {})
-    } catch {
-      // silent
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : 'Neznáma chyba')
     } finally {
       setSaving(false)
     }
@@ -410,23 +413,35 @@ export default function CrmPage() {
 
       {/* Detail panel */}
       {selectedLead && (
-        <DetailPanel
-          lead={selectedLead}
-          notes={detailNotes}
-          status={detailStatus}
-          saving={saving}
-          onNotesChange={setDetailNotes}
-          onStatusChange={saveStatus}
-          onNotesSave={saveNotes}
-          onDelete={() => setConfirmDelete(selectedLead)}
-          onClose={closeDetail}
-          leadNotes={leadNotes}
-          notesLoading={notesLoading}
-          newNoteText={newNoteText}
-          onNewNoteTextChange={setNewNoteText}
-          onAddNote={addNote}
-          savingNote={savingNote}
-        />
+        <>
+          {saveError && (
+            <div style={{
+              position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
+              background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)',
+              color: '#fca5a5', borderRadius: '10px', padding: '12px 20px',
+              fontSize: '13px', zIndex: 9999, maxWidth: '480px',
+            }}>
+              ❌ Chyba pri ukladaní: {saveError}
+            </div>
+          )}
+          <DetailPanel
+            lead={selectedLead}
+            notes={detailNotes}
+            status={detailStatus}
+            saving={saving}
+            onNotesChange={setDetailNotes}
+            onStatusChange={saveStatus}
+            onNotesSave={saveNotes}
+            onDelete={() => setConfirmDelete(selectedLead)}
+            onClose={closeDetail}
+            leadNotes={leadNotes}
+            notesLoading={notesLoading}
+            newNoteText={newNoteText}
+            onNewNoteTextChange={setNewNoteText}
+            onAddNote={addNote}
+            savingNote={savingNote}
+          />
+        </>
       )}
 
       {/* Confirm delete */}
