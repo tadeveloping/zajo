@@ -96,11 +96,12 @@ export default function CrmPage() {
     setLoading(true)
     setError(null)
     try {
+      const opts = { cache: 'no-store' } as RequestInit
       const [rPredaj, rOcenenie, rCally, rCounts] = await Promise.all([
-        fetch('/api/leads/predaj'),
-        fetch('/api/leads/ocenenie'),
-        fetch('/api/leads/cally'),
-        fetch('/api/leads/count'),
+        fetch('/api/leads/predaj', opts),
+        fetch('/api/leads/ocenenie', opts),
+        fetch('/api/leads/cally', opts),
+        fetch('/api/leads/count', opts),
       ])
       if (!rPredaj.ok || !rOcenenie.ok || !rCally.ok) throw new Error('Chyba pri načítaní')
       const [dPredaj, dOcenenie, dCally, dCounts] = await Promise.all([

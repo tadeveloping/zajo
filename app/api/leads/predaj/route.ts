@@ -6,6 +6,7 @@ import { leadConfirmationEmail } from '@/lib/emailTemplates'
 import { resend, FROM_EMAIL } from '@/lib/resend'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
