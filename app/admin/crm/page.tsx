@@ -194,7 +194,7 @@ export default function CrmPage() {
         setCallyLeads(prev => prev.map(l => l.id === updated.id ? updated : l))
       }
       setSelectedLead({ ...updated, _type: table } as AnyLead)
-      fetch('/api/leads/count').then(r => r.json()).then(setCounts).catch(() => {})
+      fetch('/api/leads/count', { cache: 'no-store' }).then(r => r.json()).then(setCounts).catch(() => {})
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : 'Neznáma chyba')
     } finally {
@@ -237,7 +237,7 @@ export default function CrmPage() {
       else if (table === 'ocenenie') setOceneniaLeads(prev => prev.filter(l => l.id !== lead.id))
       else setCallyLeads(prev => prev.filter(l => l.id !== lead.id))
       if (selectedLead?.id === lead.id) closeDetail()
-      fetch('/api/leads/count').then(r => r.json()).then(setCounts).catch(() => {})
+      fetch('/api/leads/count', { cache: 'no-store' }).then(r => r.json()).then(setCounts).catch(() => {})
     }
     setConfirmDelete(null)
   }
