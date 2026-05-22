@@ -250,6 +250,14 @@ export default function CrmPage() {
     ...callyLeads.map(l => ({ ...l, _type: 'cally' as const })),
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
+  // Derive counts from loaded data — always in sync, no separate API needed
+  const derivedCounts = {
+    predaj: predajLeads.filter(l => l.status === 'novy').length,
+    ocenenie: oceneniaLeads.filter(l => l.status === 'novy').length,
+    cally: callyLeads.filter(l => l.status === 'novy').length,
+    total: [...predajLeads, ...oceneniaLeads, ...callyLeads].filter(l => l.status === 'novy').length,
+  }
+
   function getVisibleLeads(): AnyLead[] {
     let list: AnyLead[] = []
     if (tab === 'vsetky') list = allLeads
@@ -274,7 +282,7 @@ export default function CrmPage() {
   const instagramCount = visible.filter(l => l.utm_source === 'instagram').length
 
   const tabLabel = (t: Tab) => {
-    const count = t === 'predaj' ? counts.predaj : t === 'ocenenie' ? counts.ocenenie : t === 'cally' ? counts.cally : counts.total
+    const count = t === 'predaj' ? derivedCounts.predaj : t === 'ocenenie' ? derivedCounts.ocenenie : t === 'cally' ? derivedCounts.cally : derivedCounts.total
     return count > 0 ? (
       <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-xs font-bold bg-accent/20 text-accent">{count}</span>
     ) : null
@@ -294,7 +302,7 @@ export default function CrmPage() {
         <div>
           <h1 className="text-3xl font-bold">CRM Leady</h1>
           <p className="text-muted text-sm mt-1">
-            {allLeads.length} leadov celkom · {counts.total} nových · {hotCount} HOT
+            {allLeads.length} leadov celkom · {derivedCounts.total} nových · {hotCount} HOT
           </p>
         </div>
         <button
@@ -313,7 +321,7 @@ export default function CrmPage() {
         </div>
         <div className="bg-panel border border-border rounded-lg p-4">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">Nových</div>
-          <div className="text-2xl font-bold mt-1 text-blue-300">{counts.total}</div>
+          <div className="text-2xl font-bold mt-1 text-blue-300">{derivedCounts.total}</div>
         </div>
         <div className="bg-panel border border-border rounded-lg p-4">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">HOT leady</div>
