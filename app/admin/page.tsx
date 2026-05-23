@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
 import { LogoutButton } from "./components/LogoutButton";
+import { NewLeadsCard } from "./components/NewLeadsCard";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 async function getStats() {
   const [
@@ -10,17 +12,11 @@ async function getStats() {
     { count: subscribed },
     { count: issuesCount },
     { data: recent },
-    { count: leadsPredajNew },
-    { count: leadsOcenenieNew },
-    { count: leadsCallyNew },
   ] = await Promise.all([
     supabaseAdmin.from("contacts").select("*", { count: "exact", head: true }),
     supabaseAdmin.from("contacts").select("*", { count: "exact", head: true }).eq("subscribed", true),
     supabaseAdmin.from("issues").select("*", { count: "exact", head: true }),
     supabaseAdmin.from("issues").select("id,subject,sent_at,recipient_count").order("sent_at", { ascending: false }).limit(5),
-    supabaseAdmin.from("leads_predaj").select("id", { count: "exact", head: true }).eq("status", "novy"),
-    supabaseAdmin.from("leads_ocenenie").select("id", { count: "exact", head: true }).eq("status", "novy"),
-    supabaseAdmin.from("leads_cally").select("id", { count: "exact", head: true }).eq("status", "novy"),
   ]);
 
   return {
@@ -28,12 +24,11 @@ async function getStats() {
     subscribed: subscribed ?? 0,
     issuesCount: issuesCount ?? 0,
     recent: recent ?? [],
-    newLeads: (leadsPredajNew ?? 0) + (leadsOcenenieNew ?? 0) + (leadsCallyNew ?? 0),
   };
 }
 
 export default async function AdminPage() {
-  let stats = { total: 0, subscribed: 0, issuesCount: 0, recent: [] as Array<{ id: string; subject: string; sent_at: string; recipient_count: number }>, newLeads: 0 };
+  let stats = { total: 0, subscribed: 0, issuesCount: 0, recent: [] as Array<{ id: string; subject: string; sent_at: string; recipient_count: number }> };
   let dbError: string | null = null;
   try {
     stats = await getStats();
@@ -133,28 +128,7 @@ export default async function AdminPage() {
             borderColor="rgba(167,139,250,0.18)"
             valueColor="#c4b5fd"
           />
-          <Link href="/admin/crm" style={{ textDecoration: 'none', display: 'block' }}>
-            <div style={{
-              background: stats.newLeads > 0
-                ? 'linear-gradient(135deg, rgba(200,119,58,0.2), rgba(200,119,58,0.06))'
-                : 'rgba(20,18,16,0.8)',
-              border: `1px solid ${stats.newLeads > 0 ? 'rgba(200,119,58,0.45)' : 'rgba(255,255,255,0.07)'}`,
-              borderRadius: '14px', padding: '22px 24px', height: '100%',
-              transition: 'border-color 200ms, transform 200ms',
-              cursor: 'pointer',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-                <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a8279' }}>Nové CRM leady</span>
-                <span style={{ fontSize: '20px' }}>🔥</span>
-              </div>
-              <div style={{ fontSize: '40px', fontWeight: 800, color: stats.newLeads > 0 ? '#c8773a' : '#f5f0ea', letterSpacing: '-0.04em', lineHeight: 1 }}>
-                {stats.newLeads}
-              </div>
-              <div style={{ marginTop: '10px', fontSize: '12px', fontWeight: 600, color: '#c8773a' }}>
-                → Otvoriť CRM
-              </div>
-            </div>
-          </Link>
+          <NewLeadsCard />
         </div>
 
         {/* ── Recent newsletters ── */}
