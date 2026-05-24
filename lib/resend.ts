@@ -15,4 +15,4 @@ export const resend = new Proxy({} as Resend, {
   },
 });
 
-export const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "newsletter@zajoreality.sk";
+export const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Zajo Reality <onboarding@resend.dev>";
