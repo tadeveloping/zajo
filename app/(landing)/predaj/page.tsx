@@ -129,7 +129,7 @@ textarea { resize: vertical; min-height: 80px; }
 .form-note { text-align: center; font-size: 0.75rem; color: var(--gray-400); margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 5px; }
 .consent-row { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
 .consent-item { display: flex; align-items: flex-start; gap: 6px; cursor: pointer; }
-.consent-item input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; border: 1px solid var(--gray-400); border-radius: 2px; background: var(--white); cursor: pointer; position: relative; transition: background 120ms, border-color 120ms; }
+.consent-item input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; padding: 0; flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--gray-400); border-radius: 3px; background: var(--white); cursor: pointer; position: relative; transition: background 120ms, border-color 120ms; }
 .consent-item input[type=checkbox]:checked { background: var(--gray-400); border-color: var(--gray-400); }
 .consent-item input[type=checkbox]:checked::after { content: ''; position: absolute; top: 1px; left: 3px; width: 4px; height: 7px; border: 1.5px solid var(--white); border-top: none; border-left: none; transform: rotate(45deg); }
 .consent-item span { font-size: .66rem; font-weight: 300; color: var(--gray-400); line-height: 1.4; }
@@ -143,7 +143,7 @@ textarea { resize: vertical; min-height: 80px; }
 .success-icon svg { color: #059669; }
 .success-state h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 10px; }
 .success-state p { color: var(--gray-600); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0; }
-.process { padding: 72px 24px; max-width: 900px; margin: 0 auto; }
+.process { padding: 72px 24px; max-width: 900px; margin: 0 auto; background: #ffffff; }
 .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; text-align: center; }
 .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--navy); letter-spacing: -0.02em; text-align: center; margin-bottom: 48px; }
 .process-steps { display: flex; flex-direction: column; gap: 0; position: relative; }

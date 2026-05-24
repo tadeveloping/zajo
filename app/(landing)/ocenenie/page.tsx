@@ -309,7 +309,7 @@ textarea { resize: vertical; min-height: 72px; }
 .form-note { text-align: center; font-size: .72rem; color: var(--gray-400); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; }
 .consent-row { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
 .consent-item { display: flex; align-items: flex-start; gap: 6px; cursor: pointer; }
-.consent-item input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; border: 1px solid var(--gray-400); border-radius: 2px; background: var(--white); cursor: pointer; position: relative; transition: background 120ms, border-color 120ms; }
+.consent-item input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; padding: 0; flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--gray-400); border-radius: 3px; background: var(--white); cursor: pointer; position: relative; transition: background 120ms, border-color 120ms; }
 .consent-item input[type=checkbox]:checked { background: var(--gray-400); border-color: var(--gray-400); }
 .consent-item input[type=checkbox]:checked::after { content: ''; position: absolute; top: 1px; left: 3px; width: 4px; height: 7px; border: 1.5px solid var(--white); border-top: none; border-left: none; transform: rotate(45deg); }
 .consent-item span { font-size: .66rem; font-weight: 300; color: var(--gray-400); line-height: 1.4; }
@@ -319,7 +319,7 @@ textarea { resize: vertical; min-height: 72px; }
 .success-icon svg { color: var(--green); }
 .success-view h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--navy); margin-bottom: 10px; }
 .success-view p { font-size: .9rem; color: var(--gray-600); line-height: 1.65; }
-.how { padding: 72px 24px; max-width: 840px; margin: 0 auto; text-align: center; }
+.how { padding: 72px 24px; max-width: 840px; margin: 0 auto; text-align: center; background: #ffffff; }
 .section-eyebrow { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
 .section-h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; color: var(--navy); letter-spacing: -.02em; margin-bottom: 44px; }
 .steps { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; }

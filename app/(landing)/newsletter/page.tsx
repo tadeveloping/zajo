@@ -111,7 +111,7 @@ input.error { border-color:#EF4444; }
 .submit-btn.loading .spinner { display:block; }
 .consent-row { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
 .consent-item { display:flex; align-items:flex-start; gap:6px; cursor:pointer; }
-.consent-item input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; flex-shrink: 0; margin-top: 2px; border: 1px solid var(--gray-400); border-radius: 2px; background: var(--white); cursor: pointer; position: relative; transition: background 120ms, border-color 120ms; }
+.consent-item input[type=checkbox] { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; padding: 0; flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--gray-400); border-radius: 3px; background: var(--white); cursor: pointer; position: relative; transition: background 120ms, border-color 120ms; }
 .consent-item input[type=checkbox]:checked { background: var(--gray-400); border-color: var(--gray-400); }
 .consent-item input[type=checkbox]:checked::after { content: ''; position: absolute; top: 1px; left: 3px; width: 4px; height: 7px; border: 1.5px solid var(--white); border-top: none; border-left: none; transform: rotate(45deg); }
 .consent-item span { font-size:.66rem; font-weight:300; color:var(--gray-400); line-height:1.4; }

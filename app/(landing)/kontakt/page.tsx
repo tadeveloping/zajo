@@ -328,7 +328,7 @@ textarea.form-input { resize: none; min-height: 100px; line-height: 1.5; }
               type="checkbox" id="gdprSuhlas"
               style={{
                 WebkitAppearance: 'none', appearance: 'none' as const,
-                width: 16, height: 16, flexShrink: 0, marginTop: 2,
+                width: 16, height: 16, padding: 0, flexShrink: 0, marginTop: 2,
                 border: '1.5px solid var(--zajo-gray-border)', borderRadius: 4,
                 background: gdprSuhlas ? '#E8711A' : 'var(--zajo-gray)',
                 borderColor: gdprSuhlas ? '#E8711A' : 'var(--zajo-gray-border)',
