@@ -57,7 +57,29 @@ export async function POST(req: Request) {
   try {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
     const unsubscribeUrl = `${appUrl}/odhlasit?email=${encodeURIComponent(email)}`
-    const { subject, html } = newsletterWelcomeEmail(name, unsubscribeUrl)
+
+    const { data: newsletterProps } = await supabaseAdmin
+      .from('newsletter_properties')
+      .select('*')
+      .order('position')
+
+    const properties = (newsletterProps ?? []).map((row: {
+      title?: string | null
+      price?: string | null
+      location?: string | null
+      area?: string | null
+      image_url?: string | null
+      url: string
+    }) => ({
+      title: row.title ?? '',
+      price: row.price ?? 'Cena na vyžiadanie',
+      location: row.location ?? 'Trenčín a okolie',
+      area: row.area ?? null,
+      imageUrl: row.image_url ?? null,
+      url: row.url,
+    }))
+
+    const { subject, html } = newsletterWelcomeEmail(name, unsubscribeUrl, properties.length > 0 ? properties : undefined)
     await resend.emails.send({ from: FROM_EMAIL, to: email, subject, html })
   } catch (e) {
     console.error("welcome email failed", e);
