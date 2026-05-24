@@ -55,7 +55,7 @@ export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string): { 
                 <td style="background:#E8711A;padding:12px 32px;">
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                      <td><img src="${LOGO_URL}" alt="Zajo Reality" width="90" style="display:block;height:auto;border:0;" /></td>
+                      <td><img src="${LOGO_URL}" alt="Zajo Reality" width="70" style="display:block;height:auto;border:0;" /></td>
                       <td align="right" style="color:rgba(255,255,255,0.75);font-family:'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;">Newsletter</td>
                     </tr>
                   </table>
@@ -179,7 +179,7 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
                 <td style="background:#E8711A;padding:12px 32px;">
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                      <td><img src="${LOGO_URL}" alt="Zajo Reality" width="90" style="display:block;height:auto;border:0;" /></td>
+                      <td><img src="${LOGO_URL}" alt="Zajo Reality" width="70" style="display:block;height:auto;border:0;" /></td>
                       <td align="right" style="color:rgba(255,255,255,0.75);font-family:'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;">Trenčín</td>
                     </tr>
                   </table>
