@@ -1,4 +1,4 @@
-const LOGO_URL = 'https://zajo-five.vercel.app/logo-v3.png'
+const LOGO_URL = 'https://zajo-five.vercel.app/logo-transparent.png'
 const SITE_URL = 'https://zajoreality.sk'
 
 function escape(s: string) {
