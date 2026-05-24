@@ -319,7 +319,8 @@ textarea { resize: vertical; min-height: 72px; }
 .success-icon svg { color: var(--green); }
 .success-view h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--navy); margin-bottom: 10px; }
 .success-view p { font-size: .9rem; color: var(--gray-600); line-height: 1.65; }
-.how { padding: 72px 24px; max-width: 840px; margin: 0 auto; text-align: center; background: #ffffff; }
+.how-section { background: #ffffff; }
+.how { padding: 72px 24px; max-width: 840px; margin: 0 auto; text-align: center; }
 .section-eyebrow { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
 .section-h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; color: var(--navy); letter-spacing: -.02em; margin-bottom: 44px; }
 .steps { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; }
@@ -830,7 +831,7 @@ footer a:hover { color: var(--gold); }
         </div>
       </section>
 
-      <section className="how">
+      <section className="how-section"><div className="how">
         <p className="section-eyebrow">Ako to funguje</p>
         <h2 className="section-h2">Tri kroky k reálnej cene</h2>
         <div className="steps">
@@ -850,7 +851,7 @@ footer a:hover { color: var(--gold); }
             <p>Do 24 hodín vás kontaktujeme s ocenením. Zadarmo, bez záväzkov.</p>
           </div>
         </div>
-      </section>
+      </div></section>
 
       <section className="proof">
         <div className="proof-inner">

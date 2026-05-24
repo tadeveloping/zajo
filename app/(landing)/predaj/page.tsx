@@ -143,7 +143,8 @@ textarea { resize: vertical; min-height: 80px; }
 .success-icon svg { color: #059669; }
 .success-state h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 10px; }
 .success-state p { color: var(--gray-600); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0; }
-.process { padding: 72px 24px; max-width: 900px; margin: 0 auto; background: #ffffff; }
+.process-section { background: #ffffff; }
+.process { padding: 72px 24px; max-width: 900px; margin: 0 auto; }
 .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; text-align: center; }
 .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; color: var(--navy); letter-spacing: -0.02em; text-align: center; margin-bottom: 48px; }
 .process-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
@@ -322,7 +323,7 @@ footer a:hover { color: var(--gold); }
         </div>
       </section>
 
-      <section className="process">
+      <section className="process-section"><div className="process">
         <p className="section-label">Ako to funguje</p>
         <h2 className="section-title">Predaj od A po Z — bez starostí</h2>
         <div className="process-steps">
@@ -372,7 +373,7 @@ footer a:hover { color: var(--gold); }
             </div>
           </div>
         </div>
-      </section>
+      </div></section>
 
       <section className="why">
         <div className="why-inner">

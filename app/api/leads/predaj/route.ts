@@ -37,9 +37,10 @@ export async function POST(req: Request) {
   const parsed = leadPredajSchema.safeParse(body)
   if (!parsed.success)
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400, headers: CORS_HEADERS })
+  const { newsletter_opt, ...insertData } = parsed.data
   const { data, error } = await supabaseAdmin
     .from('leads_predaj')
-    .insert(parsed.data)
+    .insert(insertData)
     .select()
     .single()
   if (error)
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
     resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
       .catch(err => console.error('lead confirmation email failed', err))
 
-    if (parsed.data.newsletter_opt) {
+    if (newsletter_opt) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
       ;(async () => {
         try {
