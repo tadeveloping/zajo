@@ -134,7 +134,9 @@ function emailFooter(unsubscribeUrl?: string) {
                   <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#A89F95;font-size:11px;">© 2026 Zajo Reality · Dolný Šianec 1, 911 48 Trenčín</p>
                 </td>
               </tr>`
-}(name: string, unsubscribeUrl: string, properties?: WelcomeProperty[]): { subject: string; html: string } {
+}
+
+export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string, properties?: WelcomeProperty[]): { subject: string; html: string } {
   const fn = firstName(name)
   const subject = `${fn}, vitajte v Zajo Reality 👋`
   const html = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
