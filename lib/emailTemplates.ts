@@ -78,7 +78,63 @@ function buildPropertiesGrid(properties: WelcomeProperty[]): string {
   return `<table cellpadding="0" cellspacing="0" border="0" width="100%">${rows.join('')}</table>`
 }
 
-export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string, properties?: WelcomeProperty[]): { subject: string; html: string } {
+const INSTAGRAM_URL = 'https://www.instagram.com/zajoreality'
+const FACEBOOK_URL = 'https://www.facebook.com/zajoreality'
+
+function emailSignature() {
+  return `
+              <!-- SIGNATURE -->
+              <tr>
+                <td style="background:#FFFFFF;padding:0 40px 32px;">
+                  <div style="height:1px;background:#ECE6E0;margin:0 0 24px;font-size:0;line-height:0;">&nbsp;</div>
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                      <td valign="middle">
+                        <img src="${LOGO_URL}" alt="Zajo Reality" width="56" style="display:block;height:auto;border:0;" />
+                      </td>
+                      <td valign="middle" style="padding-left:16px;">
+                        <div style="font-family:'Segoe UI',Arial,sans-serif;color:#111111;font-size:14px;font-weight:700;line-height:1.4;">Tomáš Zajac</div>
+                        <div style="font-family:'Segoe UI',Arial,sans-serif;color:#8A7F73;font-size:12px;line-height:1.4;">Zajo Reality · Trenčín</div>
+                        <div style="margin-top:4px;">
+                          <a href="${SITE_URL}" style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:12px;text-decoration:none;">zajoreality.sk</a>
+                        </div>
+                      </td>
+                      <td valign="middle" align="right">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-right:8px;">
+                              <a href="${FACEBOOK_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;border-radius:8px;background:#1877F2;text-align:center;text-decoration:none;line-height:36px;">
+                                <span style="font-family:Arial,sans-serif;font-size:16px;font-weight:900;color:#FFFFFF;line-height:36px;">f</span>
+                              </a>
+                            </td>
+                            <td>
+                              <a href="${INSTAGRAM_URL}" target="_blank" style="display:inline-block;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);text-align:center;text-decoration:none;line-height:36px;">
+                                <span style="font-family:Arial,sans-serif;font-size:13px;font-weight:900;color:#FFFFFF;line-height:36px;">IG</span>
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>`
+}
+
+function emailFooter(unsubscribeUrl?: string) {
+  return `
+              <!-- FOOTER -->
+              <tr>
+                <td style="background:#F8F5F1;padding:18px 40px 8px;text-align:center;border-top:1px solid #ECE6E0;">
+                  ${unsubscribeUrl ? `<p style="margin:0 0 6px;font-family:'Segoe UI',Arial,sans-serif;color:#8A7F73;font-size:12px;line-height:1.65;">Tento e-mail ste dostali, lebo ste sa prihlásili na newsletter Zajo Reality.<br><a href="${unsubscribeUrl}" style="color:#6B6359;text-decoration:underline;">Odhlásiť sa z newslettera</a>.</p>` : ''}
+                </td>
+              </tr>
+              <tr>
+                <td style="background:#F8F5F1;padding:4px 40px 22px;text-align:center;">
+                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#A89F95;font-size:11px;">© 2026 Zajo Reality · Dolný Šianec 1, 911 48 Trenčín</p>
+                </td>
+              </tr>`
+}(name: string, unsubscribeUrl: string, properties?: WelcomeProperty[]): { subject: string; html: string } {
   const fn = firstName(name)
   const subject = `${fn}, vitajte v Zajo Reality 👋`
   const html = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -175,27 +231,8 @@ export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string, pro
                 </td>
               </tr>
 
-              <!-- SIGNATURE -->
-              <tr>
-                <td class="px" style="background:#FFFFFF;padding:0 40px 36px;">
-                  <div style="height:1px;background:#ECE6E0;margin:0 0 22px;font-size:0;line-height:0;">&nbsp;</div>
-                  <p style="margin:0 0 4px;font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:14px;line-height:1.6;">S pozdravom,</p>
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#111111;font-size:15px;font-weight:700;line-height:1.6;">Tomáš Zajac — Zajo Reality</p>
-                  <p style="margin:4px 0 0;font-family:'Segoe UI',Arial,sans-serif;color:#8A7F73;font-size:13px;">Trenčín · <a href="${SITE_URL}" style="color:#8A7F73;text-decoration:underline;">zajoreality.sk</a></p>
-                </td>
-              </tr>
-
-              <!-- UNSUBSCRIBE -->
-              <tr>
-                <td style="background:#F8F5F1;padding:20px 40px 8px;text-align:center;border-top:1px solid #ECE6E0;">
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#8A7F73;font-size:12px;line-height:1.65;">Tento e-mail ste dostali, lebo ste sa prihlásili na newsletter Zajo Reality.<br><a href="${unsubscribeUrl}" style="color:#6B6359;text-decoration:underline;">Odhlásiť sa z newslettera</a>.</p>
-                </td>
-              </tr>
-              <tr>
-                <td style="background:#F8F5F1;padding:6px 40px 22px;text-align:center;">
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#A89F95;font-size:11px;">© 2026 Zajo Reality · Dolný Šianec 1, 911 48 Trenčín</p>
-                </td>
-              </tr>
+              ${emailSignature()}
+              ${emailFooter(unsubscribeUrl)}
 
             </table>
           </td>
@@ -300,22 +337,8 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
                 </td>
               </tr>
 
-              <!-- SIGNATURE -->
-              <tr>
-                <td class="px" style="background:#FFFFFF;padding:0 40px 36px;">
-                  <div style="height:1px;background:#ECE6E0;margin:0 0 22px;font-size:0;line-height:0;">&nbsp;</div>
-                  <p style="margin:0 0 4px;font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:14px;line-height:1.6;">S pozdravom,</p>
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#111111;font-size:15px;font-weight:700;line-height:1.6;">Tomáš Zajac — Zajo Reality</p>
-                  <p style="margin:4px 0 0;font-family:'Segoe UI',Arial,sans-serif;color:#8A7F73;font-size:13px;">Trenčín · <a href="${SITE_URL}" style="color:#8A7F73;text-decoration:underline;">zajoreality.sk</a></p>
-                </td>
-              </tr>
-
-              <!-- FOOTER -->
-              <tr>
-                <td style="background:#F8F5F1;padding:20px 40px;text-align:center;border-top:1px solid #ECE6E0;">
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#A89F95;font-size:11px;">© 2026 Zajo Reality · Dolný Šianec 1, 911 48 Trenčín</p>
-                </td>
-              </tr>
+              ${emailSignature()}
+              ${emailFooter()}
 
             </table>
           </td>
