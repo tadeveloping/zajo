@@ -42,23 +42,23 @@ type WelcomeProperty = {
 
 function buildWelcomePropertyCard(p: WelcomeProperty, idx: number): string {
   const img = p.imageUrl || FALLBACK_IMAGES[idx % FALLBACK_IMAGES.length]
-  const esc2 = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-  return `<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#FFFFFF;border-radius:8px;overflow:hidden;border:1px solid #ECE6E0;margin-bottom:12px;">
-  <tr><td style="padding:0;line-height:0;font-size:0;">
-    <img src="${esc2(img)}" alt="${esc2(p.title)}" width="520" height="180" style="display:block;width:100%;max-width:520px;height:180px;object-fit:cover;border:0;" />
+  const e = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  return `<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#FFFFFF;border-radius:10px;overflow:hidden;border:1px solid #ECE6E0;margin-bottom:16px;">
+  <tr><td style="padding:0;line-height:0;font-size:0;position:relative;">
+    <a href="${e(p.url)}" target="_blank" style="display:block;line-height:0;"><img src="${e(img)}" alt="${e(p.title)}" width="520" height="220" style="display:block;width:100%;height:220px;object-fit:cover;border:0;" /></a>
   </td></tr>
-  <tr><td style="background:#E8711A;padding:8px 16px;">
+  <tr><td style="background:#E8711A;padding:10px 20px;">
     <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
-      <td style="font-family:'Segoe UI',Arial,sans-serif;font-size:10px;font-weight:700;color:#FFFFFF;letter-spacing:2px;text-transform:uppercase;">PONUKA</td>
-      <td align="right" style="font-family:'Segoe UI',Arial,sans-serif;font-size:14px;font-weight:800;color:#FFFFFF;">${esc2(p.price)}</td>
+      <td style="font-family:'Segoe UI',Arial,sans-serif;font-size:9px;font-weight:800;color:rgba(255,255,255,0.8);letter-spacing:2.5px;text-transform:uppercase;">PONUKA</td>
+      <td align="right" style="font-family:'Segoe UI',Arial,sans-serif;font-size:16px;font-weight:900;color:#FFFFFF;">${e(p.price)}</td>
     </tr></table>
   </td></tr>
-  <tr><td style="padding:14px 16px 10px;">
-    <div style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:700;color:#111111;line-height:1.3;margin-bottom:6px;">${esc2(p.title)}</div>
-    <div style="font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#8A7F73;">&#128205;&nbsp;${esc2(p.location)}${p.area ? `&nbsp;&middot;&nbsp;${esc2(p.area)}` : ''}</div>
+  <tr><td style="padding:16px 20px 8px;">
+    <div style="font-family:'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:700;color:#111111;line-height:1.35;margin-bottom:8px;">${e(p.title)}</div>
+    <div style="font-family:'Segoe UI',Arial,sans-serif;font-size:13px;color:#8A7F73;">&#128205;&nbsp;${e(p.location)}${p.area ? `&nbsp;&middot;&nbsp;${e(p.area)}` : ''}</div>
   </td></tr>
-  <tr><td style="padding:0 16px 16px;">
-    <a href="${esc2(p.url)}" target="_blank" style="display:inline-block;background:#E8711A;color:#FFFFFF;font-family:'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;text-decoration:none;padding:8px 18px;border-radius:6px;letter-spacing:0.3px;">Zobraziť ponuku&nbsp;&rarr;</a>
+  <tr><td style="padding:12px 20px 20px;">
+    <a href="${e(p.url)}" target="_blank" style="display:inline-block;background:#E8711A;color:#FFFFFF;font-family:'Segoe UI',Arial,sans-serif;font-size:11px;font-weight:800;text-decoration:none;padding:10px 22px;border-radius:6px;letter-spacing:1.5px;text-transform:uppercase;">ZOBRAZIŤ&nbsp;&rarr;</a>
   </td></tr>
 </table>`
 }

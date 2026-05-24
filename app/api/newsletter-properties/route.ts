@@ -35,12 +35,12 @@ function bestFromSrcset(srcset: string): string | undefined {
   return entries[0].u;
 }
 
-function extractPrice(html: string): string {
-  // Match € amounts like "145 000 €" or "145.000€" or "145000 €"
-  const m = html.match(/[\d\s.]+\s*€/);
-  if (m) return m[0].trim();
-  const m2 = html.match(/€\s*[\d\s.]+/);
-  if (m2) return m2[0].trim();
+function extractPrice(text: string): string {
+  // Match € amounts like "145 000 €" or "145.000€" — no newlines, max 20 chars
+  const m = text.match(/\d[\d .]*\s*€/);
+  if (m && m[0].length <= 20) return m[0].trim();
+  const m2 = text.match(/€\s*\d[\d .]*/);
+  if (m2 && m2[0].length <= 20) return m2[0].trim();
   return "";
 }
 
@@ -123,19 +123,18 @@ async function scrapeListing(url: string): Promise<{
   $(".price,.cena,.cost,[class*='price'],[class*='cena'],[class*='amount']")
     .first()
     .each((_, el) => {
-      price = $(el).text().trim();
+      const t = $(el).clone().children().remove().end().text().trim();
+      if (t.length < 25) price = t;
+      else price = extractPrice($(el).text()) || "";
     });
   if (!price) {
-    // Walk text nodes looking for € pattern
     $("*").each((_, node) => {
       if (price) return false;
       const t = $(node).clone().children().remove().end().text().trim();
-      if (/\d[\d\s.]*[€Eur]/.test(t) && t.length < 40) price = t;
+      if (/\d[\d .]*€/.test(t) && t.length < 20) price = t;
     });
   }
-  if (!price) {
-    price = extractPrice(html);
-  }
+  if (!price) price = extractPrice($("body").text());
 
   // ── Location ──────────────────────────────────────────────────────────────
   let location =
