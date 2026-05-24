@@ -65,7 +65,7 @@ export async function POST(req: Request) {
         try {
           await supabaseAdmin.from('contacts').upsert(
             { name: data.name, email: data.email, phone: data.phone ?? null, source: 'predaj_form', subscribed: true },
-            { onConflict: 'email', ignoreDuplicates: true }
+            { onConflict: 'email' }
           )
           const { data: newsletterProps } = await supabaseAdmin
             .from('newsletter_properties').select('*').order('position')
