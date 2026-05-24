@@ -210,7 +210,7 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
                     <tr>
                       <td style="padding:14px 22px 18px;">
                         <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:12px;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;">⏱&nbsp; Ozveme sa do 24 hodín</div>
-                        <div style="font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:14px;line-height:1.55;">V pracovné dni vás osobne kontaktujeme. Ozve sa vám jeden z našich maklérov — radi zodpovedia všetky vaše otázky.</div>
+                        <div style="font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:14px;line-height:1.55;">V pracovné dni vás osobne kontaktujeme. Ozve sa vám jeden z našich maklérov, ktorý vám rád zodpovie všetky vaše otázky.</div>
                       </td>
                     </tr>
                   </table>
