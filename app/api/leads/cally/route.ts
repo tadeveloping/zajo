@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { leadCallySchema } from '@/lib/validators'
 import { sendLeadNotification } from '@/lib/leadNotification'
-import { leadConfirmationEmail } from '@/lib/emailTemplates'
-import { resend, FROM_EMAIL } from '@/lib/resend'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -52,13 +50,6 @@ export async function POST(req: Request) {
     source: data.source ?? 'cally', type: 'cally',
     message: data.sprava, score: data.score, leadId: data.id, crmUrl,
   }).catch(err => console.error('lead notification failed', err))
-
-  if (data.email) {
-    const typZaujmu = data.zaujem ? `${data.zaujem} nehnuteľnosti` : 'Dopyt'
-    const { subject, html } = leadConfirmationEmail(data.name, typZaujmu)
-    await resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
-      .catch(err => console.error('lead confirmation email failed', err))
-  }
 
   return NextResponse.json(data, { status: 201, headers: CORS_HEADERS })
 }
