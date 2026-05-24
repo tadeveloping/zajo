@@ -137,15 +137,15 @@ async function scrapeListing(url: string): Promise<{
   if (!price) price = extractPrice($("body").text());
 
   // ── Location ──────────────────────────────────────────────────────────────
-  let location =
-    $(
-      ".location,.lokalita,.place,.city,[class*='location'],[class*='place'],[class*='address']"
-    )
-      .first()
-      .text()
-      .trim() ||
-    $("meta[name='geo.placename']").attr("content")?.trim() ||
-    "";
+  let location = ""
+  $(".location,.lokalita,.place,.city,[class*='location'],[class*='place'],[class*='address']")
+    .each((_, el) => {
+      if (location) return false
+      const t = $(el).clone().children().remove().end().text().trim()
+      if (t.length > 0 && t.length < 50) location = t
+    })
+  if (!location) location = $("meta[name='geo.placename']").attr("content")?.trim() || ""
+  if (location.length > 40) location = location.slice(0, 40).replace(/\s+\S*$/, '') + '…'
 
   // ── Area ──────────────────────────────────────────────────────────────────
   let area: string | null =
