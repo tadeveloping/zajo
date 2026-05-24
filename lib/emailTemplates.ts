@@ -224,7 +224,7 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
               <!-- PERSONAL -->
               <tr>
                 <td class="px" style="background:#FFFFFF;padding:18px 40px 8px;">
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:15px;line-height:1.65;">Zajo Reality je <b style="color:#111111;">lokálna realitná kancelária</b> z Trenčína — nie korporát. Každého klienta poznáme osobne a každú nehnuteľnosť riešime naplno.</p>
+                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:15px;line-height:1.65;">Zajo Reality je <b style="color:#111111;">lokálna realitná kancelária</b> z Trenčína — nie korporát. Každého klienta spoznávame osobne a každú nehnuteľnosť riešime naplno.</p>
                 </td>
               </tr>
 
