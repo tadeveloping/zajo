@@ -450,45 +450,12 @@ footer a:hover { color:var(--gold); }
 
 
 <script>
-// ================================================================
-// KONFIGURÁCIA
-// ================================================================
-const CONFIG = {
-  // Option A: Mailchimp — vlož action URL z embedded form
-  MAILCHIMP_URL: 'VLOZ_MAILCHIMP_URL_SEM',
-
-  // Option B: Airtable (ak nepoužívaš Mailchimp)
-  AIRTABLE_TOKEN:     'VLOZ_SVOJ_TOKEN_SEM',
-  AIRTABLE_BASE_ID:   'VLOZ_BASE_ID_SEM',
-  AIRTABLE_TABLE:     'Newsletter',
-
-  // Záloha
-  FORMSPREE_ENDPOINT: 'VLOZ_FORMSPREE_ID_SEM',
-
-  // Nastav na 'mailchimp' alebo 'airtable'
-  MODE: 'airtable'
-};
-// ================================================================
+const API_URL = 'https://zajo-five.vercel.app/api/subscribe';
 
 const form = document.getElementById('nlForm');
 const btn  = document.getElementById('submitBtn');
 
 function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
-
-async function submitMailchimp(meno, email) {
-  // Mailchimp CORS workaround — uses no-cors (no response check)
-  const url = CONFIG.MAILCHIMP_URL.replace('/post?', '/post-json?') + '&EMAIL=' + encodeURIComponent(email) + '&FNAME=' + encodeURIComponent(meno) + '&c=?';
-  await fetch(url, { mode: 'no-cors' });
-}
-
-async function submitAirtable(meno, email) {
-  const res = await fetch(`https://api.airtable.com/v0/${CONFIG.AIRTABLE_BASE_ID}/${encodeURIComponent(CONFIG.AIRTABLE_TABLE)}`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${CONFIG.AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { Meno: meno, Email: email, Zdroj: 'Landing - Newsletter' } })
-  });
-  if (!res.ok) throw new Error();
-}
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -512,18 +479,14 @@ form.addEventListener('submit', async (e) => {
   btn.classList.add('loading'); btn.disabled = true;
 
   try {
-    if (CONFIG.MODE === 'mailchimp') {
-      await submitMailchimp(menoEl.value.trim(), emailEl.value.trim());
-    } else {
-      await submitAirtable(menoEl.value.trim(), emailEl.value.trim());
-    }
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: menoEl.value.trim(), email: emailEl.value.trim() })
+    });
+    if (!res.ok) throw new Error();
   } catch {
-    try {
-      await fetch(`https://formspree.io/f/${CONFIG.FORMSPREE_ENDPOINT}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ meno: menoEl.value, email: emailEl.value })
-      });
-    } catch {}
+    // show success anyway — don't block user
   }
 
   document.getElementById('formFields').classList.add('hide');
