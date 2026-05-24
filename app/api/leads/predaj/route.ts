@@ -46,9 +46,10 @@ export async function POST(req: Request) {
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500, headers: CORS_HEADERS })
 
-  // Fire-and-forget notification — don't block the response
   const crmUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'}/admin/crm`
-  sendLeadNotification({
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
+
+  await sendLeadNotification({
     name: data.name, phone: data.phone, email: data.email,
     source: data.source ?? 'landing_page', type: 'predaj',
     message: data.sprava, leadId: data.id, crmUrl,
@@ -56,30 +57,27 @@ export async function POST(req: Request) {
 
   if (data.email) {
     const { subject, html } = leadConfirmationEmail(data.name, 'Predaj nehnuteľnosti')
-    resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
+    await resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
       .catch(err => console.error('lead confirmation email failed', err))
 
     if (newsletter_opt) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
-      ;(async () => {
-        try {
-          await supabaseAdmin.from('contacts').upsert(
-            { name: data.name, email: data.email, phone: data.phone ?? null, source: 'predaj_form', subscribed: true },
-            { onConflict: 'email' }
-          )
-          const { data: newsletterProps } = await supabaseAdmin
-            .from('newsletter_properties').select('*').order('position')
-          const properties = (newsletterProps ?? []).map((row: { title?: string | null; price?: string | null; location?: string | null; area?: string | null; image_url?: string | null; url: string }) => ({
-            title: row.title ?? '', price: row.price ?? 'Cena na vyžiadanie',
-            location: row.location ?? 'Trenčín a okolie', area: row.area ?? null, imageUrl: row.image_url ?? null, url: row.url,
-          }))
-          const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
-            data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`,
-            properties.length > 0 ? properties : undefined
-          )
-          await resend.emails.send({ from: FROM_EMAIL, to: data.email!, subject: ws, html: wh })
-        } catch (err) { console.error('newsletter opt-in failed', err) }
-      })()
+      try {
+        await supabaseAdmin.from('contacts').upsert(
+          { name: data.name, email: data.email, phone: data.phone ?? null, source: 'predaj_form', subscribed: true },
+          { onConflict: 'email' }
+        )
+        const { data: newsletterProps } = await supabaseAdmin
+          .from('newsletter_properties').select('*').order('position')
+        const properties = (newsletterProps ?? []).map((row: { title?: string | null; price?: string | null; location?: string | null; area?: string | null; image_url?: string | null; url: string }) => ({
+          title: row.title ?? '', price: row.price ?? 'Cena na vyžiadanie',
+          location: row.location ?? 'Trenčín a okolie', area: row.area ?? null, imageUrl: row.image_url ?? null, url: row.url,
+        }))
+        const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
+          data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`,
+          properties.length > 0 ? properties : undefined
+        )
+        await resend.emails.send({ from: FROM_EMAIL, to: data.email!, subject: ws, html: wh })
+      } catch (err) { console.error('newsletter opt-in failed', err) }
     }
   }
 

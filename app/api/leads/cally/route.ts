@@ -46,7 +46,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500, headers: CORS_HEADERS })
 
   const crmUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'}/admin/crm`
-  sendLeadNotification({
+
+  await sendLeadNotification({
     name: data.name, phone: data.phone, email: data.email,
     source: data.source ?? 'cally', type: 'cally',
     message: data.sprava, score: data.score, leadId: data.id, crmUrl,
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
   if (data.email) {
     const typZaujmu = data.zaujem ? `${data.zaujem} nehnuteľnosti` : 'Dopyt'
     const { subject, html } = leadConfirmationEmail(data.name, typZaujmu)
-    resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
+    await resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
       .catch(err => console.error('lead confirmation email failed', err))
   }
 
