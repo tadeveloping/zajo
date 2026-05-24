@@ -37,9 +37,10 @@ export async function POST(req: Request) {
   const parsed = leadOceneniaSchema.safeParse(body)
   if (!parsed.success)
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400, headers: CORS_HEADERS })
+  const { newsletter_opt, ...insertData } = parsed.data
   const { data, error } = await supabaseAdmin
     .from('leads_ocenenie')
-    .insert(parsed.data)
+    .insert(insertData)
     .select()
     .single()
   if (error)
@@ -59,7 +60,7 @@ export async function POST(req: Request) {
     await resend.emails.send({ from: FROM_EMAIL, to: data.email, subject, html })
       .catch(err => console.error('lead confirmation email failed', err))
 
-    if (parsed.data.newsletter_opt) {
+    if (newsletter_opt) {
       try {
         await supabaseAdmin.from('contacts').upsert(
           { name: data.name, email: data.email, phone: data.phone ?? null, source: 'ocenenie_form', subscribed: true },
