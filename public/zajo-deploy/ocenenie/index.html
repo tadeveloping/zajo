@@ -837,7 +837,7 @@ footer a:hover { color: var(--gold); }
             </label>
             <label class="consent-item">
               <input type="checkbox" id="gdprSuhlas" name="gdprSuhlas">
-              <span>Súhlasím so <a href="/zasady-ochrany-osobnych-udajov" target="_blank" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a> podľa GDPR.</span>
+              <span>Súhlasím so <a href="#" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a></span>
             </label>
           </div>
 
@@ -941,10 +941,6 @@ const CONFIG = {
 
 let currentStep = 1;
 let selectedType = null;
-
-function getUtm(key) {
-  return new URLSearchParams(window.location.search).get(key) || null;
-}
 
 // ── Type selection ──
 function selectType(btn) {
@@ -1121,9 +1117,7 @@ async function submitForm() {
       stav_nehnutelnosti: data.Stav || null,
       doplnujuce_info:    [data.Izby ? 'Izby: ' + data.Izby : null, data.Konstrukcia ? 'Konštrukcia: ' + data.Konstrukcia : null, data.Dovod ? 'Dôvod: ' + data.Dovod : null].filter(Boolean).join('; ') || null,
       source:             'landing_page',
-      utm_source:         getUtm('utm_source'),
-      utm_campaign:       getUtm('utm_campaign'),
-      newsletter_opt:     document.getElementById('nlSuhlas').checked,
+      newsletter_opt:     document.getElementById('nlSuhlas')?.checked ?? false,
     };
     await fetch(`${CONFIG.API_BASE}/api/leads/ocenenie`, {
       method: 'POST',

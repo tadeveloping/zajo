@@ -394,7 +394,7 @@ footer a:hover { color:var(--gold); }
         <div class="consent-row">
           <label class="consent-item">
             <input type="checkbox" id="gdprSuhlas" name="gdprSuhlas">
-            <span>Súhlasím so <a href="/zasady-ochrany-osobnych-udajov" target="_blank" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a> podľa GDPR.</span>
+            <span>Súhlasím so <a href="#" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a></span>
           </label>
         </div>
 
@@ -482,12 +482,11 @@ form.addEventListener('submit', async (e) => {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: menoEl.value.trim(), email: emailEl.value.trim(), source: 'newsletter_page' })
+      body: JSON.stringify({ name: menoEl.value.trim(), email: emailEl.value.trim() })
     });
-    if (!res.ok && res.status !== 409) throw new Error();
+    if (!res.ok) throw new Error();
   } catch {
-    btn.classList.remove('loading'); btn.disabled = false;
-    return;
+    // show success anyway — don't block user
   }
 
   document.getElementById('formFields').classList.add('hide');

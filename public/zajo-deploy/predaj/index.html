@@ -457,7 +457,7 @@
             </label>
             <label class="consent-item">
               <input type="checkbox" id="gdprSuhlas" name="gdprSuhlas">
-              <span>Súhlasím so <a href="/zasady-ochrany-osobnych-udajov" target="_blank" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a> podľa GDPR.</span>
+              <span>Súhlasím so <a href="#" style="color:inherit;text-decoration:underline;">spracovaním osobných údajov</a></span>
             </label>
           </div>
 
@@ -587,10 +587,6 @@ const CONFIG = {
 const form = document.getElementById('leadForm');
 const btn  = document.getElementById('submitBtn');
 
-function getUtm(key) {
-  return new URLSearchParams(window.location.search).get(key) || null;
-}
-
 function validate() {
   let ok = true;
   const fields = [
@@ -642,11 +638,9 @@ form.addEventListener('submit', async (e) => {
     typ:          document.getElementById('typ').value || null,
     lokalita:     document.getElementById('lokalita').value.trim() || null,
     casovy_ramec: document.getElementById('casovyRamec').value || null,
-    sprava:           document.getElementById('sprava').value.trim() || null,
-    source:           'landing_page',
-    utm_source:       getUtm('utm_source'),
-    utm_campaign:     getUtm('utm_campaign'),
-    newsletter_opt:   document.getElementById('nlSuhlas').checked,
+    sprava:       document.getElementById('sprava').value.trim() || null,
+    source:       'landing_page',
+    newsletter_opt: document.getElementById('nlSuhlas').checked,
   };
   try {
     await fetch(`${CONFIG.API_BASE}/api/leads/predaj`, {
