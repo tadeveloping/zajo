@@ -16,10 +16,10 @@ const MOBILE = `@media only screen and (max-width:620px){
   .btn a{display:block!important;}
 }`
 
-const HEADER_LOGO = `
+const HEADER_BAR_LOGO = `
 <tr>
-  <td align="center" style="padding:28px 0 0;">
-    <img src="${LOGO_URL}" alt="Zajo Reality" width="110" style="display:block;height:auto;border:0;" />
+  <td align="center" style="padding:0;">
+    <img src="${LOGO_URL}" alt="Zajo Reality" width="120" style="display:block;height:auto;border:0;" />
   </td>
 </tr>`
 
@@ -45,8 +45,6 @@ export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string): { 
     <td align="center" style="padding:0 16px 32px;">
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="max-width:600px;width:100%;">
 
-        ${HEADER_LOGO}
-
         <!-- CARD -->
         <tr>
           <td style="background:#FFFFFF;border-radius:12px;overflow:hidden;margin-top:16px;">
@@ -54,10 +52,10 @@ export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string): { 
 
               <!-- ORANGE HEADER -->
               <tr>
-                <td style="background:#E8711A;padding:20px 32px;">
+                <td style="background:#E8711A;padding:12px 32px;">
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                      <td style="color:#fff;font-family:'Segoe UI',Arial,sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;">ZAJO REALITY</td>
+                      <td><img src="${LOGO_URL}" alt="Zajo Reality" width="90" style="display:block;height:auto;border:0;" /></td>
                       <td align="right" style="color:rgba(255,255,255,0.75);font-family:'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;">Newsletter</td>
                     </tr>
                   </table>
@@ -171,8 +169,6 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
     <td align="center" style="padding:0 16px 32px;">
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="max-width:600px;width:100%;">
 
-        ${HEADER_LOGO}
-
         <!-- CARD -->
         <tr>
           <td style="background:#FFFFFF;border-radius:12px;overflow:hidden;margin-top:16px;">
@@ -180,10 +176,10 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
 
               <!-- ORANGE HEADER -->
               <tr>
-                <td style="background:#E8711A;padding:20px 32px;">
+                <td style="background:#E8711A;padding:12px 32px;">
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                      <td style="color:#fff;font-family:'Segoe UI',Arial,sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;">ZAJO REALITY</td>
+                      <td><img src="${LOGO_URL}" alt="Zajo Reality" width="90" style="display:block;height:auto;border:0;" /></td>
                       <td align="right" style="color:rgba(255,255,255,0.75);font-family:'Segoe UI',Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;">Trenčín</td>
                     </tr>
                   </table>
