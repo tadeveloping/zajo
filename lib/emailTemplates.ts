@@ -176,32 +176,32 @@ export function newsletterWelcomeEmail(name: string, unsubscribeUrl: string, pro
 
               <!-- HERO -->
               <tr>
-                <td class="px" style="background:#FFFFFF;padding:40px 40px 22px;">
-                  <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;">Vitajte v Zajo Reality</div>
-                  <h1 class="h1" style="margin:0 0 14px;font-family:'Segoe UI',Arial,sans-serif;color:#111111;font-size:30px;font-weight:900;line-height:1.15;">${fn}, ďakujeme za prihlásenie&nbsp;👋</h1>
-                  <div style="height:3px;width:48px;background:#E8711A;margin:0 0 22px;font-size:0;line-height:0;">&nbsp;</div>
-                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:15px;line-height:1.65;">Sme radi, že ste sa pridali k odberateľom Zajo Reality. Posielame newsletter <b style="color:#111111;">1-2× mesačne</b> — krátky, prehľadný a bez spamu.</p>
+                <td style="background:linear-gradient(160deg,#FFF8F2 0%,#FFFFFF 60%);padding:44px 40px 28px;">
+                  <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;">Vitajte v Zajo Reality</div>
+                  <h1 style="margin:0 0 18px;font-family:'Segoe UI',Arial,sans-serif;color:#111111;font-size:32px;font-weight:900;line-height:1.15;">${fn}, ďakujeme<br/>za prihlásenie&nbsp;👋</h1>
+                  <div style="height:4px;width:56px;background:linear-gradient(90deg,#E8711A,#f09240);border-radius:2px;margin:0 0 22px;font-size:0;line-height:0;">&nbsp;</div>
+                  <p style="margin:0;font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:15px;line-height:1.7;">Sme radi, že ste sa pridali k odberateľom Zajo Reality.<br/>Posielame newsletter <b style="color:#111111;">1-2× mesačne</b> — krátky, prehľadný a bez spamu.</p>
                 </td>
               </tr>
 
               <!-- WHAT YOU GET -->
               <tr>
-                <td class="px" style="background:#FFFFFF;padding:14px 40px 8px;">
-                  <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;">Čo vás čaká</div>
+                <td style="background:#FFFFFF;padding:8px 40px 28px;">
+                  <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;">Čo vás čaká</div>
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                     ${[
-                      ['Nové nehnuteľnosti', 'Byty, domy a pozemky v Trenčianskom kraji — často skôr ako sa objavia inde.'],
-                      ['Tipy z trhu', 'Krátke rady — ako predať za lepšiu cenu, čo sledovať pri kúpe, hypotéky, dane.'],
-                      ['Novinky z regiónu', 'Čo sa deje na realitnom trhu v Trenčíne a okolí — bez zbytočnej omáčky.'],
-                    ].map(([title, desc]) => `
+                      ['🏠', 'Nové nehnuteľnosti', 'Byty, domy a pozemky v Trenčianskom kraji — často skôr ako sa objavia inde.'],
+                      ['💡', 'Tipy z trhu', 'Krátke rady — ako predať za lepšiu cenu, čo sledovať pri kúpe, hypotéky, dane.'],
+                      ['📍', 'Novinky z regiónu', 'Čo sa deje na realitnom trhu v Trenčíne a okolí — bez zbytočnej omáčky.'],
+                    ].map(([icon, title, desc]) => `
                     <tr>
-                      <td valign="top" style="padding:10px 0;">
-                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <td style="padding:0 0 12px 0;">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background:#FAFAF9;border-left:3px solid #E8711A;border-radius:6px;">
                           <tr>
-                            <td valign="top" width="34" style="color:#E8711A;font-size:20px;font-weight:900;font-family:'Segoe UI',Arial,sans-serif;line-height:1.2;">›</td>
-                            <td style="font-family:'Segoe UI',Arial,sans-serif;">
-                              <div style="color:#111111;font-size:15px;font-weight:700;line-height:1.4;margin-bottom:3px;">${title}</div>
-                              <div style="color:#6B6359;font-size:14px;line-height:1.55;">${desc}</div>
+                            <td width="44" style="padding:14px 0 14px 16px;font-size:20px;vertical-align:top;">${icon}</td>
+                            <td style="padding:14px 16px 14px 8px;font-family:'Segoe UI',Arial,sans-serif;vertical-align:top;">
+                              <div style="color:#111111;font-size:14px;font-weight:700;line-height:1.3;margin-bottom:3px;">${title}</div>
+                              <div style="color:#6B6359;font-size:13px;line-height:1.55;">${desc}</div>
                             </td>
                           </tr>
                         </table>
