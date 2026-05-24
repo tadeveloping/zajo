@@ -640,6 +640,7 @@ form.addEventListener('submit', async (e) => {
     casovy_ramec: document.getElementById('casovyRamec').value || null,
     sprava:       document.getElementById('sprava').value.trim() || null,
     source:       'landing_page',
+    newsletter_opt: document.getElementById('nlSuhlas').checked,
   };
   try {
     await fetch(`${CONFIG.API_BASE}/api/leads/predaj`, {
