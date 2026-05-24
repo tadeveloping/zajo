@@ -65,8 +65,15 @@ export async function POST(req: Request) {
             { name: data.name, email: data.email, phone: data.phone ?? null, source: 'ocenenie_form', subscribed: true },
             { onConflict: 'email', ignoreDuplicates: true }
           )
+          const { data: newsletterProps } = await supabaseAdmin
+            .from('newsletter_properties').select('*').order('position')
+          const properties = (newsletterProps ?? []).map((row: { title?: string | null; price?: string | null; location?: string | null; area?: string | null; image_url?: string | null; url: string }) => ({
+            title: row.title ?? '', price: row.price ?? 'Cena na vyžiadanie',
+            location: row.location ?? 'Trenčín a okolie', area: row.area ?? null, imageUrl: row.image_url ?? null, url: row.url,
+          }))
           const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
-            data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`
+            data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email!)}`,
+            properties.length > 0 ? properties : undefined
           )
           await resend.emails.send({ from: FROM_EMAIL, to: data.email!, subject: ws, html: wh })
         } catch (err) { console.error('newsletter opt-in failed', err) }
