@@ -111,6 +111,7 @@ export default function KontaktPage() {
       { label: 'Horizont', value: cap(timeline) },
       { label: 'Zavoláme', value: cap(callbackTime) },
     ])
+    setCurrentStep(0)
     setDone(true)
   }
 
