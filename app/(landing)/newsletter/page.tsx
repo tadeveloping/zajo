@@ -97,7 +97,7 @@ nav { display:none; }
 .divider { height:1px; background:#F1F5F9; margin:12px 0; }
 .form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
 label { font-size:.78rem; font-weight:600; color:var(--gray-700); letter-spacing:.02em; }
-input[type=text], input[type=email] { font-family:'Inter',sans-serif; font-size:.9rem; color:var(--navy); background:var(--gray-50); border:1.5px solid #E2E8F0; border-radius:9px; padding:11px 14px; outline:none; width:100%; -webkit-appearance:none; transition:border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out); }
+input[type=text], input[type=email] { font-family:'Inter',sans-serif; font-size:1rem; color:var(--navy); background:var(--gray-50); border:1.5px solid #E2E8F0; border-radius:9px; padding:11px 14px; outline:none; width:100%; -webkit-appearance:none; transition:border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out); }
 input:focus { border-color:var(--gold); background:var(--white); box-shadow:0 0 0 3px rgba(245,158,11,.12); }
 input.error { border-color:#EF4444; }
 .field-error { font-size:.72rem; color:#EF4444; display:none; }

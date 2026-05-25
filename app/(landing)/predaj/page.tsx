@@ -115,7 +115,7 @@ nav { display: none; }
 .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .form-group.full { grid-column: 1 / -1; }
 label { font-size: 0.8rem; font-weight: 600; color: var(--gray-700); letter-spacing: 0.02em; }
-input:not([type=checkbox]), select, textarea { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--navy); background: var(--gray-50); border: 1.5px solid #E2E8F0; border-radius: 10px; padding: 11px 14px; outline: none; width: 100%; -webkit-appearance: none; transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out); }
+input:not([type=checkbox]), select, textarea { font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--navy); background: var(--gray-50); border: 1.5px solid #E2E8F0; border-radius: 10px; padding: 11px 14px; outline: none; width: 100%; -webkit-appearance: none; transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out); }
 input:not([type=checkbox]):focus, select:focus, textarea:focus { border-color: var(--gold); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,0.12); }
 input:not([type=checkbox]).error, select.error { border-color: #EF4444; }
 select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 38px; cursor: pointer; }

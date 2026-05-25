@@ -285,7 +285,7 @@ nav { display: none; }
 .form-group { display: flex; flex-direction: column; gap: 5px; }
 .form-group.full { grid-column: 1 / -1; }
 label { font-size: .78rem; font-weight: 600; color: var(--gray-700); letter-spacing: .02em; }
-input[type=text], input[type=tel], input[type=email], input[type=number], select, textarea { font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--navy); background: var(--gray-50); border: 1.5px solid #E2E8F0; border-radius: 9px; padding: 10px 12px; outline: none; width: 100%; -webkit-appearance: none; transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out); }
+input[type=text], input[type=tel], input[type=email], input[type=number], select, textarea { font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--navy); background: var(--gray-50); border: 1.5px solid #E2E8F0; border-radius: 9px; padding: 10px 12px; outline: none; width: 100%; -webkit-appearance: none; transition: border-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out), background 180ms var(--ease-out); }
 input:focus, select:focus, textarea:focus { border-color: var(--gold); background: var(--white); box-shadow: 0 0 0 3px rgba(245,158,11,.12); }
 input.error, select.error { border-color: #EF4444; }
 .field-error { font-size: .72rem; color: #EF4444; display: none; }
