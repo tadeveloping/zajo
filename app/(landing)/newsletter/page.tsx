@@ -227,7 +227,7 @@ footer a:hover { color:var(--gold); }
                       type="checkbox" id="gdprSuhlas" name="gdprSuhlas"
                       checked={gdprSuhlas} onChange={e => { setGdprSuhlas(e.target.checked); setErrors(ev => ({ ...ev, gdpr: '' })) }}
                     />
-                    <span>Súhlasím so <a href="#" style={{ color: 'inherit', textDecoration: 'underline' }}>spracovaním osobných údajov</a></span>
+                    <span>Súhlasím so <a href="/zasady-ochrany-osobnych-udajov" target="_blank" style={{ color: 'inherit', textDecoration: 'underline' }}>spracovaním osobných údajov</a></span>
                   </label>
                   {errors.gdpr && <span className="field-error show" style={{ marginTop: 2 }}>{errors.gdpr}</span>}
                 </div>
