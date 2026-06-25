@@ -14,6 +14,10 @@ const MOBILE = `@media only screen and (max-width:620px){
   .px{padding-left:24px!important;padding-right:24px!important;}
   .h1{font-size:26px!important;line-height:1.2!important;}
   .btn a{display:block!important;}
+  .prop-img{width:100%!important;height:180px!important;}
+  .prop-col{display:block!important;width:100%!important;}
+  .two-col td{display:block!important;width:100%!important;padding-bottom:16px!important;}
+  .stat-td{display:block!important;width:100%!important;text-align:center!important;padding-bottom:12px!important;}
 }`
 
 const HEADER_BAR_LOGO = `
