@@ -29,7 +29,7 @@ export default function KontaktPage() {
   function selectOption(field: string, val: string) {
     if (field === 'interest') {
       setInterest(val)
-      setTimeout(() => goToStep(val === 'iné' ? 3 : 2), 300)
+      setTimeout(() => goToStep(val === 'iné' || val === 'obhliadka' ? 3 : 2), 300)
     } else if (field === 'property') {
       const newProperty = val
       setProperty(newProperty)
@@ -155,7 +155,7 @@ body::after { content: ''; position: fixed; inset: 0; opacity: 0.02; background-
 .step-label { font-family: 'IBM Plex Sans', 'Manrope', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: rgba(196,185,168,0.84); font-weight: 700; margin-bottom: 8px; }
 .step-title { font-family: 'Manrope', 'Segoe UI', sans-serif; font-size: 31px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.08; margin-bottom: 18px; color: var(--zajo-text); text-wrap: balance; }
 .options { display: flex; flex-direction: column; gap: 10px; }
-.option { background: rgba(30,28,25,0.92); border: 1.5px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 18px 20px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out); -webkit-tap-highlight-color: transparent; user-select: none; box-shadow: 0 8px 24px rgba(0,0,0,0.16); width: 100%; font-family: inherit; text-align: left; }
+.option { background: rgba(30,28,25,0.92); border: 1.5px solid rgba(255,255,255,0.18); border-radius: var(--radius); padding: 18px 20px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), background 200ms var(--ease-out), box-shadow 200ms var(--ease-out); -webkit-tap-highlight-color: transparent; user-select: none; box-shadow: 0 8px 24px rgba(0,0,0,0.16); width: 100%; font-family: inherit; text-align: left; }
 @media (hover: hover) and (pointer: fine) { .option:hover { background: rgba(42,39,34,0.96); border-color: rgba(232,113,26,0.34); transform: translateY(-1px); } }
 .option:active { transform: scale(0.98); }
 .option.selected { border-color: rgba(232,113,26,0.85); background: linear-gradient(180deg, rgba(232,113,26,0.18), rgba(232,113,26,0.07)); box-shadow: 0 0 0 1px rgba(232,113,26,0.26), 0 16px 34px rgba(232,113,26,0.12); transform: translateY(-2px); }
@@ -211,7 +211,7 @@ textarea.form-input { resize: none; min-height: 100px; line-height: 1.5; }
               <path fill="#F59E0B" fillRule="nonzero" d={LOGO_PATH} />
             </svg>
           </div>
-          <div className="header-sub">Ďakujeme za zavolanie.<br />Vyplňte krátky formulár a ozveme sa vám.</div>
+          <div className="header-sub">Ďakujeme za zavolanie, zatiaľ vyplňte krátky formulár,<br />ihneď ako to bude možné sa Vám ozveme.</div>
         </div>
 
         <div className="progress-bar">
@@ -225,21 +225,25 @@ textarea.form-input { resize: none; min-height: 100px; line-height: 1.5; }
           <div className="step-label">Krok 1 zo 4</div>
           <div className="step-title">Čo riešite?</div>
           <div className="options" id="interest-options">
+            <button className={`option${interest === 'obhliadka' ? ' selected' : ''}`} onClick={() => selectOption('interest', 'obhliadka')}>
+              <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div><div className="option-label">Mám záujem o obhliadku nehnuteľnosti</div></div>
+            </button>
             <button className={`option${interest === 'kúpa' ? ' selected' : ''}`} onClick={() => selectOption('interest', 'kúpa')}>
               <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M21 21H3"/><path d="M3 7l9-4 9 4"/><path d="M6 7v9"/><path d="M18 7v9"/><path d="M9 21v-6h6v6"/></svg></div>
-              <div><div className="option-label">Kúpa nehnuteľnosti</div><div className="option-desc">Hľadám byt, dom alebo pozemok</div></div>
+              <div><div className="option-label">Mám záujem kúpiť nehnuteľnosť</div></div>
             </button>
             <button className={`option${interest === 'predaj' ? ' selected' : ''}`} onClick={() => selectOption('interest', 'predaj')}>
               <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M18 8a8 8 0 00-14 5.5A8 8 0 0018 16"/><path d="M3 10h11"/><path d="M3 14h11"/></svg></div>
-              <div><div className="option-label">Predaj nehnuteľnosti</div><div className="option-desc">Chcem predať svoju nehnuteľnosť</div></div>
+              <div><div className="option-label">Mám záujem predať nehnuteľnosť</div></div>
             </button>
             <button className={`option${interest === 'ocenenie' ? ' selected' : ''}`} onClick={() => selectOption('interest', 'ocenenie')}>
               <div className="option-icon"><svg viewBox="0 0 24 24"><g transform="translate(3,2)"><path d="M9 1H2v7l7.29 7.29a1 1 0 001.42 0l5.58-5.58a1 1 0 000-1.42L9 1z"/><circle cx="5.5" cy="5.5" r="1"/></g></svg></div>
-              <div><div className="option-label">Ocenenie nehnuteľnosti</div><div className="option-desc">Chcem zistiť trhovú hodnotu</div></div>
+              <div><div className="option-label">Mám záujem oceniť nehnuteľnosť</div></div>
             </button>
             <button className={`option${interest === 'iné' ? ' selected' : ''}`} onClick={() => selectOption('interest', 'iné')}>
               <div className="option-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>
-              <div><div className="option-label">Mám otázku</div><div className="option-desc">Potrebujem poradiť alebo informáciu</div></div>
+              <div><div className="option-label">Mám otázku</div></div>
             </button>
           </div>
         </div>
@@ -290,7 +294,7 @@ textarea.form-input { resize: none; min-height: 100px; line-height: 1.5; }
               value={message} onChange={e => setMessage(e.target.value)} />
           </div>
           <button className="btn-next" onClick={() => goToStep(4)}>Prejsť na kontaktné údaje</button>
-          <button className="btn-back" onClick={() => goToStep(interest === 'iné' ? 1 : 2)}>← Späť</button>
+          <button className="btn-back" onClick={() => goToStep(interest === 'iné' || interest === 'obhliadka' ? 1 : 2)}>← Späť</button>
         </div>
 
         {/* Step 4 */}

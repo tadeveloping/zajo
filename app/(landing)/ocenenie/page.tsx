@@ -363,10 +363,10 @@ footer a:hover { color: var(--gold); }
         </div>
 
         <h1>Za koľko môžete predať svoju <em>nehnuteľnosť</em>?</h1>
-        <p className="hero-sub">Zistite reálnu predajnú cenu — bezplatne a do 24 hodín.</p>
+        <p className="hero-sub">Zistite reálnu predajnú cenu — bezplatne a do 48 hodín.</p>
 
         <div className="trust-row">
-          <div className="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Výsledok do 24 hodín</div>
+          <div className="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Výsledok do 48 hodín</div>
           <div className="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>100% zadarmo</div>
           <div className="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Bez záväzkov</div>
           <div className="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Trenčiansky kraj</div>
@@ -745,7 +745,7 @@ footer a:hover { color: var(--gold); }
               {currentStep === 3 && !successType && (
                 <div>
                   <div className="wizard-title">Kontaktné údaje</div>
-                  <div className="wizard-sub">Ozveme sa vám do 24 hodín s výsledkom ocenenia.</div>
+                  <div className="wizard-sub">Ozveme sa vám do 48 hodín s výsledkom ocenenia.</div>
                   <div className="form-grid">
                     <div className="form-group">
                       <label htmlFor="meno">Meno a priezvisko *</label>
@@ -810,7 +810,7 @@ footer a:hover { color: var(--gold); }
                     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
                   <h2>Žiadosť prijatá!</h2>
-                  <p>Ďakujeme. Ozveme sa vám <strong>do 24 hodín</strong> s bezplatným odborným ocenením a poradíme vám, ako dostať za nehnuteľnosť čo najlepšiu cenu.</p>
+                  <p>Ďakujeme. Ozveme sa vám <strong>do 48 hodín</strong> s bezplatným odborným ocenením a poradíme vám, ako dostať za nehnuteľnosť čo najlepšiu cenu.</p>
                 </div>
               )}
 
@@ -821,7 +821,7 @@ footer a:hover { color: var(--gold); }
                     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                   </div>
                   <h2>Žiadosť prijatá!</h2>
-                  <p>Radi zistíme hodnotu vašej nehnuteľnosti. Ozveme sa vám <strong>do 24 hodín</strong>.</p>
+                  <p>Radi zistíme hodnotu vašej nehnuteľnosti. Ozveme sa vám <strong>do 48 hodín</strong>.</p>
                   <p style={{ marginTop: 12, fontSize: '0.875rem', color: 'var(--gray-600)' }}>Keď sa rozhodnete predávať, sme tu — pomôžeme vám dostať za nehnuteľnosť čo najlepšiu cenu.</p>
                 </div>
               )}
@@ -848,7 +848,7 @@ footer a:hover { color: var(--gold); }
           <div>
             <div className="step-num">3</div>
             <h3>Dostanete výsledok</h3>
-            <p>Do 24 hodín vás kontaktujeme s ocenením. Zadarmo, bez záväzkov.</p>
+            <p>Do 48 hodín vás kontaktujeme s ocenením. Zadarmo, bez záväzkov.</p>
           </div>
         </div>
       </div></section>
@@ -857,7 +857,7 @@ footer a:hover { color: var(--gold); }
         <div className="proof-inner">
           <div className="stats">
             <div><div className="stat-n">120<span>+</span></div><div className="stat-l">úspešných predajov</div></div>
-            <div><div className="stat-n">24<span>h</span></div><div className="stat-l">priemerný čas odpovede</div></div>
+            <div><div className="stat-n">48<span>h</span></div><div className="stat-l">priemerný čas odpovede</div></div>
             <div><div className="stat-n">4.9<span>★</span></div><div className="stat-l">priemerné hodnotenie</div></div>
           </div>
           <div className="reviews">

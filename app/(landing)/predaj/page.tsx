@@ -351,7 +351,7 @@ footer a:hover { color: var(--gold); }
             </div>
             <div className="process-content">
               <h3>Profesionálna prezentácia</h3>
-              <p>Postaráme sa o profesionálne fotografie, pôdorys a popis. Inzeráty zverejníme na všetkých relevantných portáloch.</p>
+              <p>Postaráme sa o profesionálne fotografie, pôdorys a popis. Vašu nehnuteľnosť zverejníme na všetkých portáloch ktoré prinášajú výsledky.</p>
             </div>
           </div>
           <div className="process-step">
@@ -369,7 +369,16 @@ footer a:hover { color: var(--gold); }
             </div>
             <div className="process-content">
               <h3>Zmluvy a odovzdanie</h3>
-              <p>Zabezpečíme právne dokumenty, kúpnopredajnú zmluvu a hladký prevod nehnuteľnosti. Vy len podpíšete.</p>
+              <p>Rezervačnú zmluvu, Kúpnu zmluvu, hladký prevod nehnuteľnosti a protokolárne odovzdanie.</p>
+            </div>
+          </div>
+          <div className="process-step">
+            <div className="process-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div className="process-content">
+              <h3>Garancia</h3>
+              <p>Ak vašu nehnuteľnosť nepredáme, nič nám neplatíte.</p>
             </div>
           </div>
         </div>
