@@ -42,7 +42,7 @@ body::after { content: ''; position: fixed; inset: 0; opacity: 0.02; background-
 .option.selected .option-icon svg { stroke: white; }
 .option.selected .option-label { color: white; }
 .option.selected .option-desc { color: rgba(242,237,231,0.84); }
-.option-label { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--zajo-orange); }
+.option-label { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
 .option-desc { font-size: 12px; color: var(--zajo-text-muted); margin-top: 4px; line-height: 1.45; }
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .chip { padding: 14px 22px; background: var(--zajo-gray); border: 1.5px solid var(--zajo-gray-border); border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 200ms var(--ease-out); -webkit-tap-highlight-color: transparent; user-select: none; color: var(--zajo-text); font-family: inherit; }
