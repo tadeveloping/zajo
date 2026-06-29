@@ -203,7 +203,7 @@ export default function KontaktPage() {
           <div className="step-label">Krok 3 zo 4</div>
           <div className="step-title">Vaša správa</div>
           <div className="form-group">
-            <label className="form-label">Napíšte nám čo potrebujete (voliteľné)</label>
+            <label className="form-label">Napíšte nám bližšie vašu požiadavku (voliteľné)</label>
             <textarea className="form-input" id="message" placeholder="Napr. Mám záujem o 3-izbový byt v centre Trenčína..." rows={4}
               value={message} onChange={e => setMessage(e.target.value)} />
           </div>
