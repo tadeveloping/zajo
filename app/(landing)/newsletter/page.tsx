@@ -62,7 +62,7 @@ export default function NewsletterPage() {
           </svg>
         </div>
 
-        <h1>Najlepšie ponuky <em>skôr ako ostatní.</em></h1>
+        <h1>Najnovšie ponuky <em>skôr ako ostatní.</em></h1>
         <p className="hero-sub">Byty, domy a pozemky v Trenčianskom kraji, priamo do vášho e&#8209;mailu, skôr ako sa objavia inde.</p>
 
         <div className="hero-fomo">
