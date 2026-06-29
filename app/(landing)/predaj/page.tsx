@@ -260,7 +260,7 @@ export default function PredajPage() {
             </div>
             <div className="process-content">
               <h3>Zmluvy a odovzdanie</h3>
-              <p>Zabezpečíme právne dokumenty — Rezervačnú zmluvu, Kúpnu zmluvu, hladký prevod nehnuteľnosti a protokolárne odovzdanie.</p>
+              <p>Zabezpečíme právne dokumenty, rezervačnú zmluvu, kúpnu zmluvu, hladký prevod nehnuteľnosti a protokolárne odovzdanie.</p>
             </div>
           </div>
           <div className="process-step">
