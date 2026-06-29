@@ -125,7 +125,7 @@ export default function KontaktPage() {
               <path fill="#F59E0B" fillRule="nonzero" d={LOGO_PATH} />
             </svg>
           </div>
-          <div className="header-sub">Ďakujeme za zavolanie, zatiaľ vyplňte krátky formulár,<br />ihneď ako to bude možné sa Vám ozveme.</div>
+          <div className="header-sub">Ďakujeme za zavolanie, zatiaľ vyplňte krátky formulár, ihneď ako to bude možné sa Vám ozveme.</div>
         </div>
 
         <div className="progress-bar">

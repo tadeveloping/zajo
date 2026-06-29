@@ -22,7 +22,7 @@ body::after { content: ''; position: fixed; inset: 0; opacity: 0.02; background-
 .header { text-align: center; padding: 18px 0 16px; }
 .logo-wrap { display: inline-block; margin-bottom: 12px; }
 .logo-wrap svg { height: 62px; width: auto; display: block; margin: 0 auto; }
-.header-sub { font-family: 'IBM Plex Sans', 'Manrope', sans-serif; font-size: 13px; font-weight: 500; color: var(--zajo-text-muted); margin: 2px auto 0; max-width: 290px; line-height: 1.55; }
+.header-sub { font-family: 'IBM Plex Sans', 'Manrope', sans-serif; font-size: 13px; font-weight: 500; color: var(--zajo-text-muted); margin: 2px auto 0; max-width: 380px; line-height: 1.55; }
 .progress-bar { display: flex; gap: 6px; margin-bottom: 24px; }
 .progress-step { flex: 1; height: 3px; background: var(--zajo-gray-border); border-radius: 3px; overflow: hidden; transition: background 400ms var(--ease-out); }
 .progress-step.active, .progress-step.done { background: var(--zajo-orange); }
@@ -42,7 +42,7 @@ body::after { content: ''; position: fixed; inset: 0; opacity: 0.02; background-
 .option.selected .option-icon svg { stroke: white; }
 .option.selected .option-label { color: white; }
 .option.selected .option-desc { color: rgba(242,237,231,0.84); }
-.option-label { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.option-label { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--zajo-orange); }
 .option-desc { font-size: 12px; color: var(--zajo-text-muted); margin-top: 4px; line-height: 1.45; }
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .chip { padding: 14px 22px; background: var(--zajo-gray); border: 1.5px solid var(--zajo-gray-border); border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 200ms var(--ease-out); -webkit-tap-highlight-color: transparent; user-select: none; color: var(--zajo-text); font-family: inherit; }
