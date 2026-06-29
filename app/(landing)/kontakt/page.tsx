@@ -138,7 +138,7 @@ export default function KontaktPage() {
         {/* Step 1 */}
         <div className={`step${currentStep === 1 ? ' active' : ''}`} id="step-1">
           <div className="step-label">Krok 1 zo 4</div>
-          <div className="step-title">Čo riešite?</div>
+          <div className="step-title">Ako vám môžeme pomôcť?</div>
           <div className="options" id="interest-options">
             <button className={`option${interest === 'obhliadka' ? ' selected' : ''}`} onClick={() => selectOption('interest', 'obhliadka')}>
               <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
