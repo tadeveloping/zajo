@@ -118,6 +118,7 @@ export default function KontaktPage() {
 
   return (
     <>
+      <style>{`html,body{background:#0D0B09!important;color:#F2EDE7!important;}`}</style>
       <div className="container">
         <div className="header">
           <div className="logo-wrap">
