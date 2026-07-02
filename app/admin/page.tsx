@@ -37,19 +37,7 @@ export default async function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#080706' }}>
-
-      {/* Ambient glow */}
-      <div style={{
-        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
-        background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(200,119,58,0.13) 0%, transparent 70%)',
-      }} />
-      {/* Subtle grid */}
-      <div style={{
-        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.018,
-        backgroundImage: 'repeating-linear-gradient(90deg,#c8773a 0,#c8773a 1px,transparent 0,transparent 50%), repeating-linear-gradient(180deg,#c8773a 0,#c8773a 1px,transparent 0,transparent 50%)',
-        backgroundSize: '48px 48px',
-      }} />
+    <div className="min-h-screen" style={{ background: '#f6f7f9' }}>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
 
@@ -58,7 +46,7 @@ export default async function AdminPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           marginBottom: '48px',
           paddingBottom: '28px',
-          borderBottom: '1px solid rgba(200,119,58,0.15)',
+          borderBottom: '1px solid #e5e7eb',
         }}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -68,8 +56,8 @@ export default async function AdminPage() {
               alt="Zajo Reality"
               style={{ height: '42px', width: 'auto', display: 'block' }}
             />
-            <div style={{ width: '1px', height: '32px', background: 'rgba(255,255,255,0.1)' }} />
-            <h1 style={{ fontSize: '16px', fontWeight: 700, color: '#8a8279', margin: 0, letterSpacing: '-0.01em' }}>
+            <div style={{ width: '1px', height: '32px', background: '#e5e7eb' }} />
+            <h1 style={{ fontSize: '16px', fontWeight: 700, color: '#6b7280', margin: 0, letterSpacing: '-0.01em' }}>
               Admin panel
             </h1>
           </div>
@@ -84,10 +72,10 @@ export default async function AdminPage() {
               style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
                 padding: '8px 18px', borderRadius: '8px',
-                background: 'linear-gradient(135deg, #c8773a, #d68a4f)',
+                background: 'linear-gradient(135deg, #E8711A, #F5923D)',
                 color: '#fff', fontSize: '13px', fontWeight: 700,
                 textDecoration: 'none', letterSpacing: '-0.01em',
-                boxShadow: '0 4px 16px rgba(200,119,58,0.3)',
+                boxShadow: '0 4px 16px rgba(232,113,26,0.3)',
                 transition: 'opacity 150ms',
               }}
             >
@@ -98,7 +86,7 @@ export default async function AdminPage() {
         </header>
 
         {dbError && (
-          <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#fca5a5', borderRadius: '10px', padding: '14px 18px', marginBottom: '28px', fontSize: '14px' }}>
+          <div style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', borderRadius: '10px', padding: '14px 18px', marginBottom: '28px', fontSize: '14px' }}>
             Chyba DB: {dbError}
           </div>
         )}
@@ -109,25 +97,25 @@ export default async function AdminPage() {
             label="Kontakty celkovo"
             value={stats.total}
             icon="👤"
-            color="rgba(96,165,250,0.12)"
-            borderColor="rgba(96,165,250,0.2)"
-            valueColor="#93c5fd"
+            color="rgba(59,130,246,0.08)"
+            borderColor="rgba(59,130,246,0.25)"
+            valueColor="#2563eb"
           />
           <StatCard
             label="Prihlásení"
             value={stats.subscribed}
             icon="✅"
-            color="rgba(74,222,128,0.1)"
-            borderColor="rgba(74,222,128,0.18)"
-            valueColor="#86efac"
+            color="rgba(34,197,94,0.08)"
+            borderColor="rgba(34,197,94,0.22)"
+            valueColor="#16a34a"
           />
           <StatCard
             label="Odoslané newslettre"
             value={stats.issuesCount}
             icon="📨"
-            color="rgba(167,139,250,0.1)"
-            borderColor="rgba(167,139,250,0.18)"
-            valueColor="#c4b5fd"
+            color="rgba(168,85,247,0.08)"
+            borderColor="rgba(168,85,247,0.22)"
+            valueColor="#9333ea"
           />
           <NewLeadsCard />
         </div>
@@ -135,44 +123,44 @@ export default async function AdminPage() {
         {/* ── Recent newsletters ── */}
         <section>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#f5f0ea', margin: 0 }}>Posledné newslettre</h2>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+            <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: 0 }}>Posledné newslettre</h2>
+            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
           </div>
 
           <div style={{
-            background: 'rgba(20,18,16,0.7)',
-            border: '1px solid rgba(255,255,255,0.07)',
+            background: '#ffffff',
+            border: '1px solid #e5e7eb',
             borderRadius: '14px', overflow: 'hidden',
-            backdropFilter: 'blur(8px)',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
           }}>
             {stats.recent.length === 0 ? (
-              <div style={{ padding: '48px', textAlign: 'center', color: '#888', fontSize: '14px' }}>
+              <div style={{ padding: '48px', textAlign: 'center', color: '#9ca3af', fontSize: '14px' }}>
                 Zatiaľ žiadne odoslané newslettre.
               </div>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#666' }}>Predmet</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#666' }}>Dátum</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'right', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#666' }}>Príjemcovia</th>
+                  <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#f9fafb' }}>
+                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Predmet</th>
+                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Dátum</th>
+                    <th style={{ padding: '12px 20px', textAlign: 'right', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Príjemcovia</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stats.recent.map((i, idx) => (
                     <tr key={i.id} style={{
-                      borderBottom: idx < stats.recent.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                      borderBottom: idx < stats.recent.length - 1 ? '1px solid #f0f1f3' : 'none',
                       transition: 'background 150ms',
                     }}>
-                      <td style={{ padding: '14px 20px', color: '#e8e0d8', fontWeight: 500 }}>{i.subject}</td>
-                      <td style={{ padding: '14px 20px', color: '#666', fontFamily: 'monospace', fontSize: '13px' }}>
+                      <td style={{ padding: '14px 20px', color: '#111827', fontWeight: 500 }}>{i.subject}</td>
+                      <td style={{ padding: '14px 20px', color: '#9ca3af', fontFamily: 'monospace', fontSize: '13px' }}>
                         {new Date(i.sent_at).toLocaleString("sk-SK")}
                       </td>
                       <td style={{ padding: '14px 20px', textAlign: 'right' }}>
                         <span style={{
                           display: 'inline-block', padding: '3px 10px',
-                          background: 'rgba(200,119,58,0.12)', border: '1px solid rgba(200,119,58,0.2)',
-                          borderRadius: '20px', color: '#c8773a', fontSize: '12px', fontWeight: 700,
+                          background: 'rgba(232,113,26,0.1)', border: '1px solid rgba(232,113,26,0.25)',
+                          borderRadius: '20px', color: '#E8711A', fontSize: '12px', fontWeight: 700,
                         }}>
                           {i.recipient_count}
                         </span>
@@ -195,8 +183,8 @@ function NavLink({ href, icon, children }: { href: string; icon: string; childre
     <Link href={href} style={{
       display: 'flex', alignItems: 'center', gap: '6px',
       padding: '8px 14px', borderRadius: '8px',
-      border: '1px solid rgba(255,255,255,0.1)',
-      color: '#c8bfb4', fontSize: '13px', fontWeight: 600,
+      border: '1px solid #e5e7eb',
+      color: '#4b5563', fontSize: '13px', fontWeight: 600,
       textDecoration: 'none', transition: 'border-color 150ms, color 150ms',
     }}>
       <span style={{ fontSize: '14px' }}>{icon}</span>
@@ -215,7 +203,7 @@ function StatCard({ label, value, icon, color, borderColor, valueColor }: {
       borderRadius: '14px', padding: '22px 24px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a8279' }}>{label}</span>
+        <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6b7280' }}>{label}</span>
         <span style={{ fontSize: '20px' }}>{icon}</span>
       </div>
       <div style={{ fontSize: '40px', fontWeight: 800, color: valueColor, letterSpacing: '-0.04em', lineHeight: 1 }}>

@@ -76,15 +76,15 @@ input.error { border-color:#EF4444; }
 .why-inner { max-width:820px; margin:0 auto; text-align:center; }
 .section-eyebrow { font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
 .section-h2 { font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(1.5rem,3vw,2.2rem); font-weight:700; color:var(--navy); letter-spacing:-.02em; margin-bottom:44px; }
-.why-grid { display:grid; grid-template-columns: 1fr; gap:16px; }
-@media(min-width:600px) { .why-grid { grid-template-columns: repeat(3,1fr); } }
-.why-item { background:var(--white); border:1px solid #E2E8F0; border-radius:14px; padding:20px; text-align:left; display:flex; align-items:flex-start; gap:16px; transition:background 200ms var(--ease-out), border-color 200ms var(--ease-out); }
-@media(min-width:600px) { .why-item { flex-direction:column; gap:0; } }
+.why-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; }
+@media(min-width:600px) { .why-grid { grid-template-columns: repeat(3,1fr); gap: 16px; } }
+.why-item { background:var(--white); border:1px solid #E2E8F0; border-radius:14px; padding:20px; text-align:left; display:flex; flex-direction: column; gap:0; transition:background 200ms var(--ease-out), border-color 200ms var(--ease-out); }
+@media (max-width: 480px) { .why-item { padding: 14px; } }
 @media(hover:hover) { .why-item:hover { background:var(--gold-light); border-color:rgba(245,158,11,.3); } }
-.why-item-icon { color:var(--gold); margin-bottom:0; flex-shrink:0; }
-@media(min-width:600px) { .why-item-icon { margin-bottom:12px; } }
+.why-item-icon { color:var(--gold); margin-bottom:12px; flex-shrink:0; }
 .why-item h3 { font-size:.95rem; font-weight:600; color:var(--navy); margin-bottom:4px; }
 .why-item p { font-size:.82rem; color:var(--gray-600); line-height:1.6; }
+@media (max-width: 480px) { .why-item h3 { font-size: .82rem; } .why-item p { font-size: .74rem; } }
 footer { background:var(--navy); color:rgba(255,255,255,.4); text-align:center; padding:26px 24px; font-size:.78rem; }
 footer a { color:rgba(255,255,255,.55); text-decoration:none; }
 footer a:hover { color:var(--gold); }

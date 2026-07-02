@@ -139,24 +139,7 @@ export default function NewsletterPonukyPage() {
   const hasSaved = (slot: PropertySlot) => !!slot.title
 
   return (
-    <div className="min-h-screen" style={{ background: '#080706' }}>
-      {/* Ambient glow */}
-      <div
-        style={{
-          position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
-          background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(200,119,58,0.13) 0%, transparent 70%)',
-        }}
-      />
-      {/* Subtle grid */}
-      <div
-        style={{
-          position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.018,
-          backgroundImage:
-            'repeating-linear-gradient(90deg,#c8773a 0,#c8773a 1px,transparent 0,transparent 50%), repeating-linear-gradient(180deg,#c8773a 0,#c8773a 1px,transparent 0,transparent 50%)',
-          backgroundSize: '48px 48px',
-        }}
-      />
-
+    <div className="min-h-screen" style={{ background: '#f6f7f9' }}>
       <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
 
         {/* ── Header ── */}
@@ -164,7 +147,7 @@ export default function NewsletterPonukyPage() {
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             marginBottom: '48px', paddingBottom: '28px',
-            borderBottom: '1px solid rgba(200,119,58,0.15)',
+            borderBottom: '1px solid #e5e7eb',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -174,8 +157,8 @@ export default function NewsletterPonukyPage() {
               alt="Zajo Reality"
               style={{ height: '42px', width: 'auto', display: 'block' }}
             />
-            <div style={{ width: '1px', height: '32px', background: 'rgba(255,255,255,0.1)' }} />
-            <h1 style={{ fontSize: '16px', fontWeight: 700, color: '#8a8279', margin: 0, letterSpacing: '-0.01em' }}>
+            <div style={{ width: '1px', height: '32px', background: '#e5e7eb' }} />
+            <h1 style={{ fontSize: '16px', fontWeight: 700, color: '#6b7280', margin: 0, letterSpacing: '-0.01em' }}>
               Admin panel
             </h1>
           </div>
@@ -190,10 +173,10 @@ export default function NewsletterPonukyPage() {
               style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
                 padding: '8px 18px', borderRadius: '8px',
-                background: 'linear-gradient(135deg, #c8773a, #d68a4f)',
+                background: 'linear-gradient(135deg, #E8711A, #F5923D)',
                 color: '#fff', fontSize: '13px', fontWeight: 700,
                 textDecoration: 'none', letterSpacing: '-0.01em',
-                boxShadow: '0 4px 16px rgba(200,119,58,0.3)',
+                boxShadow: '0 4px 16px rgba(232,113,26,0.3)',
               }}
             >
               <span>✨</span> Newsletter
@@ -203,17 +186,17 @@ export default function NewsletterPonukyPage() {
 
         {/* ── Page heading ── */}
         <div style={{ marginBottom: '36px' }}>
-          <h2 style={{ fontSize: '26px', fontWeight: 800, color: '#f5f0ea', margin: '0 0 8px', letterSpacing: '-0.03em' }}>
+          <h2 style={{ fontSize: '26px', fontWeight: 800, color: '#111827', margin: '0 0 8px', letterSpacing: '-0.03em' }}>
             Aktuálne ponuky v newsletteri
           </h2>
-          <p style={{ fontSize: '14px', color: '#8a8279', margin: 0 }}>
+          <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
             Zadajte URL inzerátu a systém automaticky stiahne informácie.
           </p>
         </div>
 
         {/* ── Slots ── */}
         {pageLoading ? (
-          <div style={{ padding: '60px', textAlign: 'center', color: '#8a8279', fontSize: '14px' }}>
+          <div style={{ padding: '60px', textAlign: 'center', color: '#6b7280', fontSize: '14px' }}>
             Načítavam...
           </div>
         ) : (
@@ -253,11 +236,11 @@ function SlotCard({
   return (
     <div
       style={{
-        background: 'rgba(20,18,16,0.7)',
-        border: '1px solid rgba(255,255,255,0.07)',
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
         borderRadius: '14px',
         padding: '22px',
-        backdropFilter: 'blur(8px)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
       }}
     >
       {/* Slot header */}
@@ -267,15 +250,15 @@ function SlotCard({
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               width: '28px', height: '28px', borderRadius: '50%',
-              background: hasSaved ? 'rgba(200,119,58,0.2)' : 'rgba(255,255,255,0.05)',
-              border: hasSaved ? '1px solid rgba(200,119,58,0.4)' : '1px solid rgba(255,255,255,0.1)',
-              color: hasSaved ? '#c8773a' : '#555',
+              background: hasSaved ? 'rgba(232,113,26,0.14)' : '#f3f4f6',
+              border: hasSaved ? '1px solid rgba(232,113,26,0.4)' : '1px solid #e5e7eb',
+              color: hasSaved ? '#E8711A' : '#9ca3af',
               fontSize: '12px', fontWeight: 800,
             }}
           >
             {slot.position}
           </span>
-          <span style={{ fontSize: '13px', fontWeight: 600, color: hasSaved ? '#e8e0d8' : '#666' }}>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: hasSaved ? '#111827' : '#9ca3af' }}>
             {hasSaved ? 'Ponuka uložená' : 'Prázdny slot'}
           </span>
         </div>
@@ -287,8 +270,8 @@ function SlotCard({
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               width: '28px', height: '28px', borderRadius: '6px',
-              background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)',
-              color: '#f87171', fontSize: '14px', cursor: isLoading ? 'not-allowed' : 'pointer',
+              background: '#fef2f2', border: '1px solid #fecaca',
+              color: '#dc2626', fontSize: '14px', cursor: isLoading ? 'not-allowed' : 'pointer',
               opacity: isLoading ? 0.5 : 1,
             }}
           >
@@ -303,7 +286,7 @@ function SlotCard({
           style={{
             display: 'flex', gap: '12px', marginBottom: '16px',
             padding: '12px', borderRadius: '10px',
-            background: 'rgba(200,119,58,0.06)', border: '1px solid rgba(200,119,58,0.12)',
+            background: 'rgba(232,113,26,0.05)', border: '1px solid rgba(232,113,26,0.15)',
           }}
         >
           {slot.image_url ? (
@@ -320,9 +303,9 @@ function SlotCard({
             <div
               style={{
                 width: '80px', height: '60px', borderRadius: '6px',
-                background: 'rgba(255,255,255,0.05)',
+                background: '#f3f4f6',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#555', fontSize: '20px', flexShrink: 0,
+                color: '#9ca3af', fontSize: '20px', flexShrink: 0,
               }}
             >
               🏠
@@ -330,15 +313,15 @@ function SlotCard({
           )}
           <div style={{ minWidth: 0 }}>
             <div style={{
-              fontSize: '13px', fontWeight: 700, color: '#e8e0d8',
+              fontSize: '13px', fontWeight: 700, color: '#111827',
               marginBottom: '4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
             }}>
               {slot.title}
             </div>
-            <div style={{ fontSize: '14px', fontWeight: 800, color: '#c8773a', marginBottom: '3px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 800, color: '#E8711A', marginBottom: '3px' }}>
               {slot.price}
             </div>
-            <div style={{ fontSize: '12px', color: '#8a8279' }}>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>
               {slot.location}{slot.area ? ` · ${slot.area}` : ''}
             </div>
           </div>
@@ -356,10 +339,10 @@ function SlotCard({
           disabled={isLoading}
           style={{
             flex: 1, padding: '10px 14px',
-            background: 'rgba(255,255,255,0.05)',
-            border: error ? '1px solid rgba(239,68,68,0.5)' : '1px solid rgba(255,255,255,0.1)',
+            background: '#f9fafb',
+            border: error ? '1px solid #fca5a5' : '1px solid #e5e7eb',
             borderRadius: '8px',
-            color: '#e8e0d8', fontSize: '13px',
+            color: '#111827', fontSize: '13px',
             outline: 'none',
             opacity: isLoading ? 0.6 : 1,
           }}
@@ -370,13 +353,13 @@ function SlotCard({
           style={{
             padding: '10px 16px', borderRadius: '8px',
             background: isLoading
-              ? 'rgba(200,119,58,0.3)'
-              : 'linear-gradient(135deg, #c8773a, #d68a4f)',
+              ? 'rgba(232,113,26,0.4)'
+              : 'linear-gradient(135deg, #E8711A, #F5923D)',
             border: 'none', color: '#fff',
             fontSize: '13px', fontWeight: 700,
             cursor: isLoading ? 'not-allowed' : 'pointer',
             whiteSpace: 'nowrap',
-            boxShadow: isLoading ? 'none' : '0 4px 12px rgba(200,119,58,0.25)',
+            boxShadow: isLoading ? 'none' : '0 4px 12px rgba(232,113,26,0.25)',
           }}
         >
           {isLoading ? 'Načítavam...' : 'Načítať'}
@@ -388,8 +371,8 @@ function SlotCard({
         <div
           style={{
             marginTop: '8px', padding: '8px 12px', borderRadius: '6px',
-            background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-            color: '#f87171', fontSize: '12px', lineHeight: 1.5,
+            background: '#fef2f2', border: '1px solid #fecaca',
+            color: '#dc2626', fontSize: '12px', lineHeight: 1.5,
           }}
         >
           {error}
@@ -406,8 +389,8 @@ function NavLink({ href, icon, children }: { href: string; icon: string; childre
       style={{
         display: 'flex', alignItems: 'center', gap: '6px',
         padding: '8px 14px', borderRadius: '8px',
-        border: '1px solid rgba(255,255,255,0.1)',
-        color: '#c8bfb4', fontSize: '13px', fontWeight: 600,
+        border: '1px solid #e5e7eb',
+        color: '#4b5563', fontSize: '13px', fontWeight: 600,
         textDecoration: 'none',
       }}
     >

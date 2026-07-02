@@ -370,7 +370,7 @@ export default function OceneniePage() {
                       </div>
                       <p className="form-section-title">Príslušenstvo</p>
                       <div className="form-grid">
-                        <div className="form-group">
+                        <div className={`form-group${byt.balkon === 'Áno' ? ' full' : ''}`}>
                           <label>Balkón / Lodžia</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${byt.balkon === 'Nie' ? ' active' : ''}`} onClick={() => setByt(p => ({ ...p, balkon: 'Nie' }))}>NIE</button>
@@ -383,7 +383,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${byt.terasa === 'Áno' ? ' full' : ''}`}>
                           <label>Terasa</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${byt.terasa === 'Nie' ? ' active' : ''}`} onClick={() => setByt(p => ({ ...p, terasa: 'Nie' }))}>NIE</button>
@@ -396,7 +396,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${byt.pivnica === 'Áno' ? ' full' : ''}`}>
                           <label>Pivnica</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${byt.pivnica === 'Nie' ? ' active' : ''}`} onClick={() => setByt(p => ({ ...p, pivnica: 'Nie' }))}>NIE</button>
@@ -408,7 +408,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${byt.zahrada === 'Áno' ? ' full' : ''}`}>
                           <label>Záhrada</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${byt.zahrada === 'Nie' ? ' active' : ''}`} onClick={() => setByt(p => ({ ...p, zahrada: 'Nie' }))}>NIE</button>
@@ -420,7 +420,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${byt.park === 'Áno' ? ' full' : ''}`}>
                           <label>Parkovacie miesto</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${byt.park === 'Nie' ? ' active' : ''}`} onClick={() => setByt(p => ({ ...p, park: 'Nie' }))}>NIE</button>
@@ -432,7 +432,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${byt.garaz === 'Áno' ? ' full' : ''}`}>
                           <label>Garáž</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${byt.garaz === 'Nie' ? ' active' : ''}`} onClick={() => setByt(p => ({ ...p, garaz: 'Nie' }))}>NIE</button>
@@ -513,7 +513,7 @@ export default function OceneniePage() {
                       </div>
                       <p className="form-section-title">Príslušenstvo</p>
                       <div className="form-grid">
-                        <div className="form-group">
+                        <div className={`form-group${dom.balkon === 'Áno' ? ' full' : ''}`}>
                           <label>Balkón / Lodžia</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${dom.balkon === 'Nie' ? ' active' : ''}`} onClick={() => setDom(p => ({ ...p, balkon: 'Nie' }))}>NIE</button>
@@ -526,7 +526,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${dom.terasa === 'Áno' ? ' full' : ''}`}>
                           <label>Terasa</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${dom.terasa === 'Nie' ? ' active' : ''}`} onClick={() => setDom(p => ({ ...p, terasa: 'Nie' }))}>NIE</button>
@@ -539,7 +539,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${dom.pivnica === 'Áno' ? ' full' : ''}`}>
                           <label>Pivnica</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${dom.pivnica === 'Nie' ? ' active' : ''}`} onClick={() => setDom(p => ({ ...p, pivnica: 'Nie' }))}>NIE</button>
@@ -551,7 +551,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${dom.park === 'Áno' ? ' full' : ''}`}>
                           <label>Parkovacie miesto</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${dom.park === 'Nie' ? ' active' : ''}`} onClick={() => setDom(p => ({ ...p, park: 'Nie' }))}>NIE</button>
@@ -563,7 +563,7 @@ export default function OceneniePage() {
                             </div>
                           )}
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group${dom.garaz === 'Áno' ? ' full' : ''}`}>
                           <label>Garáž</label>
                           <div className="toggle-row">
                             <button type="button" className={`toggle-opt${dom.garaz === 'Nie' ? ' active' : ''}`} onClick={() => setDom(p => ({ ...p, garaz: 'Nie' }))}>NIE</button>
