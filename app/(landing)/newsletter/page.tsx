@@ -21,7 +21,7 @@ export default function NewsletterPage() {
     if (!gdprSuhlas) {
       errs.gdpr = 'Toto pole je povinné'
     }
-    if (Object.keys(errs).length) { setErrors(errs); return }
+    if (Object.keys(errs).length) { setErrors({ ...errs, submit: 'Skontrolujte, prosím, vyplnené polia vyššie.' }); return }
     setLoading(true)
     try {
       const res = await fetch('/api/subscribe', {

@@ -16,7 +16,6 @@ export default function KontaktPage() {
   const [callbackTime, setCallbackTime] = useState('')
   const [gdprSuhlas, setGdprSuhlas] = useState(false)
   const [step2BtnDisabled, setStep2BtnDisabled] = useState(true)
-  const [step4BtnDisabled, setStep4BtnDisabled] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -45,11 +44,17 @@ export default function KontaktPage() {
 
   function selectCallbackChip(val: string) {
     setCallbackTime(val)
-    validateStep4Fields(name, phone, gdprSuhlas)
   }
 
-  function validateStep4Fields(n: string, p: string, g: boolean) {
-    setStep4BtnDisabled(!(n.trim() && p.trim() && g))
+  function validateStep4(): boolean {
+    const e: Record<string, string> = {}
+    if (!name.trim()) e.name = 'Vyplňte meno'
+    if (!/^[\d\s+\-]{9,}$/.test(phone.trim())) e.phone = 'Vyplňte telefón'
+    if (!gdprSuhlas) e.gdpr = 'Toto pole je povinné'
+    const hasErrors = Object.keys(e).length > 0
+    if (hasErrors) e.submit = 'Skontrolujte, prosím, vyplnené polia vyššie.'
+    setErrors(e)
+    return !hasErrors
   }
 
   function getScore() {
@@ -65,12 +70,7 @@ export default function KontaktPage() {
   }
 
   async function submitForm() {
-    const errGdpr = document.getElementById('err-gdprSuhlas')
-    if (!gdprSuhlas) {
-      if (errGdpr) errGdpr.style.display = 'block'
-      return
-    }
-    if (errGdpr) errGdpr.style.display = 'none'
+    if (!validateStep4()) return
 
     setLoading(true)
     try {
@@ -219,12 +219,14 @@ export default function KontaktPage() {
           <div className="form-group">
             <label className="form-label">Meno a priezvisko</label>
             <input className="form-input" type="text" id="name" placeholder="Ján Novák" autoComplete="name"
-              value={name} onChange={e => { setName(e.target.value); validateStep4Fields(e.target.value, phone, gdprSuhlas) }} />
+              value={name} onChange={e => { setName(e.target.value); setErrors(v => ({ ...v, name: '' })) }} />
+            {errors.name && <span style={{ fontSize: 11, color: '#ef4444', display: 'block', marginTop: 4 }}>{errors.name}</span>}
           </div>
           <div className="form-group">
             <label className="form-label">Telefón</label>
             <input className="form-input" type="tel" id="phone" placeholder="+421 9XX XXX XXX" autoComplete="tel"
-              value={phone} onChange={e => { setPhone(e.target.value); validateStep4Fields(name, e.target.value, gdprSuhlas) }} />
+              value={phone} onChange={e => { setPhone(e.target.value); setErrors(v => ({ ...v, phone: '' })) }} />
+            {errors.phone && <span style={{ fontSize: 11, color: '#ef4444', display: 'block', marginTop: 4 }}>{errors.phone}</span>}
           </div>
           <div className="form-group">
             <label className="form-label">Email (voliteľné)</label>
@@ -255,15 +257,15 @@ export default function KontaktPage() {
                 cursor: 'pointer', position: 'relative', transition: 'background 120ms, border-color 120ms',
               }}
               checked={gdprSuhlas}
-              onChange={e => { setGdprSuhlas(e.target.checked); validateStep4Fields(name, phone, e.target.checked) }}
+              onChange={e => { setGdprSuhlas(e.target.checked); setErrors(v => ({ ...v, gdpr: '' })) }}
             />
             <label htmlFor="gdprSuhlas" style={{ fontSize: 12, color: 'var(--zajo-text-muted)', lineHeight: 1.5, cursor: 'pointer' }}>
               Súhlasím so <a href="/zasady-ochrany-osobnych-udajov" target="_blank" style={{ color: 'var(--zajo-cream)', textDecoration: 'underline' }}>spracovaním osobných údajov</a> podľa GDPR.
             </label>
           </div>
-          <span id="err-gdprSuhlas" style={{ fontSize: 11, color: '#ef4444', display: 'none', marginBottom: 4 }}>Toto pole je povinné</span>
+          {errors.gdpr && <span style={{ fontSize: 11, color: '#ef4444', display: 'block', marginBottom: 4 }}>{errors.gdpr}</span>}
           {errors.submit && <p style={{ fontSize: 11, color: '#ef4444', marginBottom: 4 }}>{errors.submit}</p>}
-          <button className="btn-next" id="btn-submit" disabled={step4BtnDisabled || loading} onClick={submitForm}>
+          <button className="btn-next" id="btn-submit" disabled={loading} onClick={submitForm}>
             {loading ? 'Odosielam…' : 'Odoslať žiadosť'}
           </button>
           <button className="btn-back" onClick={() => goToStep(3)}>← Späť</button>

@@ -38,7 +38,7 @@ export default function PredajPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const errs = validate()
-    if (Object.keys(errs).length) { setErrors(errs); return }
+    if (Object.keys(errs).length) { setErrors({ ...errs, submit: 'Skontrolujte, prosím, vyplnené polia vyššie.' }); return }
     setLoading(true)
     try {
       const res = await fetch('/api/leads/predaj', {

@@ -95,8 +95,10 @@ export default function OceneniePage() {
       if (pozemok.adresa.trim().length <= 2) e.adresaPozemok = 'Vyplňte adresu'
       if (!pozemok.vymera || Number(pozemok.vymera) <= 0) e.vymeraPozemok = 'Vyplňte výmeru'
     }
+    const hasErrors = Object.keys(e).length > 0
+    if (hasErrors) e.submit = 'Skontrolujte, prosím, vyplnené polia vyššie.'
     setErrors(e)
-    return Object.keys(e).length === 0
+    return !hasErrors
   }
 
   function validateStep3(): boolean {
@@ -105,8 +107,10 @@ export default function OceneniePage() {
     if (!/^[\d\s+\-]{9,}$/.test(telefon.trim())) e.telefon = 'Vyplňte telefón'
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Neplatný e-mail'
     if (!gdprSuhlas) e.gdpr = 'Toto pole je povinné'
+    const hasErrors = Object.keys(e).length > 0
+    if (hasErrors) e.submit = 'Skontrolujte, prosím, vyplnené polia vyššie.'
     setErrors(e)
-    return Object.keys(e).length === 0
+    return !hasErrors
   }
 
   function toggle(field: string, val: ToggleVal) {
@@ -605,6 +609,7 @@ export default function OceneniePage() {
                     </div>
                   )}
 
+                  {errors.submit && <p style={{ fontSize: '.72rem', color: '#EF4444', marginTop: 8 }}>{errors.submit}</p>}
                   <button className="wizard-btn" onClick={() => goStep(3)}>
                     <span className="btn-text">Pokračovať →</span>
                   </button>
