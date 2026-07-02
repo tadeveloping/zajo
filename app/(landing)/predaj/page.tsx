@@ -19,6 +19,11 @@ export default function PredajPage() {
     setErrors(e => ({ ...e, [key]: '' }))
   }
 
+  function getUtm(key: string) {
+    if (typeof window === 'undefined') return null
+    return new URLSearchParams(window.location.search).get(key) || null
+  }
+
   function validate() {
     const e: Record<string, string> = {}
     if (form.meno.trim().length < 2) e.meno = 'Vyplňte meno'
@@ -48,6 +53,8 @@ export default function PredajPage() {
           casovy_ramec: form.casovyRamec || null,
           sprava: form.sprava.trim() || null,
           source: 'landing_page',
+          utm_source: getUtm('utm_source'),
+          utm_campaign: getUtm('utm_campaign'),
           newsletter_opt: nlSuhlas,
         }),
       })

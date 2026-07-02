@@ -120,6 +120,11 @@ export default function OceneniePage() {
     }
   }
 
+  function getUtm(key: string) {
+    if (typeof window === 'undefined') return null
+    return new URLSearchParams(window.location.search).get(key) || null
+  }
+
   function collectData() {
     const base = {
       name: meno.trim() || null,
@@ -127,6 +132,8 @@ export default function OceneniePage() {
       phone: telefon.trim() || null,
       typ_nehnutelnosti: selectedType || null,
       source: 'landing_page',
+      utm_source: getUtm('utm_source'),
+      utm_campaign: getUtm('utm_campaign'),
       newsletter_opt: nlSuhlas,
     }
     if (selectedType === 'Byt') {
