@@ -237,7 +237,7 @@ export default function OceneniePage() {
         </div>
 
         <h1>Za koľko môžete predať svoju <em>nehnuteľnosť</em>?</h1>
-        <p className="hero-sub">Zistite reálnu predajnú cenu — bezplatne a do 48 hodín.</p>
+        <p className="hero-sub">Zistite reálnu predajnú cenu, bezplatne a do 48 hodín.</p>
 
         <div className="trust-row">
           <div className="trust-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>Výsledok do 48 hodín</div>
@@ -267,7 +267,7 @@ export default function OceneniePage() {
               {currentStep === 1 && !successType && (
                 <div>
                   <div className="wizard-title">Aký typ nehnuteľnosti chcete oceniť?</div>
-                  <div className="wizard-sub">Vyberte typ — formulár sa prispôsobí automaticky.</div>
+                  <div className="wizard-sub">Vyberte typ a formulár sa prispôsobí automaticky.</div>
                   <div className="type-grid">
                     <button className={`type-btn${selectedType === 'Byt' ? ' selected' : ''}`} onClick={() => setSelectedType('Byt')}>
                       <div className="type-icon">
@@ -505,9 +505,9 @@ export default function OceneniePage() {
                           <label htmlFor="poschDom">Počet poschodí</label>
                           <select id="poschDom" value={dom.posch} onChange={e => setDom(p => ({ ...p, posch: e.target.value }))}>
                             <option value="">— Vybrať —</option>
-                            <option>1 — prízemie</option>
-                            <option>2 — prízemie + 1. poschodie</option>
-                            <option>3 — prízemie + 2 poschodia</option>
+                            <option>1 (prízemie)</option>
+                            <option>2 (prízemie + 1. poschodie)</option>
+                            <option>3 (prízemie + 2 poschodia)</option>
                           </select>
                         </div>
                       </div>
@@ -697,7 +697,7 @@ export default function OceneniePage() {
                   </div>
                   <h2>Žiadosť prijatá!</h2>
                   <p>Radi zistíme hodnotu vašej nehnuteľnosti. Ozveme sa vám <strong>do 48 hodín</strong>.</p>
-                  <p style={{ marginTop: 12, fontSize: '0.875rem', color: 'var(--gray-600)' }}>Keď sa rozhodnete predávať, sme tu — pomôžeme vám dostať za nehnuteľnosť čo najlepšiu cenu.</p>
+                  <p style={{ marginTop: 12, fontSize: '0.875rem', color: 'var(--gray-600)' }}>Keď sa rozhodnete predávať, sme tu a pomôžeme vám dostať za nehnuteľnosť čo najlepšiu cenu.</p>
                 </div>
               )}
 
@@ -738,12 +738,12 @@ export default function OceneniePage() {
           <div className="reviews">
             <div className="review-card">
               <div className="stars">★★★★★</div>
-              <blockquote>„Ocenenie prišlo hneď nasledujúci deň. Cena bola presná — predali sme byt za cenu, ktorú nám odporučili."</blockquote>
+              <blockquote>„Ocenenie prišlo hneď nasledujúci deň. Cena bola presná a predali sme byt za cenu, ktorú nám odporučili."</blockquote>
               <cite>Marta K.</cite><div className="review-loc">Trenčín</div>
             </div>
             <div className="review-card">
               <div className="stars">★★★★★</div>
-              <blockquote>„Nevedeli sme za koľko predávať. Zajo nám poradili a výsledok bol lepší ako sme čakali."</blockquote>
+              <blockquote>„Nevedeli sme za koľko predávať. Zajo Reality nám poradili a výsledok bol lepší, ako sme čakali."</blockquote>
               <cite>Peter a Jana H.</cite><div className="review-loc">Zlatovce</div>
             </div>
             <div className="review-card">

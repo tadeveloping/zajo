@@ -109,7 +109,7 @@ export default function PredajPage() {
         <div className="form-wrap" id="formular">
           <div className="form-card">
             <h2>Mám záujem predať nehnuteľnosť</h2>
-            <p>Zanechajte nám kontakt — ozveme sa a dohodneme si stretnutie.</p>
+            <p>Zanechajte nám kontakt, ozveme sa a dohodneme si stretnutie.</p>
 
             {done ? (
               <div className="success-state show">
@@ -223,7 +223,7 @@ export default function PredajPage() {
 
       <section className="process-section"><div className="process">
         <p className="section-label">Ako to funguje</p>
-        <h2 className="section-title">Predaj od A po Z — bez starostí</h2>
+        <h2 className="section-title">Predaj od A po Z bez starostí</h2>
         <div className="process-steps">
           <div className="process-step">
             <div className="process-icon">
@@ -249,7 +249,7 @@ export default function PredajPage() {
             </div>
             <div className="process-content">
               <h3>Profesionálna prezentácia</h3>
-              <p>Postaráme sa o profesionálne fotografie, pôdorys a popis. Vašu nehnuteľnosť zverejníme na všetkých portáloch ktoré prinášajú výsledky.</p>
+              <p>Postaráme sa o profesionálne fotografie, pôdorys a popis. Vašu nehnuteľnosť zverejníme na všetkých portáloch, ktoré prinášajú výsledky.</p>
             </div>
           </div>
           <div className="process-step">

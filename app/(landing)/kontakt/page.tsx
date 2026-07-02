@@ -292,7 +292,7 @@ export default function KontaktPage() {
         )}
 
         <div className="footer">
-          Zajo reality · Dolný Šianec 1, 911 48 Trenčín<br />
+          Zajo Reality · Dolný Šianec 1, 911 48 Trenčín<br />
           <a href="https://www.zajoreality.sk" target="_blank" rel="noreferrer">zajoreality.sk</a>
         </div>
       </div>

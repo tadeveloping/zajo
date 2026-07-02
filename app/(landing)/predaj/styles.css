@@ -33,11 +33,12 @@ nav { display: none; }
 @media (max-width: 600px) { .benefit-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); width: 100%; } .benefit-item:last-child { border-bottom: none; } }
 .form-wrap { max-width: 540px; width: 100%; margin: 0 auto; position: relative; z-index: 1; animation: fadeUp 500ms 240ms var(--ease-out) both; }
 .form-card { background: var(--white); border-radius: 20px; padding: 36px 36px 44px; box-shadow: 0 -8px 40px rgba(0,0,0,0.3); text-align: left; }
-@media (max-width: 480px) { .form-card { padding: 24px 18px 32px; } }
+@media (max-width: 480px) { .form-card { padding: 24px 16px 32px; } }
 .form-card h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
 .form-card > p { font-size: 0.875rem; color: var(--gray-600); margin-bottom: 24px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+@media (max-width: 400px) { .form-row { gap: 8px; } }
+@media (max-width: 340px) { .form-row { grid-template-columns: 1fr; } }
 .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .form-group.full { grid-column: 1 / -1; }
 label { font-size: 0.8rem; font-weight: 600; color: var(--gray-700); letter-spacing: 0.02em; }
