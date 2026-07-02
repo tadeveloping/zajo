@@ -31,17 +31,17 @@ const STATUS_LABELS: Record<LeadStatus, string> = {
 }
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
-  novy: 'bg-blue-500/20 text-blue-300',
-  kontaktovany: 'bg-yellow-500/20 text-yellow-300',
-  stretnutie: 'bg-purple-500/20 text-purple-300',
-  v_procese: 'bg-orange-500/20 text-orange-300',
-  uzavrety: 'bg-green-500/20 text-green-300',
+  novy: 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+  kontaktovany: 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200',
+  stretnutie: 'bg-purple-50 text-purple-700 ring-1 ring-purple-200',
+  v_procese: 'bg-orange-50 text-orange-700 ring-1 ring-orange-200',
+  uzavrety: 'bg-green-50 text-green-700 ring-1 ring-green-200',
 }
 
 const SCORE_COLORS: Record<LeadScore, string> = {
-  HOT: 'bg-red-500/20 text-red-300',
-  WARM: 'bg-orange-500/20 text-orange-300',
-  COLD: 'bg-blue-500/20 text-blue-300',
+  HOT: 'bg-red-50 text-red-700 ring-1 ring-red-200',
+  WARM: 'bg-orange-50 text-orange-700 ring-1 ring-orange-200',
+  COLD: 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
 }
 
 type Tab = 'vsetky' | 'predaj' | 'ocenenie' | 'cally'
@@ -292,7 +292,7 @@ export default function CrmPage() {
     <main className="max-w-7xl mx-auto px-6 py-10">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <Link href="/admin" className="text-muted hover:text-white text-sm">
+        <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">
           ← Späť na dashboard
         </Link>
         <div className="text-accent text-xs uppercase tracking-widest font-bold">CRM</div>
@@ -300,14 +300,14 @@ export default function CrmPage() {
 
       <header className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold">CRM Leady</h1>
+          <h1 className="text-3xl font-bold text-gray-900">CRM Leady</h1>
           <p className="text-muted text-sm mt-1">
             {allLeads.length} leadov celkom · {derivedCounts.total} nových · {hotCount} HOT
           </p>
         </div>
         <button
           onClick={loadAll}
-          className="px-4 py-2 rounded-md border border-border hover:border-accent transition text-sm"
+          className="px-4 py-2 rounded-md border border-border bg-panel hover:border-accent hover:text-accent transition text-sm font-medium shadow-sm"
         >
           Obnoviť
         </button>
@@ -315,31 +315,31 @@ export default function CrmPage() {
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-        <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">Celkom</div>
-          <div className="text-2xl font-bold mt-1">{allLeads.length}</div>
+          <div className="text-2xl font-bold mt-1 text-gray-900">{allLeads.length}</div>
         </div>
-        <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">Nových</div>
-          <div className="text-2xl font-bold mt-1 text-blue-300">{derivedCounts.total}</div>
+          <div className="text-2xl font-bold mt-1 text-blue-600">{derivedCounts.total}</div>
         </div>
-        <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">HOT leady</div>
-          <div className="text-2xl font-bold mt-1 text-red-300">{hotCount}</div>
+          <div className="text-2xl font-bold mt-1 text-red-600">{hotCount}</div>
         </div>
-        <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">Uzavretých</div>
-          <div className="text-2xl font-bold mt-1 text-green-300">
+          <div className="text-2xl font-bold mt-1 text-green-600">
             {allLeads.filter(l => l.status === 'uzavrety').length}
           </div>
         </div>
-        <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">📘 Facebook</div>
-          <div className="text-2xl font-bold mt-1 text-blue-400">{facebookCount}</div>
+          <div className="text-2xl font-bold mt-1 text-blue-600">{facebookCount}</div>
         </div>
-        <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
           <div className="text-muted text-xs uppercase tracking-widest font-semibold">📷 Instagram</div>
-          <div className="text-2xl font-bold mt-1 text-pink-300">{instagramCount}</div>
+          <div className="text-2xl font-bold mt-1 text-pink-600">{instagramCount}</div>
         </div>
       </div>
 
@@ -351,8 +351,8 @@ export default function CrmPage() {
             onClick={() => setTab(t)}
             className={`px-4 py-2.5 text-sm font-semibold transition border-b-2 -mb-px capitalize flex items-center ${
               tab === t
-                ? 'border-accent text-white'
-                : 'border-transparent text-muted hover:text-white'
+                ? 'border-accent text-gray-900'
+                : 'border-transparent text-muted hover:text-gray-900'
             }`}
           >
             {t === 'vsetky' ? 'Všetky' : t.charAt(0).toUpperCase() + t.slice(1)}
@@ -379,13 +379,13 @@ export default function CrmPage() {
       </div>
 
       {error && (
-        <div className="bg-red-950/40 border border-red-900 text-red-300 rounded p-3 mb-4 text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded p-3 mb-4 text-sm">
           {error}
         </div>
       )}
 
       {/* Table */}
-      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+      <div className="bg-panel border border-border rounded-xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="p-10 text-center text-muted text-sm">Načítavam...</div>
         ) : visible.length === 0 ? (
@@ -393,7 +393,7 @@ export default function CrmPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead>
+              <thead className="bg-panel2">
                 <tr className="text-left text-muted text-xs uppercase tracking-widest border-b border-border">
                   <th className="px-4 py-3 font-semibold">Meno</th>
                   <th className="px-4 py-3 font-semibold">Kontakt</th>
@@ -426,9 +426,10 @@ export default function CrmPage() {
           {saveError && (
             <div style={{
               position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
-              background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)',
-              color: '#fca5a5', borderRadius: '10px', padding: '12px 20px',
+              background: '#fef2f2', border: '1px solid #fecaca',
+              color: '#b91c1c', borderRadius: '10px', padding: '12px 20px',
               fontSize: '13px', zIndex: 9999, maxWidth: '480px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
             }}>
               ❌ Chyba pri ukladaní: {saveError}
             </div>
@@ -458,10 +459,10 @@ export default function CrmPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setConfirmDelete(null)}>
           <div className="absolute inset-0 bg-black/60" />
           <div
-            className="relative bg-panel border border-border rounded-lg p-6 max-w-sm w-full mx-4"
+            className="relative bg-panel border border-border rounded-xl p-6 max-w-sm w-full mx-4 shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
-            <div className="text-lg font-bold mb-2">Zmazať lead?</div>
+            <div className="text-lg font-bold mb-2 text-gray-900">Zmazať lead?</div>
             <div className="text-muted text-sm mb-6">{confirmDelete.name}</div>
             <div className="flex justify-end gap-3">
               <button
@@ -472,7 +473,7 @@ export default function CrmPage() {
               </button>
               <button
                 onClick={() => handleDelete(confirmDelete)}
-                className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-sm font-semibold"
+                className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-sm font-semibold"
               >
                 Zmazať
               </button>
@@ -496,7 +497,7 @@ function LeadRow({
   utmLabel: string
 }) {
   const typeLabel = lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Cally'
-  const typeColor = lead._type === 'predaj' ? 'text-green-300' : lead._type === 'ocenenie' ? 'text-yellow-300' : 'text-purple-300'
+  const typeColor = lead._type === 'predaj' ? 'text-green-700' : lead._type === 'ocenenie' ? 'text-yellow-700' : 'text-purple-700'
 
   let info = '—'
   if (lead._type === 'predaj') {
@@ -514,10 +515,10 @@ function LeadRow({
     <tr
       onClick={onClick}
       className={`border-b border-border last:border-0 cursor-pointer transition ${
-        isSelected ? 'bg-accent/10' : 'hover:bg-white/5'
+        isSelected ? 'bg-accent/10' : 'hover:bg-panel2'
       }`}
     >
-      <td className="px-4 py-3 text-white font-semibold">{lead.name}</td>
+      <td className="px-4 py-3 text-gray-900 font-semibold">{lead.name}</td>
       <td className="px-4 py-3 text-soft">
         <div>{lead.phone || '—'}</div>
         {lead.email && <div className="text-muted text-xs">{lead.email}</div>}
@@ -577,12 +578,12 @@ function DetailPanel({
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60" />
       <div
-        className="relative w-full max-w-md bg-panel border-l border-border h-full p-6 overflow-y-auto"
+        className="relative w-full max-w-md bg-panel border-l border-border h-full p-6 overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-xl font-bold">{lead.name}</h2>
+            <h2 className="text-xl font-bold text-gray-900">{lead.name}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-muted">
                 {lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Cally'}
@@ -592,7 +593,7 @@ function DetailPanel({
               )}
             </div>
           </div>
-          <button onClick={onClose} className="text-muted hover:text-white">✕</button>
+          <button onClick={onClose} className="text-muted hover:text-gray-900">✕</button>
         </div>
 
         {/* Contact */}
@@ -635,7 +636,7 @@ function DetailPanel({
                 onClick={() => onStatusChange(s)}
                 className={`px-3 py-1.5 rounded-full text-xs font-semibold transition disabled:opacity-50 ${
                   status === s
-                    ? STATUS_COLORS[s] + ' ring-1 ring-white/30'
+                    ? STATUS_COLORS[s] + ' ring-2 ring-accent/40'
                     : 'bg-panel2 text-muted border border-border hover:border-accent'
                 }`}
               >
@@ -674,7 +675,7 @@ function DetailPanel({
               onChange={e => onNewNoteTextChange(e.target.value)}
               placeholder="Pridať poznámku..."
               rows={3}
-              className="w-full bg-panel2 border border-border rounded-md px-3 py-2 text-sm text-white placeholder:text-muted resize-none focus:outline-none focus:border-accent transition"
+              className="w-full bg-panel2 border border-border rounded-md px-3 py-2 text-sm text-gray-900 placeholder:text-muted resize-none focus:outline-none focus:border-accent transition"
               onKeyDown={e => {
                 if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
                   e.preventDefault()
@@ -685,7 +686,7 @@ function DetailPanel({
             <button
               onClick={onAddNote}
               disabled={savingNote || !newNoteText.trim()}
-              className="mt-2 px-4 py-2 rounded-md bg-accent hover:bg-accentHover disabled:opacity-40 text-white text-xs font-semibold transition"
+              className="mt-2 px-4 py-2 rounded-md bg-accent hover:bg-accentHover disabled:opacity-40 text-white text-xs font-semibold transition shadow-sm"
             >
               {savingNote ? 'Ukladám...' : 'Pridať poznámku'}
             </button>
@@ -696,7 +697,7 @@ function DetailPanel({
         {/* Delete */}
         <button
           onClick={onDelete}
-          className="w-full py-2.5 rounded-md border border-red-900/50 text-red-400 hover:bg-red-950/30 text-sm font-semibold transition"
+          className="w-full py-2.5 rounded-md border border-red-200 text-red-600 hover:bg-red-50 text-sm font-semibold transition"
         >
           Zmazať lead
         </button>

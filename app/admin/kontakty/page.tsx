@@ -61,7 +61,7 @@ export default function KontaktyPage() {
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
-        <Link href="/admin" className="text-muted hover:text-white text-sm">
+        <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">
           ← Späť na dashboard
         </Link>
         <div className="text-accent text-xs uppercase tracking-widest font-bold">Kontakty</div>
@@ -96,7 +96,7 @@ export default function KontaktyPage() {
       />
 
       {error && (
-        <div className="bg-red-950/40 border border-red-900 text-red-300 rounded p-3 mb-4 text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded p-3 mb-4 text-sm">
           {error}
         </div>
       )}
@@ -125,7 +125,7 @@ export default function KontaktyPage() {
               <tbody>
                 {filtered.map((c) => (
                   <tr key={c.id} className="border-b border-border last:border-0">
-                    <td className="px-4 py-3 text-white font-semibold">{c.name}</td>
+                    <td className="px-4 py-3 text-gray-900 font-semibold">{c.name}</td>
                     <td className="px-4 py-3 text-soft">{c.email}</td>
                     <td className="px-4 py-3 text-muted">{c.phone || "—"}</td>
                     <td className="px-4 py-3 text-muted">{c.source || "—"}</td>
@@ -147,7 +147,7 @@ export default function KontaktyPage() {
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => setConfirmDelete(c)}
-                        className="text-muted hover:text-red-400 text-xs"
+                        className="text-muted hover:text-red-600 text-xs"
                       >
                         Zmazať
                       </button>
@@ -224,7 +224,7 @@ function AddPanel({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
       >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">Pridať kontakt</h2>
-          <button onClick={onClose} className="text-muted hover:text-white">
+          <button onClick={onClose} className="text-muted hover:text-gray-900">
             ✕
           </button>
         </div>
@@ -259,7 +259,7 @@ function AddPanel({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
               ))}
             </select>
           </div>
-          {err && <div className="text-red-400 text-sm">{err}</div>}
+          {err && <div className="text-red-600 text-sm">{err}</div>}
           <button
             type="submit"
             disabled={saving}

@@ -34,7 +34,7 @@ function StepNav({ current }: { current: Step }) {
             >
               {done ? "✓" : s.id}
             </div>
-            <span className={`text-sm font-semibold ${active ? "text-white" : "text-muted"}`}>
+            <span className={`text-sm font-semibold ${active ? "text-gray-900" : "text-muted"}`}>
               {s.label}
             </span>
             {i < STEPS.length - 1 && <div className="w-10 h-px bg-border ml-2" />}
@@ -145,7 +145,7 @@ export default function GenerovatPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
-        <Link href="/admin" className="text-muted hover:text-white text-sm">← Späť na dashboard</Link>
+        <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">← Späť na dashboard</Link>
         <div className="text-accent text-xs uppercase tracking-widest font-bold">Generovať newsletter</div>
       </div>
 
@@ -167,29 +167,29 @@ export default function GenerovatPage() {
                 {scraping ? "Načítavam..." : "Načítať inzeráty zo zajoreality.sk"}
               </button>
               {scrapeError && (
-                <div className="mt-4 text-red-400 text-sm">
+                <div className="mt-4 text-red-600 text-sm">
                   {scrapeError}
-                  <button onClick={handleScrape} className="ml-3 underline hover:text-red-300">Skúsiť znova</button>
+                  <button onClick={handleScrape} className="ml-3 underline hover:text-red-500">Skúsiť znova</button>
                 </div>
               )}
             </div>
           ) : (
             <>
               {scrapeSource === "mock" && (
-                <div className="bg-yellow-950/40 border border-yellow-900 text-yellow-300 rounded-md p-3 mb-4 text-sm">
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-md p-3 mb-4 text-sm">
                   Scraping zlyhal — používame ukážkové dáta. Môžeš pokračovať.
                 </div>
               )}
 
               <div className="flex items-center justify-between mb-3">
                 <div className="text-sm text-muted">
-                  Vybrané: <span className="text-white font-bold">{selected.size}</span> / {listings.length}
+                  Vybrané: <span className="text-gray-900 font-bold">{selected.size}</span> / {listings.length}
                   {selected.size !== 6 && <span className="text-yellow-400 ml-2">(odporúčané: 6)</span>}
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => setSelected(new Set(listings.map((_, i) => i)))} className="text-xs text-muted hover:text-white underline">Vybrať všetky</button>
+                  <button onClick={() => setSelected(new Set(listings.map((_, i) => i)))} className="text-xs text-muted hover:text-gray-900 underline">Vybrať všetky</button>
                   <span className="text-border">|</span>
-                  <button onClick={() => setSelected(new Set())} className="text-xs text-muted hover:text-white underline">Zrušiť výber</button>
+                  <button onClick={() => setSelected(new Set())} className="text-xs text-muted hover:text-gray-900 underline">Zrušiť výber</button>
                 </div>
               </div>
 
@@ -207,7 +207,7 @@ export default function GenerovatPage() {
                       className="shrink-0 accent-orange-500 w-4 h-4"
                     />
                     <div className="flex-1 overflow-hidden">
-                      <div className="font-bold text-white text-sm">{l.title}</div>
+                      <div className="font-bold text-gray-900 text-sm">{l.title}</div>
                       <div className="text-muted text-xs mt-0.5">{l.location}{l.area ? ` · ${l.area}` : ""}</div>
                     </div>
                     <div className="text-accent font-semibold text-sm shrink-0">{l.price}</div>
@@ -218,7 +218,7 @@ export default function GenerovatPage() {
               {/* Manual add */}
               {showManual ? (
                 <div className="bg-panel border border-accent/40 rounded-lg p-4 mb-4 space-y-3">
-                  <div className="text-sm font-semibold text-white mb-1">Pridať vlastný inzerát</div>
+                  <div className="text-sm font-semibold text-gray-900 mb-1">Pridať vlastný inzerát</div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="col-span-2">
                       <label className="text-xs text-muted block mb-1">Názov nehnuteľnosti *</label>
@@ -251,7 +251,7 @@ export default function GenerovatPage() {
                   </div>
                 </div>
               ) : (
-                <button onClick={() => setShowManual(true)} className="w-full mb-4 py-2.5 rounded-lg border border-dashed border-border hover:border-accent text-muted hover:text-white transition text-sm">
+                <button onClick={() => setShowManual(true)} className="w-full mb-4 py-2.5 rounded-lg border border-dashed border-border hover:border-accent text-muted hover:text-gray-900 transition text-sm">
                   + Pridať vlastný inzerát (starší alebo iný)
                 </button>
               )}
@@ -286,7 +286,7 @@ export default function GenerovatPage() {
                   Môže to trvať 10–30 sekúnd
                 </div>
               )}
-              {genError && <div className="mt-4 text-red-400 text-sm">{genError}</div>}
+              {genError && <div className="mt-4 text-red-600 text-sm">{genError}</div>}
             </div>
           ) : (
             <div className="space-y-5">
@@ -328,7 +328,7 @@ export default function GenerovatPage() {
                     <div key={i} className="bg-panel border border-border rounded-lg p-4">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1 min-w-0 mr-3">
-                          <div className="font-bold text-sm text-white truncate">{p.title}</div>
+                          <div className="font-bold text-sm text-gray-900 truncate">{p.title}</div>
                           <div className="text-accent text-sm font-semibold">{p.price}</div>
                           <div className="text-muted text-xs mt-0.5">{p.location}{p.area ? ` · ${p.area}` : ""}</div>
                         </div>
@@ -349,7 +349,7 @@ export default function GenerovatPage() {
                           </div>
                           <button
                             onClick={() => setContent({ ...content, properties: content.properties.filter((_, j) => j !== i) })}
-                            className="mt-5 p-1.5 rounded text-muted hover:text-red-400 hover:bg-red-950/30 transition"
+                            className="mt-5 p-1.5 rounded text-muted hover:text-red-600 hover:bg-red-50 transition"
                             title="Odstrániť"
                           >✕</button>
                         </div>
@@ -392,7 +392,7 @@ export default function GenerovatPage() {
           )}
 
           <div className="mt-6">
-            <button onClick={() => setStep(1)} className="text-muted hover:text-white text-sm">← Späť na inzeráty</button>
+            <button onClick={() => setStep(1)} className="text-muted hover:text-gray-900 text-sm">← Späť na inzeráty</button>
           </div>
         </section>
       )}
@@ -405,17 +405,17 @@ export default function GenerovatPage() {
 
           <div className="bg-panel border border-border rounded-lg p-4 mb-4">
             <div className="text-muted text-xs uppercase tracking-widest font-semibold mb-1">Predmet</div>
-            <div className="text-white font-semibold">{subject || "(bez predmetu)"}</div>
+            <div className="text-gray-900 font-semibold">{subject || "(bez predmetu)"}</div>
           </div>
 
           <iframe srcDoc={previewHtml} className="w-full h-[800px] rounded-lg border border-border mb-6" title="Finálny náhľad" />
 
           <RecipientCount />
 
-          {sendError && <div className="mt-4 text-red-400 text-sm">{sendError}</div>}
+          {sendError && <div className="mt-4 text-red-600 text-sm">{sendError}</div>}
 
           <div className="flex justify-between items-center mt-6">
-            <button onClick={() => setStep(2)} className="text-muted hover:text-white text-sm">← Späť na úpravy</button>
+            <button onClick={() => setStep(2)} className="text-muted hover:text-gray-900 text-sm">← Späť na úpravy</button>
             <button
               onClick={handleSend}
               disabled={sending}
@@ -452,7 +452,7 @@ function RecipientCount() {
   return (
     <div className="bg-panel border border-border rounded-lg p-4 text-center">
       <span className="text-muted">Odošle sa </span>
-      <span className="text-white font-bold text-lg">{n ?? "..."}</span>
+      <span className="text-gray-900 font-bold text-lg">{n ?? "..."}</span>
       <span className="text-muted"> odberateľom</span>
     </div>
   );
