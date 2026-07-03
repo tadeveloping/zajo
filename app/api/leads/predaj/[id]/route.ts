@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { updateLeadStatusSchema } from '@/lib/validators'
+import { getAdminUser, unauthorized } from '@/lib/adminAuth'
 
 export const runtime = 'nodejs'
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  if (!(await getAdminUser())) return unauthorized()
   let body: unknown
   try {
     body = await req.json()
@@ -25,6 +27,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+  if (!(await getAdminUser())) return unauthorized()
   const { error } = await supabaseAdmin.from('leads_predaj').delete().eq('id', params.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })

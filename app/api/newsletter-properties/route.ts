@@ -1,12 +1,38 @@
 import { NextResponse } from "next/server";
 import { load } from "cheerio";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getAdminUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
+function assertSafeUrl(raw: string) {
+  let u: URL;
+  try {
+    u = new URL(raw);
+  } catch {
+    throw new Error("Neplatná URL");
+  }
+  if (u.protocol !== "http:" && u.protocol !== "https:") {
+    throw new Error("Povolené sú len http/https URL");
+  }
+  const host = u.hostname.toLowerCase();
+  if (
+    host === "localhost" ||
+    host === "0.0.0.0" ||
+    host.endsWith(".local") ||
+    /^127\./.test(host) ||
+    /^10\./.test(host) ||
+    /^192\.168\./.test(host) ||
+    /^169\.254\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host)
+  ) {
+    throw new Error("Táto adresa nie je povolená");
+  }
+}
 
 function absUrl(href: string, base: string): string {
   if (!href) return "";
@@ -51,6 +77,7 @@ async function scrapeListing(url: string): Promise<{
   area: string | null;
   imageUrl: string | null;
 }> {
+  assertSafeUrl(url);
   const res = await fetch(url, {
     headers: { "User-Agent": UA },
     signal: AbortSignal.timeout(10000),
@@ -174,6 +201,7 @@ async function scrapeListing(url: string): Promise<{
 
 // ── GET ────────────────────────────────────────────────────────────────────
 export async function GET() {
+  if (!(await getAdminUser())) return unauthorized();
   const { data, error } = await supabaseAdmin
     .from("newsletter_properties")
     .select("*")
@@ -188,6 +216,7 @@ export async function GET() {
 
 // ── POST ───────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
+  if (!(await getAdminUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();
@@ -254,6 +283,7 @@ export async function POST(req: Request) {
 
 // ── DELETE ─────────────────────────────────────────────────────────────────
 export async function DELETE(req: Request) {
+  if (!(await getAdminUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();

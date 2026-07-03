@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { contactSchema } from "@/lib/validators";
+import { getAdminUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  if (!(await getAdminUser())) return unauthorized();
   const { data, error } = await supabaseAdmin
     .from("contacts")
     .select("*")
@@ -15,6 +17,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  if (!(await getAdminUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();

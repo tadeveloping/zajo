@@ -3,6 +3,7 @@ import { load } from "cheerio";
 import type { Cheerio, CheerioAPI } from "cheerio";
 import type { AnyNode } from "domhandler";
 import type { Listing } from "@/types";
+import { getAdminUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -146,6 +147,7 @@ async function fetchListingImage(url: string): Promise<string | undefined> {
 }
 
 export async function GET() {
+  if (!(await getAdminUser())) return unauthorized();
   try {
     const res = await fetch(`${BASE}/vsetky-reality/`, {
       headers: { "User-Agent": UA },

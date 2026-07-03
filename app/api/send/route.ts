@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { getResend, FROM_EMAIL } from "@/lib/resend";
 import { generateNewsletterHTML } from "@/lib/newsletterTemplate";
 import { sendSchema } from "@/lib/validators";
+import { getAdminUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -12,6 +13,7 @@ const BATCH_DELAY_MS = 200;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export async function POST(req: Request) {
+  if (!(await getAdminUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();

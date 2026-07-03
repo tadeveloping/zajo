@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { leadCallySchema } from '@/lib/validators'
 import { sendLeadNotification } from '@/lib/leadNotification'
+import { getAdminUser, unauthorized } from '@/lib/adminAuth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -17,6 +18,7 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
+  if (!(await getAdminUser())) return unauthorized()
   const { data, error } = await supabaseAdmin
     .from('leads_cally')
     .select('*')

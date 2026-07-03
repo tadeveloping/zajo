@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAnthropic, NEWSLETTER_MODEL } from "@/lib/anthropic";
 import { generateSchema, newsletterContentSchema } from "@/lib/validators";
+import { getAdminUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -26,6 +27,7 @@ function stripFences(s: string): string {
 }
 
 export async function POST(req: Request) {
+  if (!(await getAdminUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();

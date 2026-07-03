@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getAdminUser, unauthorized } from '@/lib/adminAuth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
+  if (!(await getAdminUser())) return unauthorized()
   const [predaj, ocenenie, cally] = await Promise.all([
     supabaseAdmin.from('leads_predaj').select('id', { count: 'exact', head: true }).eq('status', 'novy'),
     supabaseAdmin.from('leads_ocenenie').select('id', { count: 'exact', head: true }).eq('status', 'novy'),

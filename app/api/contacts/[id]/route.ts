@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getAdminUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  if (!(await getAdminUser())) return unauthorized();
   let body: { subscribed?: boolean };
   try {
     body = await req.json();
@@ -22,6 +24,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+  if (!(await getAdminUser())) return unauthorized();
   const { error } = await supabaseAdmin.from("contacts").delete().eq("id", params.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });

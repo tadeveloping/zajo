@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { z } from 'zod'
+import { getAdminUser, unauthorized } from '@/lib/adminAuth'
 
 export const runtime = 'nodejs'
 
@@ -8,11 +9,11 @@ const createNoteSchema = z.object({
   lead_id: z.string().uuid(),
   lead_type: z.enum(['predaj', 'ocenenie', 'cally']),
   content: z.string().min(1).max(5000),
-  author_email: z.string().email().optional(),
 })
 
 // GET /api/notes?lead_id=xxx&lead_type=xxx
 export async function GET(req: Request) {
+  if (!(await getAdminUser())) return unauthorized()
   const url = new URL(req.url)
   const lead_id = url.searchParams.get('lead_id')
   const lead_type = url.searchParams.get('lead_type')
@@ -34,6 +35,9 @@ export async function GET(req: Request) {
 
 // POST /api/notes
 export async function POST(req: Request) {
+  const admin = await getAdminUser()
+  if (!admin) return unauthorized()
+
   let body: unknown
   try {
     body = await req.json()
@@ -48,7 +52,7 @@ export async function POST(req: Request) {
 
   const { data, error } = await supabaseAdmin
     .from('lead_notes')
-    .insert(parsed.data)
+    .insert({ ...parsed.data, author_email: admin.email })
     .select()
     .single()
 
