@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { CloseTabLink } from './CloseTabLink'
 
 export const metadata = {
   title: 'Zásady ochrany osobných údajov — Zajo Reality',
@@ -17,9 +17,7 @@ export default function PrivacyPage() {
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
         {/* Back */}
         <div style={{ marginBottom: '32px' }}>
-          <Link href="/" style={{ color: '#8A8279', fontSize: '14px', textDecoration: 'none' }}>
-            ← Zajo Reality
-          </Link>
+          <CloseTabLink />
         </div>
 
         {/* Header */}
