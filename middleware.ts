@@ -5,6 +5,12 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export async function middleware(request: NextRequest) {
+  const hostname = request.headers.get('host') || ''
+
+  if (hostname.startsWith('kontakt.') && request.nextUrl.pathname === '/') {
+    return NextResponse.rewrite(new URL('/kontakt', request.url))
+  }
+
   if (!request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.next()
   }
@@ -33,5 +39,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/'],
 }
