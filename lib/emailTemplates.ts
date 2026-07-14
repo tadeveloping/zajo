@@ -269,7 +269,7 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
 <style>${MOBILE}</style>
 </head>
 <body style="margin:0;padding:0;background:#F5F2EE;font-family:'Segoe UI',Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#F5F2EE;">Vašu správu sme prijali. Ozveme sa osobne do 24 hodín v pracovné dni.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#F5F2EE;">Vašu správu sme prijali. Ozveme sa osobne do 48 hodín v pracovné dni.</div>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background:#F5F2EE;">
   <tr>
     <td align="center" style="padding:0 16px 32px;">
@@ -315,7 +315,7 @@ export function leadConfirmationEmail(name: string, typZaujmu: string): { subjec
                     <tr><td style="padding:0 22px;"><div style="height:1px;background:#F0DEC4;font-size:0;line-height:0;">&nbsp;</div></td></tr>
                     <tr>
                       <td style="padding:14px 22px 18px;">
-                        <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:12px;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;">⏱&nbsp; Ozveme sa do 24 hodín</div>
+                        <div style="font-family:'Segoe UI',Arial,sans-serif;color:#E8711A;font-size:12px;font-weight:700;letter-spacing:0.5px;margin-bottom:6px;">⏱&nbsp; Ozveme sa do 48 hodín</div>
                         <div style="font-family:'Segoe UI',Arial,sans-serif;color:#3D3530;font-size:14px;line-height:1.55;">V pracovné dni vás osobne kontaktujeme. Ozve sa vám jeden z našich maklérov, ktorý vám rád zodpovie všetky vaše otázky.</div>
                       </td>
                     </tr>
