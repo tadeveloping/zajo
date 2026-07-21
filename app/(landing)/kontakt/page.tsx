@@ -19,12 +19,16 @@ export default function KontaktPage() {
   const [property, setProperty] = useState('')
   const [timeline, setTimeline] = useState('')
   const [message, setMessage] = useState('')
+  const [propertyInterest, setPropertyInterest] = useState('')
+  const [viewingDate, setViewingDate] = useState('')
+  const [viewingTime, setViewingTime] = useState('')
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [callbackTime, setCallbackTime] = useState('')
   const [gdprSuhlas, setGdprSuhlas] = useState(false)
   const [step2BtnDisabled, setStep2BtnDisabled] = useState(true)
+  const [viewingBtnDisabled, setViewingBtnDisabled] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
@@ -38,7 +42,7 @@ export default function KontaktPage() {
   function selectOption(field: string, val: string) {
     if (field === 'interest') {
       setInterest(val)
-      setTimeout(() => goToStep(val === 'iné' || val === 'obhliadka' ? 3 : 2), 300)
+      setTimeout(() => goToStep(val === 'iné' ? 3 : 2), 300)
     } else if (field === 'property') {
       const newProperty = val
       setProperty(newProperty)
@@ -55,6 +59,18 @@ export default function KontaktPage() {
     setCallbackTime(val)
   }
 
+  function selectViewingTime(val: string) {
+    setViewingTime(val)
+    setViewingBtnDisabled(!(viewingDate && val))
+  }
+
+  const VIEWING_TIME_LABELS: Record<string, string> = {
+    rano: 'Ráno (8–12h)',
+    obed: 'Obed (12–14h)',
+    poobede: 'Popoludní (14–18h)',
+    vecer: 'Večer (18–20h)',
+  }
+
   function validateStep4(): boolean {
     const e: Record<string, string> = {}
     if (!name.trim()) e.name = 'Vyplňte meno'
@@ -67,6 +83,7 @@ export default function KontaktPage() {
   }
 
   function getScore() {
+    if (interest === 'obhliadka') return 'HOT'
     if (timeline === 'ihneď' || timeline === '1-3 mesiace') {
       return (interest === 'predaj' || interest === 'kúpa') ? 'HOT' : 'WARM'
     } else if (timeline === '3-6 mesiacov') return 'WARM'
@@ -78,8 +95,16 @@ export default function KontaktPage() {
     return new URLSearchParams(window.location.search).get(key) || null
   }
 
+  function formatViewingDate(iso: string) {
+    if (!iso) return ''
+    const [y, m, d] = iso.split('-')
+    return `${d}.${m}.${y}`
+  }
+
   async function submitForm() {
     if (!validateStep4()) return
+
+    const isObhliadka = interest === 'obhliadka'
 
     setLoading(true)
     try {
@@ -91,9 +116,11 @@ export default function KontaktPage() {
           phone: phone.trim(),
           email: email.trim() || null,
           zaujem: interest,
-          nehnutelnost: property,
-          horizont: timeline,
-          sprava: message.trim() || null,
+          nehnutelnost: isObhliadka ? (propertyInterest.trim() || null) : property,
+          horizont: isObhliadka
+            ? `${formatViewingDate(viewingDate)}, ${VIEWING_TIME_LABELS[viewingTime] || ''}`.trim()
+            : timeline,
+          sprava: isObhliadka ? null : (message.trim() || null),
           zavolame: !!callbackTime,
           score: getScore(),
           source: 'cally',
@@ -113,14 +140,22 @@ export default function KontaktPage() {
       return
     }
     setLoading(false)
-    const labels: Record<string, string> = { 'kúpa': 'Kúpa', 'predaj': 'Predaj', 'ocenenie': 'Ocenenie', 'iné': 'Otázka' }
+    const labels: Record<string, string> = { 'kúpa': 'Kúpa', 'predaj': 'Predaj', 'ocenenie': 'Ocenenie', 'iné': 'Otázka', 'obhliadka': 'Obhliadka' }
     const cap = (s: string | null) => s ? s.charAt(0).toUpperCase() + s.slice(1) : '—'
-    setSummaryRows([
-      { label: 'Záujem', value: labels[interest] || cap(interest) },
-      { label: 'Nehnuteľnosť', value: cap(property) },
-      { label: 'Horizont', value: cap(timeline) },
-      { label: 'Zavoláme', value: cap(callbackTime) },
-    ])
+    setSummaryRows(
+      interest === 'obhliadka'
+        ? [
+            { label: 'Záujem', value: labels[interest] },
+            { label: 'Nehnuteľnosť', value: cap(propertyInterest) },
+            { label: 'Termín', value: `${formatViewingDate(viewingDate)}, ${VIEWING_TIME_LABELS[viewingTime] || ''}` },
+          ]
+        : [
+            { label: 'Záujem', value: labels[interest] || cap(interest) },
+            { label: 'Nehnuteľnosť', value: cap(property) },
+            { label: 'Horizont', value: cap(timeline) },
+            { label: 'Zavoláme', value: cap(callbackTime) },
+          ]
+    )
     setCurrentStep(0)
     setDone(true)
   }
@@ -175,50 +210,88 @@ export default function KontaktPage() {
         {/* Step 2 */}
         <div className={`step${currentStep === 2 ? ' active' : ''}`} id="step-2">
           <div className="step-label">Krok 2 zo 4</div>
-          <div className="step-title">Aký typ nehnuteľnosti?</div>
-          <div className="options" id="property-options">
-            <button className={`option${property === 'byt' ? ' selected' : ''}`} onClick={() => { const v = 'byt'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
-              <div className="option-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 6h.01M16 6h.01M8 10h.01M16 10h.01"/></svg></div>
-              <div><div className="option-label">Byt</div></div>
-            </button>
-            <button className={`option${property === 'dom' ? ' selected' : ''}`} onClick={() => { const v = 'dom'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
-              <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2V9.5z"/><path d="M9 22V12h6v10"/></svg></div>
-              <div><div className="option-label">Dom</div></div>
-            </button>
-            <button className={`option${property === 'pozemok' ? ' selected' : ''}`} onClick={() => { const v = 'pozemok'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
-              <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M2 22L12 2l10 20H2z"/><path d="M12 18h.01"/></svg></div>
-              <div><div className="option-label">Pozemok</div></div>
-            </button>
-          </div>
-          <div style={{ marginTop: 28 }}>
-            <div className="step-label">Časový horizont</div>
-            <div className="step-title" style={{ fontSize: 20, marginBottom: 16 }}>Kedy to plánujete?</div>
-            <div className="chips" id="timeline-chips">
-              {[
-                { val: 'ihneď', label: 'Čo najskôr' },
-                { val: '1-3 mesiace', label: '1–3 mesiace' },
-                { val: '3-6 mesiacov', label: '3–6 mesiacov' },
-                { val: 'len sa rozhliadam', label: 'Len sa rozhliadam' },
-              ].map(c => (
-                <button key={c.val} className={`chip${timeline === c.val ? ' selected' : ''}`} onClick={() => selectChip(c.val)}>{c.label}</button>
-              ))}
-            </div>
-          </div>
-          <button className="btn-next" id="btn-step2" disabled={step2BtnDisabled} onClick={() => goToStep(3)}>Pokračovať ďalej</button>
-          <button className="btn-back" onClick={() => goToStep(1)}>← Späť</button>
+          {interest === 'obhliadka' ? (
+            <>
+              <div className="step-title">O akú nehnuteľnosť máte záujem?</div>
+              <div className="form-group">
+                <label className="form-label">Napíšte nám adresu, názov inzerátu alebo odkaz na nehnuteľnosť</label>
+                <textarea className="form-input" id="property-interest" placeholder="Napr. 3-izbový byt, Hlavná ulica, Košice" rows={4}
+                  value={propertyInterest} onChange={e => setPropertyInterest(e.target.value)} />
+              </div>
+              <button className="btn-next" id="btn-step2" disabled={!propertyInterest.trim()} onClick={() => goToStep(3)}>Pokračovať ďalej</button>
+              <button className="btn-back" onClick={() => goToStep(1)}>← Späť</button>
+            </>
+          ) : (
+            <>
+              <div className="step-title">Aký typ nehnuteľnosti?</div>
+              <div className="options" id="property-options">
+                <button className={`option${property === 'byt' ? ' selected' : ''}`} onClick={() => { const v = 'byt'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
+                  <div className="option-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 6h.01M16 6h.01M8 10h.01M16 10h.01"/></svg></div>
+                  <div><div className="option-label">Byt</div></div>
+                </button>
+                <button className={`option${property === 'dom' ? ' selected' : ''}`} onClick={() => { const v = 'dom'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
+                  <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2V9.5z"/><path d="M9 22V12h6v10"/></svg></div>
+                  <div><div className="option-label">Dom</div></div>
+                </button>
+                <button className={`option${property === 'pozemok' ? ' selected' : ''}`} onClick={() => { const v = 'pozemok'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
+                  <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M2 22L12 2l10 20H2z"/><path d="M12 18h.01"/></svg></div>
+                  <div><div className="option-label">Pozemok</div></div>
+                </button>
+              </div>
+              <div style={{ marginTop: 28 }}>
+                <div className="step-label">Časový horizont</div>
+                <div className="step-title" style={{ fontSize: 20, marginBottom: 16 }}>Kedy to plánujete?</div>
+                <div className="chips" id="timeline-chips">
+                  {[
+                    { val: 'ihneď', label: 'Čo najskôr' },
+                    { val: '1-3 mesiace', label: '1–3 mesiace' },
+                    { val: '3-6 mesiacov', label: '3–6 mesiacov' },
+                    { val: 'len sa rozhliadam', label: 'Len sa rozhliadam' },
+                  ].map(c => (
+                    <button key={c.val} className={`chip${timeline === c.val ? ' selected' : ''}`} onClick={() => selectChip(c.val)}>{c.label}</button>
+                  ))}
+                </div>
+              </div>
+              <button className="btn-next" id="btn-step2" disabled={step2BtnDisabled} onClick={() => goToStep(3)}>Pokračovať ďalej</button>
+              <button className="btn-back" onClick={() => goToStep(1)}>← Späť</button>
+            </>
+          )}
         </div>
 
         {/* Step 3 */}
         <div className={`step${currentStep === 3 ? ' active' : ''}`} id="step-3">
           <div className="step-label">Krok 3 zo 4</div>
-          <div className="step-title">Vaša správa</div>
-          <div className="form-group">
-            <label className="form-label">Napíšte nám bližšie vašu požiadavku (voliteľné)</label>
-            <textarea className="form-input" id="message" placeholder={MESSAGE_PLACEHOLDERS[interest] || MESSAGE_PLACEHOLDERS.default} rows={4}
-              value={message} onChange={e => setMessage(e.target.value)} />
-          </div>
-          <button className="btn-next" onClick={() => goToStep(4)}>Prejsť na kontaktné údaje</button>
-          <button className="btn-back" onClick={() => goToStep(interest === 'iné' || interest === 'obhliadka' ? 1 : 2)}>← Späť</button>
+          {interest === 'obhliadka' ? (
+            <>
+              <div className="step-title">Ktorý deň a v aký čas by vám vyhovovala obhliadka?</div>
+              <div className="form-group">
+                <label className="form-label">Preferovaný dátum</label>
+                <input className="form-input" type="date" id="viewing-date"
+                  value={viewingDate} onChange={e => { setViewingDate(e.target.value); setViewingBtnDisabled(!(e.target.value && viewingTime)) }} />
+              </div>
+              <div style={{ marginTop: 20 }}>
+                <div className="step-label">Preferovaný čas</div>
+                <div className="chips" id="viewing-time-chips">
+                  {Object.entries(VIEWING_TIME_LABELS).map(([val, label]) => (
+                    <button key={val} className={`chip${viewingTime === val ? ' selected' : ''}`} onClick={() => selectViewingTime(val)}>{label}</button>
+                  ))}
+                </div>
+              </div>
+              <button className="btn-next" disabled={viewingBtnDisabled} onClick={() => goToStep(4)}>Prejsť na kontaktné údaje</button>
+              <button className="btn-back" onClick={() => goToStep(2)}>← Späť</button>
+            </>
+          ) : (
+            <>
+              <div className="step-title">Vaša správa</div>
+              <div className="form-group">
+                <label className="form-label">Napíšte nám bližšie vašu požiadavku (voliteľné)</label>
+                <textarea className="form-input" id="message" placeholder={MESSAGE_PLACEHOLDERS[interest] || MESSAGE_PLACEHOLDERS.default} rows={4}
+                  value={message} onChange={e => setMessage(e.target.value)} />
+              </div>
+              <button className="btn-next" onClick={() => goToStep(4)}>Prejsť na kontaktné údaje</button>
+              <button className="btn-back" onClick={() => goToStep(interest === 'iné' ? 1 : 2)}>← Späť</button>
+            </>
+          )}
         </div>
 
         {/* Step 4 */}
@@ -242,18 +315,20 @@ export default function KontaktPage() {
             <input className="form-input" type="email" id="email" placeholder="jan@email.sk" autoComplete="email"
               value={email} onChange={e => setEmail(e.target.value)} />
           </div>
-          <div className="form-group">
-            <label className="form-label">Kedy vám môžeme zavolať späť?</label>
-            <div className="chips" id="callback-chips">
-              {[
-                { val: 'dnes', label: 'Dnes' },
-                { val: 'zajtra', label: 'Zajtra' },
-                { val: 'kedykoľvek', label: 'Kedykoľvek' },
-              ].map(c => (
-                <button key={c.val} className={`chip${callbackTime === c.val ? ' selected' : ''}`} onClick={() => selectCallbackChip(c.val)}>{c.label}</button>
-              ))}
+          {interest !== 'obhliadka' && (
+            <div className="form-group">
+              <label className="form-label">Kedy vám môžeme zavolať späť?</label>
+              <div className="chips" id="callback-chips">
+                {[
+                  { val: 'dnes', label: 'Dnes' },
+                  { val: 'zajtra', label: 'Zajtra' },
+                  { val: 'kedykoľvek', label: 'Kedykoľvek' },
+                ].map(c => (
+                  <button key={c.val} className={`chip${callbackTime === c.val ? ' selected' : ''}`} onClick={() => selectCallbackChip(c.val)}>{c.label}</button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 14, marginBottom: 4 }}>
             <input
               type="checkbox" id="gdprSuhlas"
