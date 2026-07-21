@@ -7,10 +7,25 @@ export function NewLeadsCard() {
   const [count, setCount] = useState<number | null>(null)
 
   useEffect(() => {
-    fetch('/api/leads/count', { cache: 'no-store' })
-      .then(r => r.json())
-      .then(d => setCount(d.total ?? 0))
-      .catch(() => setCount(0))
+    let cancelled = false
+
+    async function load() {
+      const RETRIES = 2
+      for (let attempt = 0; attempt <= RETRIES; attempt++) {
+        try {
+          const r = await fetch('/api/leads/count', { cache: 'no-store' })
+          if (!r.ok) throw new Error(String(r.status))
+          const d = await r.json()
+          if (!cancelled) setCount(d.total ?? 0)
+          return
+        } catch {
+          if (attempt < RETRIES) await new Promise(res => setTimeout(res, 800))
+        }
+      }
+    }
+
+    load()
+    return () => { cancelled = true }
   }, [])
 
   const n = count ?? 0
