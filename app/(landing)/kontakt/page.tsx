@@ -64,13 +64,6 @@ export default function KontaktPage() {
     setViewingBtnDisabled(!(viewingDate && val))
   }
 
-  const VIEWING_TIME_LABELS: Record<string, string> = {
-    rano: 'Ráno (8–12h)',
-    obed: 'Obed (12–14h)',
-    poobede: 'Popoludní (14–18h)',
-    vecer: 'Večer (18–20h)',
-  }
-
   function validateStep4(): boolean {
     const e: Record<string, string> = {}
     if (!name.trim()) e.name = 'Vyplňte meno'
@@ -118,7 +111,7 @@ export default function KontaktPage() {
           zaujem: interest,
           nehnutelnost: isObhliadka ? (propertyInterest.trim() || null) : property,
           horizont: isObhliadka
-            ? `${formatViewingDate(viewingDate)}, ${VIEWING_TIME_LABELS[viewingTime] || ''}`.trim()
+            ? `${formatViewingDate(viewingDate)}, ${viewingTime}`.trim()
             : timeline,
           sprava: isObhliadka ? null : (message.trim() || null),
           zavolame: !!callbackTime,
@@ -147,7 +140,7 @@ export default function KontaktPage() {
         ? [
             { label: 'Záujem', value: labels[interest] },
             { label: 'Nehnuteľnosť', value: cap(propertyInterest) },
-            { label: 'Termín', value: `${formatViewingDate(viewingDate)}, ${VIEWING_TIME_LABELS[viewingTime] || ''}` },
+            { label: 'Termín', value: `${formatViewingDate(viewingDate)}, ${viewingTime}` },
           ]
         : [
             { label: 'Záujem', value: labels[interest] || cap(interest) },
@@ -267,15 +260,14 @@ export default function KontaktPage() {
               <div className="form-group">
                 <label className="form-label">Preferovaný dátum</label>
                 <input className="form-input" type="date" id="viewing-date"
+                  onClick={e => (e.currentTarget as HTMLInputElement).showPicker?.()}
                   value={viewingDate} onChange={e => { setViewingDate(e.target.value); setViewingBtnDisabled(!(e.target.value && viewingTime)) }} />
               </div>
-              <div style={{ marginTop: 20 }}>
-                <div className="step-label">Preferovaný čas</div>
-                <div className="chips" id="viewing-time-chips">
-                  {Object.entries(VIEWING_TIME_LABELS).map(([val, label]) => (
-                    <button key={val} className={`chip${viewingTime === val ? ' selected' : ''}`} onClick={() => selectViewingTime(val)}>{label}</button>
-                  ))}
-                </div>
+              <div className="form-group" style={{ marginTop: 20 }}>
+                <label className="form-label">Preferovaný čas</label>
+                <input className="form-input" type="time" id="viewing-time"
+                  onClick={e => (e.currentTarget as HTMLInputElement).showPicker?.()}
+                  value={viewingTime} onChange={e => selectViewingTime(e.target.value)} />
               </div>
               <button className="btn-next" disabled={viewingBtnDisabled} onClick={() => goToStep(4)}>Prejsť na kontaktné údaje</button>
               <button className="btn-back" onClick={() => goToStep(2)}>← Späť</button>
