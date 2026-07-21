@@ -208,7 +208,7 @@ export default function KontaktPage() {
               <div className="step-title">O akú nehnuteľnosť máte záujem?</div>
               <div className="form-group">
                 <label className="form-label">Napíšte nám adresu, názov inzerátu alebo odkaz na nehnuteľnosť</label>
-                <textarea className="form-input" id="property-interest" placeholder="Napr. 3-izbový byt, Hlavná ulica, Trenčín" rows={4}
+                <textarea className="form-input" id="property-interest" placeholder="Napr. 3-izbový byt, Jilemnického ulica, Trenčín" rows={4}
                   value={propertyInterest} onChange={e => setPropertyInterest(e.target.value)} />
               </div>
               <button className="btn-next" id="btn-step2" disabled={!propertyInterest.trim()} onClick={() => goToStep(3)}>Pokračovať ďalej</button>
