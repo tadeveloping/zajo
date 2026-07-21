@@ -92,34 +92,54 @@ export default function CrmPage() {
   const [notesLoading, setNotesLoading] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
+  async function safeJson(res: Response) {
+    if (!res.ok) throw new Error(`Server odmietol požiadavku (${res.status}). Skúste to znova.`)
+    try {
+      return await res.json()
+    } catch {
+      throw new Error('Server vrátil neočakávanú odpoveď. Skúste to znova.')
+    }
+  }
+
+  const loadAllOnce = useCallback(async () => {
+    const opts = { cache: 'no-store' } as RequestInit
+    const [rPredaj, rOcenenie, rCally, rCounts] = await Promise.all([
+      fetch('/api/leads/predaj', opts),
+      fetch('/api/leads/ocenenie', opts),
+      fetch('/api/leads/cally', opts),
+      fetch('/api/leads/count', opts),
+    ])
+    const [dPredaj, dOcenenie, dCally, dCounts] = await Promise.all([
+      safeJson(rPredaj),
+      safeJson(rOcenenie),
+      safeJson(rCally),
+      safeJson(rCounts),
+    ])
+    setPredajLeads(dPredaj)
+    setOceneniaLeads(dOcenenie)
+    setCallyLeads(dCally)
+    setCounts(dCounts)
+  }, [])
+
   const loadAll = useCallback(async () => {
     setLoading(true)
     setError(null)
-    try {
-      const opts = { cache: 'no-store' } as RequestInit
-      const [rPredaj, rOcenenie, rCally, rCounts] = await Promise.all([
-        fetch('/api/leads/predaj', opts),
-        fetch('/api/leads/ocenenie', opts),
-        fetch('/api/leads/cally', opts),
-        fetch('/api/leads/count', opts),
-      ])
-      if (!rPredaj.ok || !rOcenenie.ok || !rCally.ok) throw new Error('Chyba pri načítaní')
-      const [dPredaj, dOcenenie, dCally, dCounts] = await Promise.all([
-        rPredaj.json(),
-        rOcenenie.json(),
-        rCally.json(),
-        rCounts.json(),
-      ])
-      setPredajLeads(dPredaj)
-      setOceneniaLeads(dOcenenie)
-      setCallyLeads(dCally)
-      setCounts(dCounts)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Chyba')
-    } finally {
-      setLoading(false)
+    const RETRIES = 2
+    for (let attempt = 0; attempt <= RETRIES; attempt++) {
+      try {
+        await loadAllOnce()
+        setLoading(false)
+        return
+      } catch (e) {
+        if (attempt === RETRIES) {
+          setError(e instanceof Error ? e.message : 'Chyba pri načítaní')
+          setLoading(false)
+          return
+        }
+        await new Promise(r => setTimeout(r, 800))
+      }
     }
-  }, [])
+  }, [loadAllOnce])
 
   useEffect(() => {
     loadAll()
