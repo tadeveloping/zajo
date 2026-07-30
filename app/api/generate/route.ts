@@ -26,6 +26,15 @@ function stripFences(s: string): string {
   return s.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
 }
 
+function sanitizeJson(s: string): string {
+  const start = s.indexOf("{");
+  const end = s.lastIndexOf("}");
+  const sliced = start !== -1 && end !== -1 ? s.slice(start, end + 1) : s;
+  // Drop trailing commas before a closing } or ] — the model occasionally
+  // leaves one, which V8's JSON.parse rejects with a confusing error.
+  return sliced.replace(/,(\s*[}\]])/g, "$1");
+}
+
 export async function POST(req: Request) {
   if (!(await getAdminUser())) return unauthorized();
   let body: unknown;
@@ -90,7 +99,7 @@ Vráť JSON presne v tomto formáte:
       .map((c) => c.text)
       .join("");
 
-    const json = JSON.parse(stripFences(text));
+    const json = JSON.parse(sanitizeJson(stripFences(text)));
     const subject = typeof json.subject === "string" ? json.subject : "";
     const content = newsletterContentSchema.parse(json.content);
     return NextResponse.json({ subject, content });
