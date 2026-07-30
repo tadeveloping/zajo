@@ -122,7 +122,7 @@ export function generateNewsletterHTML(content: NewsletterContent, recipientEmai
   <table cellpadding="0" cellspacing="0" border="0">
     <tr><td><p style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:10px;font-weight:800;color:#E0882C;letter-spacing:2.5px;text-transform:uppercase;margin:0 0 18px 0;">&#9632;&nbsp; VÝBER DOPORUČENÝCH NEHNUTEĽNOSTÍ</p></td></tr>
     <tr><td>
-      <h1 style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:34px;font-weight:800;color:#1C1917;margin:0 0 8px 0;line-height:1.15;letter-spacing:-0.5px;">${esc(content.greeting)},</h1>
+      <h1 style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:34px;font-weight:800;color:#1C1917;margin:0 0 8px 0;line-height:1.15;letter-spacing:-0.5px;">${esc(content.greeting)}.</h1>
       <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;"><tr><td style="background:#B8860B;height:2px;width:48px;border-radius:1px;font-size:0;line-height:0;">&nbsp;</td></tr></table>
     </td></tr>
     <tr><td><p style="font-family:'Inter',Arial,Helvetica,sans-serif;font-size:15px;color:#555555;line-height:1.8;margin:0;max-width:460px;">${safeHtml(content.intro)}</p></td></tr>
