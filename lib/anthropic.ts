@@ -15,4 +15,4 @@ export const anthropic = new Proxy({} as Anthropic, {
   },
 });
 
-export const NEWSLETTER_MODEL = "claude-sonnet-4-20250514";
+export const NEWSLETTER_MODEL = "claude-sonnet-5";
