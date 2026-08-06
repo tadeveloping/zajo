@@ -21,14 +21,25 @@ export async function middleware(request: NextRequest) {
   }
 
   const token = request.cookies.get('sb-access-token')?.value
+  const refreshToken = request.cookies.get('sb-refresh-token')?.value
+  const remember = request.cookies.get('sb-remember')?.value === '1'
 
   if (!token) {
+    if (refreshToken) {
+      const refreshed = await tryRefresh(refreshToken, remember, request)
+      if (refreshed) return refreshed
+    }
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
   const cached = tokenCache.get(token)
   if (cached && cached.expires > Date.now()) {
-    return cached.valid ? NextResponse.next() : NextResponse.redirect(new URL('/login', request.url))
+    if (cached.valid) return NextResponse.next()
+    if (refreshToken) {
+      const refreshed = await tryRefresh(refreshToken, remember, request)
+      if (refreshed) return refreshed
+    }
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   try {
@@ -40,6 +51,10 @@ export async function middleware(request: NextRequest) {
     })
     tokenCache.set(token, { valid: res.ok, expires: Date.now() + CACHE_TTL_MS })
     if (!res.ok) {
+      if (refreshToken) {
+        const refreshed = await tryRefresh(refreshToken, remember, request)
+        if (refreshed) return refreshed
+      }
       return NextResponse.redirect(new URL('/login', request.url))
     }
   } catch {
@@ -47,6 +62,32 @@ export async function middleware(request: NextRequest) {
   }
 
   return NextResponse.next()
+}
+
+// Silently exchange an expired session's refresh token for a new access token,
+// so an admin doesn't have to log in again just because an hour passed.
+async function tryRefresh(refreshToken: string, remember: boolean, request: NextRequest) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    })
+    if (!res.ok) return null
+    const data = await res.json()
+    if (!data.access_token || !data.refresh_token) return null
+
+    tokenCache.set(data.access_token, { valid: true, expires: Date.now() + CACHE_TTL_MS })
+
+    const response = NextResponse.next()
+    const maxAge = remember ? 60 * 60 * 24 * 30 : undefined
+    response.cookies.set('sb-access-token', data.access_token, { path: '/', maxAge, sameSite: 'lax' })
+    response.cookies.set('sb-refresh-token', data.refresh_token, { path: '/', maxAge, sameSite: 'lax' })
+    if (remember) response.cookies.set('sb-remember', '1', { path: '/', maxAge, sameSite: 'lax' })
+    return response
+  } catch {
+    return null
+  }
 }
 
 export const config = {

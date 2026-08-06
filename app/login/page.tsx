@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<Mode>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -28,9 +29,15 @@ export default function LoginPage() {
     if (error || !data.session) {
       setError('Nesprávny email alebo heslo.')
     } else {
-      const token = data.session.access_token
-      const maxAge = data.session.expires_in ?? 3600
-      document.cookie = `sb-access-token=${token}; path=/; max-age=${maxAge}; SameSite=Lax`
+      const { access_token, refresh_token } = data.session
+      // Remembered logins get a 30-day cookie so a silent refresh (see middleware.ts)
+      // can keep the session alive without asking for a password again; unchecked
+      // logins are cleared once the browser closes.
+      const maxAge = rememberMe ? 60 * 60 * 24 * 30 : undefined
+      const ageAttr = maxAge ? `; max-age=${maxAge}` : ''
+      document.cookie = `sb-access-token=${access_token}; path=/${ageAttr}; SameSite=Lax`
+      document.cookie = `sb-refresh-token=${refresh_token}; path=/${ageAttr}; SameSite=Lax`
+      if (rememberMe) document.cookie = `sb-remember=1; path=/${ageAttr}; SameSite=Lax`
       window.location.href = '/admin'
     }
   }
@@ -191,6 +198,18 @@ export default function LoginPage() {
                   style={inputStyle(!!error)}
                 />
                 {error && <p style={{ color: '#ef4444', fontSize: '13px', marginTop: '8px', marginBottom: 0 }}>{error}</p>}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={e => setRememberMe(e.target.checked)}
+                  style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: '#E8711A' }}
+                />
+                <label htmlFor="rememberMe" style={{ fontSize: '13px', color: '#6b7280', cursor: 'pointer' }}>
+                  Zapamätať prihlásenie
+                </label>
               </div>
               <button type="submit" disabled={loading} style={{
                 width: '100%',
