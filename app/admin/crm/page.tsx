@@ -375,7 +375,7 @@ export default function CrmPage() {
                 : 'border-transparent text-muted hover:text-gray-900'
             }`}
           >
-            {t === 'vsetky' ? 'Všetky' : t.charAt(0).toUpperCase() + t.slice(1)}
+            {t === 'vsetky' ? 'Všetky' : t === 'cally' ? 'Kontakt' : t.charAt(0).toUpperCase() + t.slice(1)}
             {t !== 'vsetky' && tabLabel(t)}
           </button>
         ))}
@@ -516,7 +516,7 @@ function LeadRow({
   isSelected: boolean
   utmLabel: string
 }) {
-  const typeLabel = lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Cally'
+  const typeLabel = lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Kontakt'
   const typeColor = lead._type === 'predaj' ? 'text-green-700' : lead._type === 'ocenenie' ? 'text-yellow-700' : 'text-purple-700'
 
   let info = '—'
@@ -606,7 +606,7 @@ function DetailPanel({
             <h2 className="text-xl font-bold text-gray-900">{lead.name}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-muted">
-                {lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Cally'}
+                {lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Kontakt'}
               </span>
               {lead._type === 'cally' && (
                 <ScoreBadge score={(lead as LeadCally & { _type: 'cally' }).score} />
@@ -774,7 +774,7 @@ function OcenenieFields({ lead }: { lead: LeadOcenenie & { _type: 'ocenenie' } }
 function CallyFields({ lead }: { lead: LeadCally & { _type: 'cally' } }) {
   return (
     <div className="space-y-2 mb-5 p-3 bg-panel2 rounded-lg border border-border">
-      <div className="text-xs uppercase tracking-widest text-muted font-semibold mb-2">Detaily Cally</div>
+      <div className="text-xs uppercase tracking-widest text-muted font-semibold mb-2">Detaily kontaktu</div>
       <Field label="Záujem" value={lead.zaujem} />
       <Field label="Nehnuteľnosť" value={lead.nehnutelnost} />
       <Field label="Horizont" value={lead.horizont} />
