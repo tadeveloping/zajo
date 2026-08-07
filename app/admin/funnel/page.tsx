@@ -11,13 +11,6 @@ interface FunnelData {
 }
 
 const STAGES: Record<string, { key: string; label: string }[]> = {
-  kontakt: [
-    { key: 'view', label: 'Otvorili stránku' },
-    { key: 'step_2', label: 'Krok 2' },
-    { key: 'step_3', label: 'Krok 3' },
-    { key: 'step_4', label: 'Kontaktné údaje' },
-    { key: 'submitted', label: 'Odoslali formulár' },
-  ],
   predaj: [
     { key: 'view', label: 'Otvorili stránku' },
     { key: 'started_typing', label: 'Začali vyplňovať' },
@@ -29,12 +22,17 @@ const STAGES: Record<string, { key: string; label: string }[]> = {
     { key: 'step_3', label: 'Kontaktné údaje' },
     { key: 'submitted', label: 'Odoslali formulár' },
   ],
+  newsletter: [
+    { key: 'view', label: 'Otvorili stránku' },
+    { key: 'started_typing', label: 'Začali vyplňovať' },
+    { key: 'submitted', label: 'Prihlásili sa na odber' },
+  ],
 }
 
 const FORM_LABELS: Record<string, string> = {
-  kontakt: 'Kontaktný formulár',
   predaj: 'Predaj',
   ocenenie: 'Ocenenie',
+  newsletter: 'Newsletter',
 }
 
 const RANGE_LABELS: Record<Range, string> = { '7d': '7 dní', '30d': '30 dní', all: 'Celá história' }

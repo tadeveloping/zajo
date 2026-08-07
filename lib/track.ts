@@ -1,6 +1,6 @@
 'use client'
 
-export type FunnelForm = 'kontakt' | 'predaj' | 'ocenenie'
+export type FunnelForm = 'newsletter' | 'predaj' | 'ocenenie'
 
 function makeId(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID()
