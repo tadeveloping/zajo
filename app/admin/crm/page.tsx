@@ -736,6 +736,17 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   )
 }
 
+function NewsletterField({ prihlaseny }: { prihlaseny?: boolean }) {
+  return (
+    <div className="flex gap-2 text-sm">
+      <span className="text-muted min-w-[80px] flex-shrink-0">Newsletter:</span>
+      <span className={prihlaseny ? 'text-green-700 font-semibold' : 'text-soft'}>
+        {prihlaseny ? 'Áno, prihlásený' : 'Nie, neprihlásil sa'}
+      </span>
+    </div>
+  )
+}
+
 function PredajFields({ lead }: { lead: LeadPredaj & { _type: 'predaj' } }) {
   return (
     <div className="space-y-2 mb-5 p-3 bg-panel2 rounded-lg border border-border">
@@ -743,6 +754,7 @@ function PredajFields({ lead }: { lead: LeadPredaj & { _type: 'predaj' } }) {
       <Field label="Typ" value={lead.typ} />
       <Field label="Lokalita" value={lead.lokalita} />
       <Field label="Časový rámec" value={lead.casovy_ramec} />
+      <NewsletterField prihlaseny={lead.newsletter_prihlaseny} />
       {lead.sprava && (
         <div className="text-sm">
           <div className="text-muted text-xs mb-1">Správa:</div>
@@ -761,6 +773,7 @@ function OcenenieFields({ lead }: { lead: LeadOcenenie & { _type: 'ocenenie' } }
       <Field label="Lokalita" value={lead.lokalita} />
       <Field label="Rozloha" value={lead.rozloha} />
       <Field label="Stav" value={lead.stav_nehnutelnosti} />
+      <NewsletterField prihlaseny={lead.newsletter_prihlaseny} />
       {lead.doplnujuce_info && (
         <div className="text-sm">
           <div className="text-muted text-xs mb-1">Doplňujúce info:</div>

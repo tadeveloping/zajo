@@ -5,6 +5,7 @@ import { sendLeadNotification } from '@/lib/leadNotification'
 import { leadConfirmationEmail } from '@/lib/emailTemplates'
 import { resend, FROM_EMAIL } from '@/lib/resend'
 import { getAdminUser, unauthorized } from '@/lib/adminAuth'
+import { withNewsletterStatus } from '@/lib/leads'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -26,7 +27,7 @@ export async function GET() {
     .select('*')
     .order('created_at', { ascending: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json(await withNewsletterStatus(data))
 }
 
 export async function POST(req: Request) {

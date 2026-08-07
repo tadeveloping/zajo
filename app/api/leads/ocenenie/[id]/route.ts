@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { updateLeadStatusSchema } from '@/lib/validators'
 import { getAdminUser, unauthorized } from '@/lib/adminAuth'
+import { withNewsletterStatus } from '@/lib/leads'
 
 export const runtime = 'nodejs'
 
@@ -23,7 +24,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     .select()
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  const [withStatus] = await withNewsletterStatus([data])
+  return NextResponse.json(withStatus)
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {

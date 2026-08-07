@@ -71,6 +71,7 @@ export interface LeadPredaj {
   source: string | null
   utm_source: string | null
   utm_campaign: string | null
+  newsletter_prihlaseny?: boolean
 }
 
 export interface LeadOcenenie {
@@ -89,6 +90,7 @@ export interface LeadOcenenie {
   source: string | null
   utm_source: string | null
   utm_campaign: string | null
+  newsletter_prihlaseny?: boolean
 }
 
 export interface LeadCally {
