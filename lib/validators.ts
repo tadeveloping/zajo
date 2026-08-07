@@ -109,3 +109,11 @@ export const updateLeadStatusSchema = z.object({
   status: z.enum(['novy', 'kontaktovany', 'stretnutie', 'v_procese', 'uzavrety']),
   notes: z.string().optional().nullable(),
 })
+
+export const trackEventSchema = z.object({
+  form: z.enum(['kontakt', 'predaj', 'ocenenie']),
+  event: z.string().min(1).max(40),
+  session_id: z.string().min(1).max(100),
+  utm_source: z.string().max(60).optional().nullable(),
+  utm_campaign: z.string().max(120).optional().nullable(),
+})

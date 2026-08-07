@@ -67,6 +67,7 @@ export default async function AdminPage() {
             <NavLink href="/admin/crm" icon="👥">CRM</NavLink>
             <NavLink href="/admin/kontakty" icon="📋">Kontakty</NavLink>
             <NavLink href="/admin/newsletter-ponuky" icon="🏠">Ponuky</NavLink>
+            <NavLink href="/admin/funnel" icon="📊">Návštevnosť</NavLink>
             <Link
               href="/admin/generovat"
               style={{
