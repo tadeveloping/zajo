@@ -18,16 +18,27 @@ export async function GET(req: Request) {
 
   const range = new URL(req.url).searchParams.get('range') || '30d'
   const days = RANGE_DAYS[range] ?? 30
+  const since = days ? new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString() : null
 
-  let query = supabaseAdmin.from('form_events').select('form,event,utm_source')
-  if (days) {
-    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
-    query = query.gte('created_at', since)
+  // Supabase caps a single select at 1000 rows, so page through the full set —
+  // otherwise the funnel silently under-counts once traffic grows past that.
+  // Order by created_at + id (id is unique) so pages don't skip or repeat rows.
+  const PAGE = 1000
+  const rows: EventRow[] = []
+  for (let from = 0; ; from += PAGE) {
+    let query = supabaseAdmin
+      .from('form_events')
+      .select('form,event,utm_source')
+      .order('created_at', { ascending: true })
+      .order('id', { ascending: true })
+      .range(from, from + PAGE - 1)
+    if (since) query = query.gte('created_at', since)
+    const { data, error } = await query
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    const batch = (data ?? []) as EventRow[]
+    rows.push(...batch)
+    if (batch.length < PAGE) break
   }
-  const { data, error } = await query
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-
-  const rows = (data ?? []) as EventRow[]
 
   const funnels: Record<string, Record<string, number>> = { kontakt: {}, predaj: {}, ocenenie: {} }
   for (const r of rows) {
