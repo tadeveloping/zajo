@@ -20,6 +20,7 @@ export default function KontaktPage() {
   const [timeline, setTimeline] = useState('')
   const [message, setMessage] = useState('')
   const [propertyInterest, setPropertyInterest] = useState('')
+  const [cena, setCena] = useState('')
   const [viewingDate, setViewingDate] = useState('')
   const [viewingTime, setViewingTime] = useState('')
   const [name, setName] = useState('')
@@ -68,6 +69,7 @@ export default function KontaktPage() {
     const e: Record<string, string> = {}
     if (!name.trim()) e.name = 'Vyplňte meno'
     if (!/^[\d\s+\-]{9,}$/.test(phone.trim())) e.phone = 'Vyplňte telefón'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Vyplňte platný email'
     if (!gdprSuhlas) e.gdpr = 'Toto pole je povinné'
     const hasErrors = Object.keys(e).length > 0
     if (hasErrors) e.submit = 'Skontrolujte, prosím, vyplnené polia vyššie.'
@@ -113,7 +115,12 @@ export default function KontaktPage() {
           horizont: isObhliadka
             ? `${formatViewingDate(viewingDate)}, ${viewingTime}`.trim()
             : timeline,
-          sprava: isObhliadka ? null : (message.trim() || null),
+          sprava: isObhliadka
+            ? null
+            : [
+                interest === 'kúpa' && cena.trim() ? `Rozpočet: ${cena.trim()}` : null,
+                message.trim() || null,
+              ].filter(Boolean).join('\n\n') || null,
           zavolame: !!callbackTime,
           score: getScore(),
           source: 'cally',
@@ -146,6 +153,7 @@ export default function KontaktPage() {
             { label: 'Záujem', value: labels[interest] || cap(interest) },
             { label: 'Nehnuteľnosť', value: cap(property) },
             { label: 'Horizont', value: cap(timeline) },
+            ...(interest === 'kúpa' && cena.trim() ? [{ label: 'Rozpočet', value: cena.trim() }] : []),
             { label: 'Zavoláme', value: cap(callbackTime) },
           ]
     )
@@ -245,6 +253,13 @@ export default function KontaktPage() {
                   ))}
                 </div>
               </div>
+              {interest === 'kúpa' && (
+                <div className="form-group" style={{ marginTop: 28 }}>
+                  <label className="form-label">Aký je váš rozpočet? (voliteľné)</label>
+                  <input className="form-input" type="text" id="cena" placeholder="Napr. do 150 000 €"
+                    value={cena} onChange={e => setCena(e.target.value)} />
+                </div>
+              )}
               <button className="btn-next" id="btn-step2" disabled={step2BtnDisabled} onClick={() => goToStep(3)}>Pokračovať ďalej</button>
               <button className="btn-back" onClick={() => goToStep(1)}>← Späť</button>
             </>
@@ -303,9 +318,10 @@ export default function KontaktPage() {
             {errors.phone && <span style={{ fontSize: 11, color: '#ef4444', display: 'block', marginTop: 4 }}>{errors.phone}</span>}
           </div>
           <div className="form-group">
-            <label className="form-label">Email (voliteľné)</label>
+            <label className="form-label">Email</label>
             <input className="form-input" type="email" id="email" placeholder="jan@email.sk" autoComplete="email"
-              value={email} onChange={e => setEmail(e.target.value)} />
+              value={email} onChange={e => { setEmail(e.target.value); setErrors(v => ({ ...v, email: '' })) }} />
+            {errors.email && <span style={{ fontSize: 11, color: '#ef4444', display: 'block', marginTop: 4 }}>{errors.email}</span>}
           </div>
           {interest !== 'obhliadka' && (
             <div className="form-group">

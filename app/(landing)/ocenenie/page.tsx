@@ -109,7 +109,7 @@ export default function OceneniePage() {
     const e: Record<string, string> = {}
     if (meno.trim().length < 2) e.meno = 'Vyplňte meno'
     if (!/^[\d\s+\-]{9,}$/.test(telefon.trim())) e.telefon = 'Vyplňte telefón'
-    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Neplatný e-mail'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Vyplňte platný e-mail'
     if (!gdprSuhlas) e.gdpr = 'Toto pole je povinné'
     const hasErrors = Object.keys(e).length > 0
     if (hasErrors) e.submit = 'Skontrolujte, prosím, vyplnené polia vyššie.'
@@ -642,7 +642,7 @@ export default function OceneniePage() {
                       {errors.telefon && <span className="field-error show">{errors.telefon}</span>}
                     </div>
                     <div className="form-group full">
-                      <label htmlFor="email">E-mail</label>
+                      <label htmlFor="email">E-mail *</label>
                       <input type="email" id="email" placeholder="jan@email.sk" autoComplete="email"
                         className={errors.email ? 'error' : ''}
                         value={email} onChange={e => { setEmail(e.target.value); setErrors(v => ({ ...v, email: '' })) }} />

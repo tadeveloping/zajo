@@ -63,8 +63,8 @@ export const generateSchema = z.object({
 
 export const leadPredajSchema = z.object({
   name: z.string().min(1),
-  email: z.string().email().optional().nullable(),
-  phone: z.string().optional().nullable(),
+  email: z.string().email(),
+  phone: z.string().min(9),
   typ: z.string().optional().nullable(),
   lokalita: z.string().optional().nullable(),
   casovy_ramec: z.string().optional().nullable(),
@@ -77,8 +77,8 @@ export const leadPredajSchema = z.object({
 
 export const leadOceneniaSchema = z.object({
   name: z.string().min(1),
-  email: z.string().email().optional().nullable(),
-  phone: z.string().optional().nullable(),
+  email: z.string().email(),
+  phone: z.string().min(9),
   typ_nehnutelnosti: z.string().optional().nullable(),
   lokalita: z.string().optional().nullable(),
   rozloha: z.string().optional().nullable(),
@@ -92,8 +92,8 @@ export const leadOceneniaSchema = z.object({
 
 export const leadCallySchema = z.object({
   name: z.string().min(1),
-  email: z.string().email().optional().nullable(),
-  phone: z.string().optional().nullable(),
+  email: z.string().email(),
+  phone: z.string().min(9),
   zaujem: z.string().optional().nullable(),
   nehnutelnost: z.string().optional().nullable(),
   horizont: z.string().optional().nullable(),

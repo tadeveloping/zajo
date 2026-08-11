@@ -38,7 +38,7 @@ export default function PredajPage() {
     if (!/^[\d\s+\-]{9,}$/.test(form.telefon.trim())) e.telefon = 'Vyplňte telefón'
     if (!form.typ) e.typ = 'Vyberte typ'
     if (form.lokalita.trim().length < 2) e.lokalita = 'Vyplňte lokalitu'
-    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Neplatný e-mail'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = 'Vyplňte platný e-mail'
     if (!gdprSuhlas) e.gdpr = 'Toto pole je povinné'
     return e
   }
@@ -173,7 +173,7 @@ export default function PredajPage() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="email">E-mail</label>
+                    <label htmlFor="email">E-mail *</label>
                     <input type="email" id="email" name="email" placeholder="jan@email.sk" autoComplete="email"
                       className={errors.email ? 'error' : ''}
                       value={form.email} onChange={e => setField('email', e.target.value)} />
