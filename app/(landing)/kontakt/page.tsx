@@ -51,9 +51,15 @@ export default function KontaktPage() {
     }
   }
 
+  function step2Disabled(prop: string, tl: string, cenaVal: string) {
+    if (!prop || !tl) return true
+    if (interest === 'kúpa' && !cenaVal.trim()) return true
+    return false
+  }
+
   function selectChip(val: string) {
     setTimeline(val)
-    setStep2BtnDisabled(!(property && val))
+    setStep2BtnDisabled(step2Disabled(property, val, cena))
   }
 
   function selectCallbackChip(val: string) {
@@ -226,19 +232,26 @@ export default function KontaktPage() {
             <>
               <div className="step-title">Aký typ nehnuteľnosti?</div>
               <div className="options" id="property-options">
-                <button className={`option${property === 'byt' ? ' selected' : ''}`} onClick={() => { const v = 'byt'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
+                <button className={`option${property === 'byt' ? ' selected' : ''}`} onClick={() => { const v = 'byt'; setProperty(v); setStep2BtnDisabled(step2Disabled(v, timeline, cena)) }}>
                   <div className="option-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22V12h6v10"/><path d="M8 6h.01M16 6h.01M8 10h.01M16 10h.01"/></svg></div>
                   <div><div className="option-label">Byt</div></div>
                 </button>
-                <button className={`option${property === 'dom' ? ' selected' : ''}`} onClick={() => { const v = 'dom'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
+                <button className={`option${property === 'dom' ? ' selected' : ''}`} onClick={() => { const v = 'dom'; setProperty(v); setStep2BtnDisabled(step2Disabled(v, timeline, cena)) }}>
                   <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 2l9 7.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2V9.5z"/><path d="M9 22V12h6v10"/></svg></div>
                   <div><div className="option-label">Dom</div></div>
                 </button>
-                <button className={`option${property === 'pozemok' ? ' selected' : ''}`} onClick={() => { const v = 'pozemok'; setProperty(v); setStep2BtnDisabled(!(v && timeline)) }}>
+                <button className={`option${property === 'pozemok' ? ' selected' : ''}`} onClick={() => { const v = 'pozemok'; setProperty(v); setStep2BtnDisabled(step2Disabled(v, timeline, cena)) }}>
                   <div className="option-icon"><svg viewBox="0 0 24 24"><path d="M2 22L12 2l10 20H2z"/><path d="M12 18h.01"/></svg></div>
                   <div><div className="option-label">Pozemok</div></div>
                 </button>
               </div>
+              {interest === 'kúpa' && (
+                <div className="form-group" style={{ marginTop: 28 }}>
+                  <label className="form-label">Aký je váš rozpočet?</label>
+                  <input className="form-input" type="text" id="cena" placeholder="Napr. do 150 000 €"
+                    value={cena} onChange={e => { setCena(e.target.value); setStep2BtnDisabled(step2Disabled(property, timeline, e.target.value)) }} />
+                </div>
+              )}
               <div style={{ marginTop: 28 }}>
                 <div className="step-label">Časový horizont</div>
                 <div className="step-title" style={{ fontSize: 20, marginBottom: 16 }}>Kedy to plánujete?</div>
@@ -253,13 +266,6 @@ export default function KontaktPage() {
                   ))}
                 </div>
               </div>
-              {interest === 'kúpa' && (
-                <div className="form-group" style={{ marginTop: 28 }}>
-                  <label className="form-label">Aký je váš rozpočet? (voliteľné)</label>
-                  <input className="form-input" type="text" id="cena" placeholder="Napr. do 150 000 €"
-                    value={cena} onChange={e => setCena(e.target.value)} />
-                </div>
-              )}
               <button className="btn-next" id="btn-step2" disabled={step2BtnDisabled} onClick={() => goToStep(3)}>Pokračovať ďalej</button>
               <button className="btn-back" onClick={() => goToStep(1)}>← Späť</button>
             </>
