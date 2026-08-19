@@ -72,7 +72,7 @@ create table leads_cally (
   nehnutelnost text,
   horizont text,
   sprava text,
-  zavolame boolean default false,
+  zavolame text, -- 'dnes' | 'zajtra' | 'kedykoľvek' | null (which callback slot they picked, if any)
   score text default 'COLD', -- HOT / WARM / COLD
   status text default 'novy' not null,
   notes text,

@@ -127,7 +127,7 @@ export default function KontaktPage() {
                 interest === 'kúpa' && cena.trim() ? `Rozpočet: ${cena.trim()}` : null,
                 message.trim() || null,
               ].filter(Boolean).join('\n\n') || null,
-          zavolame: !!callbackTime,
+          zavolame: callbackTime || null,
           score: getScore(),
           source: 'cally',
           utm_source: getUtm('utm_source'),

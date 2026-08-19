@@ -103,7 +103,7 @@ export interface LeadCally {
   nehnutelnost: string | null
   horizont: string | null
   sprava: string | null
-  zavolame: boolean
+  zavolame: string | null
   score: LeadScore
   status: LeadStatus
   notes: string | null

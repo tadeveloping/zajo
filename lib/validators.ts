@@ -98,7 +98,7 @@ export const leadCallySchema = z.object({
   nehnutelnost: z.string().optional().nullable(),
   horizont: z.string().optional().nullable(),
   sprava: z.string().optional().nullable(),
-  zavolame: z.boolean().optional().default(false),
+  zavolame: z.string().optional().nullable(),
   score: z.enum(['HOT', 'WARM', 'COLD']).optional().default('COLD'),
   source: z.string().optional().default('cally'),
   utm_source: z.string().optional().nullable(),

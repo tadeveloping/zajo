@@ -792,8 +792,10 @@ function CallyFields({ lead }: { lead: LeadCally & { _type: 'cally' } }) {
       <Field label="Nehnuteľnosť" value={lead.nehnutelnost} />
       <Field label="Horizont" value={lead.horizont} />
       <div className="flex gap-2 text-sm">
-        <span className="text-muted min-w-[80px] flex-shrink-0">Zavolame:</span>
-        <span className="text-soft">{lead.zavolame ? 'Áno' : 'Nie'}</span>
+        <span className="text-muted min-w-[80px] flex-shrink-0">Zavolať:</span>
+        <span className="text-soft">
+          {lead.zavolame ? lead.zavolame.charAt(0).toUpperCase() + lead.zavolame.slice(1) : 'Nevybral'}
+        </span>
       </div>
       {lead.sprava && (
         <div className="text-sm">
