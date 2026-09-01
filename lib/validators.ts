@@ -103,6 +103,7 @@ export const leadCallySchema = z.object({
   source: z.string().optional().default('cally'),
   utm_source: z.string().optional().nullable(),
   utm_campaign: z.string().optional().nullable(),
+  newsletter_opt: z.boolean().optional().default(false),
 })
 
 export const updateLeadStatusSchema = z.object({

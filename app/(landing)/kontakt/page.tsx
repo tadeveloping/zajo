@@ -28,6 +28,7 @@ export default function KontaktPage() {
   const [email, setEmail] = useState('')
   const [callbackTime, setCallbackTime] = useState('')
   const [gdprSuhlas, setGdprSuhlas] = useState(false)
+  const [nlSuhlas, setNlSuhlas] = useState(false)
   const [step2BtnDisabled, setStep2BtnDisabled] = useState(true)
   const [viewingBtnDisabled, setViewingBtnDisabled] = useState(true)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -132,6 +133,7 @@ export default function KontaktPage() {
           source: 'cally',
           utm_source: getUtm('utm_source'),
           utm_campaign: getUtm('utm_campaign'),
+          newsletter_opt: nlSuhlas,
         }),
       })
       if (!res.ok) {
@@ -343,7 +345,25 @@ export default function KontaktPage() {
               </div>
             </div>
           )}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 14, marginBottom: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 14 }}>
+            <input
+              type="checkbox" id="nlSuhlas"
+              style={{
+                WebkitAppearance: 'none', appearance: 'none' as const,
+                width: 16, height: 16, padding: 0, flexShrink: 0, marginTop: 2,
+                border: '1.5px solid var(--zajo-gray-border)', borderRadius: 4,
+                background: nlSuhlas ? '#E8711A' : 'var(--zajo-gray)',
+                borderColor: nlSuhlas ? '#E8711A' : 'var(--zajo-gray-border)',
+                cursor: 'pointer', position: 'relative', transition: 'background 120ms, border-color 120ms',
+              }}
+              checked={nlSuhlas}
+              onChange={e => setNlSuhlas(e.target.checked)}
+            />
+            <label htmlFor="nlSuhlas" style={{ fontSize: 12, color: 'var(--zajo-text-muted)', lineHeight: 1.5, cursor: 'pointer' }}>
+              Súhlasím so zasielaním nových ponúk a aktuálnych nehnuteľností na môj email (<a href="/zasady-ochrany-osobnych-udajov" target="_blank" style={{ color: 'var(--zajo-cream)', textDecoration: 'underline' }}>čo to znamená</a>).
+            </label>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginTop: 10, marginBottom: 4 }}>
             <input
               type="checkbox" id="gdprSuhlas"
               style={{

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { leadCallySchema } from '@/lib/validators'
 import { sendLeadNotification } from '@/lib/leadNotification'
+import { resend, FROM_EMAIL } from '@/lib/resend'
 import { getAdminUser, unauthorized } from '@/lib/adminAuth'
 
 export const runtime = 'nodejs'
@@ -37,21 +38,43 @@ export async function POST(req: Request) {
   const parsed = leadCallySchema.safeParse(body)
   if (!parsed.success)
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400, headers: CORS_HEADERS })
+  const { newsletter_opt, ...insertData } = parsed.data
   const { data, error } = await supabaseAdmin
     .from('leads_cally')
-    .insert(parsed.data)
+    .insert(insertData)
     .select()
     .single()
   if (error)
     return NextResponse.json({ error: error.message }, { status: 500, headers: CORS_HEADERS })
 
-  const crmUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'}/admin/crm`
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
+  const crmUrl = `${appUrl}/admin/crm`
 
   await sendLeadNotification({
     name: data.name, phone: data.phone, email: data.email,
     source: data.source ?? 'cally', type: 'cally',
     message: data.sprava, score: data.score, leadId: data.id, crmUrl,
   }).catch(err => console.error('lead notification failed', err))
+
+  if (newsletter_opt && data.email) {
+    try {
+      await supabaseAdmin.from('contacts').upsert(
+        { name: data.name, email: data.email, phone: data.phone ?? null, source: 'kontakt_form', subscribed: true },
+        { onConflict: 'email' }
+      )
+      const { data: newsletterProps } = await supabaseAdmin
+        .from('newsletter_properties').select('*').order('position')
+      const properties = (newsletterProps ?? []).map((row: { title?: string | null; price?: string | null; location?: string | null; area?: string | null; image_url?: string | null; url: string }) => ({
+        title: row.title ?? '', price: row.price ?? 'Cena na vyžiadanie',
+        location: row.location ?? 'Trenčín a okolie', area: row.area ?? null, imageUrl: row.image_url ?? null, url: row.url,
+      }))
+      const { subject: ws, html: wh } = (await import('@/lib/emailTemplates')).newsletterWelcomeEmail(
+        data.name, `${appUrl}/odhlasit?email=${encodeURIComponent(data.email)}`,
+        properties.length > 0 ? properties : undefined
+      )
+      await resend.emails.send({ from: FROM_EMAIL, to: data.email, subject: ws, html: wh })
+    } catch (err) { console.error('newsletter opt-in failed', err) }
+  }
 
   return NextResponse.json(data, { status: 201, headers: CORS_HEADERS })
 }
