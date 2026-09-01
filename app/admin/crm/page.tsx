@@ -309,7 +309,7 @@ export default function CrmPage() {
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-10">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">
@@ -598,7 +598,7 @@ function DetailPanel({
     <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60" />
       <div
-        className="relative w-full max-w-md bg-panel border-l border-border h-full p-6 overflow-y-auto shadow-2xl"
+        className="relative w-full max-w-md bg-panel border-l border-border h-full p-4 sm:p-6 overflow-y-auto shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">

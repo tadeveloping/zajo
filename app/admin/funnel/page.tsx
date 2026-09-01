@@ -70,7 +70,7 @@ export default function FunnelPage() {
     : 0
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-10">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div className="flex items-center justify-between mb-8">
         <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">
           ← Späť na dashboard
@@ -78,7 +78,7 @@ export default function FunnelPage() {
         <div className="text-accent text-xs uppercase tracking-widest font-bold">NÁVŠTEVNOSŤ</div>
       </div>
 
-      <header className="flex items-center justify-between mb-6 flex-wrap gap-3">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Návštevnosť formulárov</h1>
           <p className="text-muted text-sm mt-1">Koľko ľudí prišlo na stránku, koľko sa dostalo ďalej a koľko odoslalo formulár.</p>
@@ -112,22 +112,22 @@ export default function FunnelPage() {
               const counts = data.funnels[form] || {}
               const base = counts[stages[0].key] || 0
               return (
-                <div key={form} className="bg-panel border border-border rounded-xl p-5 shadow-sm">
+                <div key={form} className="bg-panel border border-border rounded-xl p-4 sm:p-5 shadow-sm">
                   <div className="text-sm font-bold text-gray-900 mb-4">{FORM_LABELS[form]}</div>
                   <div className="space-y-2">
                     {stages.map(s => {
                       const n = counts[s.key] || 0
                       const pct = base > 0 ? Math.round((n / base) * 100) : 0
                       return (
-                        <div key={s.key} className="flex items-center gap-3">
-                          <div className="w-40 text-xs text-muted flex-shrink-0">{s.label}</div>
+                        <div key={s.key} className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-20 sm:w-40 text-[11px] sm:text-xs text-muted flex-shrink-0 leading-tight">{s.label}</div>
                           <div className="flex-1 bg-panel2 rounded-full h-6 overflow-hidden relative">
                             <div
                               className="h-full bg-accent/70 rounded-full transition-all"
                               style={{ width: `${Math.max(pct, n > 0 ? 4 : 0)}%` }}
                             />
                           </div>
-                          <div className="w-24 text-right text-xs font-semibold text-gray-900 flex-shrink-0">
+                          <div className="w-14 sm:w-24 text-right text-[11px] sm:text-xs font-semibold text-gray-900 flex-shrink-0">
                             {n} {base > 0 && <span className="text-muted font-normal">({pct}%)</span>}
                           </div>
                         </div>
@@ -139,7 +139,7 @@ export default function FunnelPage() {
             })}
           </div>
 
-          <div className="bg-panel border border-border rounded-xl p-5 shadow-sm">
+          <div className="bg-panel border border-border rounded-xl p-4 sm:p-5 shadow-sm">
             <div className="text-sm font-bold text-gray-900 mb-4">Odkiaľ prišli návštevníci</div>
             {Object.keys(data.sources).length === 0 ? (
               <div className="text-muted text-sm">Zatiaľ žiadne dáta pre zvolené obdobie.</div>
@@ -150,12 +150,12 @@ export default function FunnelPage() {
                   .map(([source, n]) => {
                     const pct = totalViews > 0 ? Math.round((n / totalViews) * 100) : 0
                     return (
-                      <div key={source} className="flex items-center gap-3">
-                        <div className="w-40 text-xs text-muted flex-shrink-0">{getUtmLabel(source)}</div>
+                      <div key={source} className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-20 sm:w-40 text-[11px] sm:text-xs text-muted flex-shrink-0 leading-tight">{getUtmLabel(source)}</div>
                         <div className="flex-1 bg-panel2 rounded-full h-6 overflow-hidden">
                           <div className="h-full bg-blue-400/70 rounded-full" style={{ width: `${Math.max(pct, 4)}%` }} />
                         </div>
-                        <div className="w-24 text-right text-xs font-semibold text-gray-900 flex-shrink-0">
+                        <div className="w-14 sm:w-24 text-right text-[11px] sm:text-xs font-semibold text-gray-900 flex-shrink-0">
                           {n} <span className="text-muted font-normal">({pct}%)</span>
                         </div>
                       </div>

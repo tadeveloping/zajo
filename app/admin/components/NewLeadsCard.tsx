@@ -37,14 +37,14 @@ export function NewLeadsCard() {
           ? 'linear-gradient(135deg, rgba(232,113,26,0.14), rgba(232,113,26,0.04))'
           : '#ffffff',
         border: `1px solid ${n > 0 ? 'rgba(232,113,26,0.4)' : '#e5e7eb'}`,
-        borderRadius: '14px', padding: '22px 24px', height: '100%',
+        borderRadius: '14px', height: '100%',
         cursor: 'pointer',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+      }} className="px-4 py-4 sm:px-6 sm:py-[22px]">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6b7280' }}>Nové CRM leady</span>
-          <span style={{ fontSize: '20px' }}>🔥</span>
+          <span style={{ fontSize: '18px' }}>🔥</span>
         </div>
-        <div style={{ fontSize: '40px', fontWeight: 800, color: n > 0 ? '#E8711A' : '#111827', letterSpacing: '-0.04em', lineHeight: 1 }}>
+        <div style={{ fontWeight: 800, color: n > 0 ? '#E8711A' : '#111827', letterSpacing: '-0.04em', lineHeight: 1 }} className="text-[28px] sm:text-[40px]">
           {count === null ? '…' : n}
         </div>
         <div style={{ marginTop: '10px', fontSize: '12px', fontWeight: 600, color: '#E8711A' }}>

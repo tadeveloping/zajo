@@ -59,7 +59,7 @@ export default function KontaktyPage() {
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div className="flex items-center justify-between mb-8">
         <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">
           ← Späť na dashboard
@@ -67,7 +67,7 @@ export default function KontaktyPage() {
         <div className="text-accent text-xs uppercase tracking-widest font-bold">Kontakty</div>
       </div>
 
-      <header className="flex items-center justify-between mb-6 flex-wrap gap-3">
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-3">
         <div>
           <h1 className="text-3xl font-bold">Správa kontaktov</h1>
           <p className="text-muted text-sm mt-1">{contacts.length} kontaktov celkom</p>

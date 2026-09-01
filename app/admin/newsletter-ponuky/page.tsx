@@ -140,16 +140,10 @@ export default function NewsletterPonukyPage() {
 
   return (
     <div className="min-h-screen" style={{ background: '#f6f7f9' }}>
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
         {/* ── Header ── */}
-        <header
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            marginBottom: '48px', paddingBottom: '28px',
-            borderBottom: '1px solid #e5e7eb',
-          }}
-        >
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-12 pb-5 sm:pb-7 border-b border-[#e5e7eb]">
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -163,7 +157,7 @@ export default function NewsletterPonukyPage() {
             </h1>
           </div>
 
-          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <nav className="flex flex-wrap gap-2 items-center">
             <NavLink href="/admin" icon="🏠">Admin</NavLink>
             <NavLink href="/admin/crm" icon="👥">CRM</NavLink>
             <NavLink href="/admin/kontakty" icon="📋">Kontakty</NavLink>
@@ -200,7 +194,7 @@ export default function NewsletterPonukyPage() {
             Načítavam...
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '18px' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-[18px]">
             {slots.map((slot) => (
               <SlotCard
                 key={slot.position}

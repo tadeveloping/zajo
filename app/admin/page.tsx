@@ -39,15 +39,10 @@ export default async function AdminPage() {
   return (
     <div className="min-h-screen" style={{ background: '#f6f7f9' }}>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-10">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
         {/* ── Header ── */}
-        <header style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          marginBottom: '48px',
-          paddingBottom: '28px',
-          borderBottom: '1px solid #e5e7eb',
-        }}>
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-12 pb-5 sm:pb-7 border-b border-[#e5e7eb]">
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -63,7 +58,7 @@ export default async function AdminPage() {
           </div>
 
           {/* Nav */}
-          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <nav className="flex flex-wrap gap-2 items-center">
             <NavLink href="/admin/crm" icon="👥">CRM</NavLink>
             <NavLink href="/admin/kontakty" icon="📋">Kontakty</NavLink>
             <NavLink href="/admin/newsletter-ponuky" icon="🏠">Ponuky</NavLink>
@@ -93,7 +88,7 @@ export default async function AdminPage() {
         )}
 
         {/* ── Stat cards ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '40px' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-3.5 mb-8 sm:mb-10">
           <StatCard
             label="Kontakty celkovo"
             value={stats.total}
@@ -139,7 +134,8 @@ export default async function AdminPage() {
                 Zatiaľ žiadne odoslané newslettre.
               </div>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+              <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', minWidth: 480 }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#f9fafb' }}>
                     <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Predmet</th>
@@ -170,6 +166,7 @@ export default async function AdminPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
         </section>
@@ -201,13 +198,13 @@ function StatCard({ label, value, icon, color, borderColor, valueColor }: {
   return (
     <div style={{
       background: color, border: `1px solid ${borderColor}`,
-      borderRadius: '14px', padding: '22px 24px',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+      borderRadius: '14px',
+    }} className="px-4 py-4 sm:px-6 sm:py-[22px]">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
         <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#6b7280' }}>{label}</span>
-        <span style={{ fontSize: '20px' }}>{icon}</span>
+        <span style={{ fontSize: '18px' }}>{icon}</span>
       </div>
-      <div style={{ fontSize: '40px', fontWeight: 800, color: valueColor, letterSpacing: '-0.04em', lineHeight: 1 }}>
+      <div style={{ fontWeight: 800, color: valueColor, letterSpacing: '-0.04em', lineHeight: 1 }} className="text-[28px] sm:text-[40px]">
         {value}
       </div>
     </div>

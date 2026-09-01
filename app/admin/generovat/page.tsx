@@ -17,14 +17,14 @@ const BADGE_OPTIONS = ["—", "NOVÉ", "ZNÍŽENÁ CENA", "REZERVOVANÉ"] as con
 
 function StepNav({ current }: { current: Step }) {
   return (
-    <div className="flex items-center gap-3 mb-10">
+    <div className="flex items-center flex-wrap gap-2 sm:gap-3 mb-8 sm:mb-10">
       {STEPS.map((s, i) => {
         const active = s.id === current;
         const done = s.id < current;
         return (
-          <div key={s.id} className="flex items-center gap-3">
+          <div key={s.id} className="flex items-center gap-2 sm:gap-3">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition ${
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition flex-shrink-0 ${
                 active
                   ? "bg-accent text-white"
                   : done
@@ -34,10 +34,10 @@ function StepNav({ current }: { current: Step }) {
             >
               {done ? "✓" : s.id}
             </div>
-            <span className={`text-sm font-semibold ${active ? "text-gray-900" : "text-muted"}`}>
+            <span className={`text-xs sm:text-sm font-semibold whitespace-nowrap ${active ? "text-gray-900" : "text-muted"}`}>
               {s.label}
             </span>
-            {i < STEPS.length - 1 && <div className="w-10 h-px bg-border ml-2" />}
+            {i < STEPS.length - 1 && <div className="w-5 sm:w-10 h-px bg-border ml-1 sm:ml-2 flex-shrink-0" />}
           </div>
         );
       })}
@@ -143,7 +143,7 @@ export default function GenerovatPage() {
   }, [content]);
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-10">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div className="flex items-center justify-between mb-8">
         <Link href="/admin" className="text-muted hover:text-gray-900 text-sm">← Späť na dashboard</Link>
         <div className="text-accent text-xs uppercase tracking-widest font-bold">Generovať newsletter</div>
@@ -361,14 +361,14 @@ export default function GenerovatPage() {
 
               <Field label="CTA text" value={content.ctaText} onChange={(v) => setContent({ ...content, ctaText: v })} />
 
-              <div className="flex justify-between items-center pt-4">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 pt-4">
                 <button
                   onClick={() => setShowPreview((v) => !v)}
                   className="px-4 py-2 rounded-md border border-border hover:border-accent transition text-sm"
                 >
                   {showPreview ? "Skryť náhľad" : "Náhľad"}
                 </button>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   <button
                     onClick={handleGenerate}
                     disabled={generating}
@@ -414,7 +414,7 @@ export default function GenerovatPage() {
 
           {sendError && <div className="mt-4 text-red-600 text-sm">{sendError}</div>}
 
-          <div className="flex justify-between items-center mt-6">
+          <div className="flex flex-wrap justify-between items-center gap-3 mt-6">
             <button onClick={() => setStep(2)} className="text-muted hover:text-gray-900 text-sm">← Späť na úpravy</button>
             <button
               onClick={handleSend}
