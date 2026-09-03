@@ -662,7 +662,7 @@ export default function OceneniePage() {
                     <label className="consent-item">
                       <input type="checkbox" id="nlSuhlas" name="nlSuhlas"
                         checked={nlSuhlas} onChange={e => setNlSuhlas(e.target.checked)} />
-                      <span>Súhlasím so zasielaním nových ponúk a aktuálnych nehnuteľností priamo na môj email</span>
+                      <span>Súhlasím so zasielaním nových ponúk a aktuálnych nehnuteľností priamo na môj email (<a href="/zasady-ochrany-osobnych-udajov" target="_blank" style={{ color: 'inherit', textDecoration: 'underline' }}>čo to znamená</a>)</span>
                     </label>
                     <label className="consent-item">
                       <input type="checkbox" id="gdprSuhlas" name="gdprSuhlas"
