@@ -44,6 +44,21 @@ const SCORE_COLORS: Record<LeadScore, string> = {
   COLD: 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
 }
 
+// A kontakt-form lead carries the interest the person picked in step 1.
+// Surface that as the lead's "type" in the CRM so a predaj enquiry shows
+// as Predaj, not the generic "Kontakt".
+const ZAUJEM_LABELS: Record<string, string> = {
+  'kúpa': 'Kúpa',
+  'predaj': 'Predaj',
+  'ocenenie': 'Ocenenie',
+  'obhliadka': 'Obhliadka',
+  'iné': 'Otázka',
+}
+
+function callyTypeLabel(zaujem: string | null): string {
+  return (zaujem && ZAUJEM_LABELS[zaujem]) || 'Kontakt'
+}
+
 type Tab = 'vsetky' | 'predaj' | 'ocenenie' | 'cally'
 
 type AnyLead = (LeadPredaj & { _type: 'predaj' }) | (LeadOcenenie & { _type: 'ocenenie' }) | (LeadCally & { _type: 'cally' })
@@ -516,7 +531,7 @@ function LeadRow({
   isSelected: boolean
   utmLabel: string
 }) {
-  const typeLabel = lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Kontakt'
+  const typeLabel = lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : callyTypeLabel((lead as LeadCally).zaujem)
   const typeColor = lead._type === 'predaj' ? 'text-green-700' : lead._type === 'ocenenie' ? 'text-yellow-700' : 'text-purple-700'
 
   let info = '—'
@@ -528,7 +543,7 @@ function LeadRow({
     info = [l.typ_nehnutelnosti, l.lokalita].filter(Boolean).join(' · ') || '—'
   } else {
     const l = lead as LeadCally & { _type: 'cally' }
-    info = [l.zaujem, l.nehnutelnost].filter(Boolean).join(' · ') || '—'
+    info = [l.nehnutelnost, l.horizont].filter(Boolean).join(' · ') || '—'
   }
 
   return (
@@ -606,7 +621,7 @@ function DetailPanel({
             <h2 className="text-xl font-bold text-gray-900">{lead.name}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-muted">
-                {lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : 'Kontakt'}
+                {lead._type === 'predaj' ? 'Predaj' : lead._type === 'ocenenie' ? 'Ocenenie' : callyTypeLabel((lead as LeadCally).zaujem)}
               </span>
               {lead._type === 'cally' && (
                 <ScoreBadge score={(lead as LeadCally & { _type: 'cally' }).score} />
