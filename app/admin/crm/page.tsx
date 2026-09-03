@@ -285,20 +285,31 @@ export default function CrmPage() {
     ...callyLeads.map(l => ({ ...l, _type: 'cally' as const })),
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
+  // Kontakt-form leads whose interest is "predaj" belong with the other predaj
+  // leads, so they show under the Predaj tab instead of Kontakt. They stay in the
+  // leads_cally table (no data moved) — this only changes which tab lists them.
+  const callyPredaj = callyLeads.filter(l => l.zaujem === 'predaj')
+  const callyRest = callyLeads.filter(l => l.zaujem !== 'predaj')
+
+  const byNewest = (a: AnyLead, b: AnyLead) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+
   // Derive counts from loaded data — always in sync, no separate API needed
   const derivedCounts = {
-    predaj: predajLeads.filter(l => l.status === 'novy').length,
+    predaj: [...predajLeads, ...callyPredaj].filter(l => l.status === 'novy').length,
     ocenenie: oceneniaLeads.filter(l => l.status === 'novy').length,
-    cally: callyLeads.filter(l => l.status === 'novy').length,
+    cally: callyRest.filter(l => l.status === 'novy').length,
     total: [...predajLeads, ...oceneniaLeads, ...callyLeads].filter(l => l.status === 'novy').length,
   }
 
   function getVisibleLeads(): AnyLead[] {
     let list: AnyLead[] = []
     if (tab === 'vsetky') list = allLeads
-    else if (tab === 'predaj') list = predajLeads.map(l => ({ ...l, _type: 'predaj' as const }))
+    else if (tab === 'predaj') list = [
+      ...predajLeads.map(l => ({ ...l, _type: 'predaj' as const })),
+      ...callyPredaj.map(l => ({ ...l, _type: 'cally' as const })),
+    ].sort(byNewest)
     else if (tab === 'ocenenie') list = oceneniaLeads.map(l => ({ ...l, _type: 'ocenenie' as const }))
-    else list = callyLeads.map(l => ({ ...l, _type: 'cally' as const }))
+    else list = callyRest.map(l => ({ ...l, _type: 'cally' as const }))
     if (statusFilter !== 'vsetky') list = list.filter(l => l.status === statusFilter)
     return list
   }
