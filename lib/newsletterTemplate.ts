@@ -39,13 +39,38 @@ function safeHtml(s: string): string {
     .replace(/&amp;(?=(?:strong|br))/g, "&");
 }
 
+// Show the area with a unit and the rooms with the right Slovak word, so a bare
+// value entered in the offer (e.g. "6" or "85m2") never renders as a lone number.
+// If the value already carries a unit/word, it's left as-is (just m2 → m²).
+function formatArea(a: string | number | null | undefined): string | null {
+  if (a == null) return null;
+  const s = String(a).trim();
+  if (!s) return null;
+  if (/m²|m2|\bm\b/i.test(s)) return `<strong>${esc(s.replace(/m2/gi, "m²"))}</strong>`;
+  if (/^\d[\d\s.,]*$/.test(s)) return `<strong>${esc(s)}&nbsp;m²</strong>`;
+  return `<strong>${esc(s)}</strong>`;
+}
+
+function formatRooms(r: string | number | null | undefined): string | null {
+  if (r == null) return null;
+  const s = String(r).trim();
+  if (!s) return null;
+  if (/izb|izieb/i.test(s)) return `<strong>${esc(s)}</strong>`;
+  const n = parseInt(s, 10);
+  if (String(n) === s) {
+    const word = n === 1 ? "izba" : n >= 2 && n <= 4 ? "izby" : "izieb";
+    return `<strong>${esc(s)}&nbsp;${word}</strong>`;
+  }
+  return `<strong>${esc(s)}</strong>`;
+}
+
 function buildPropertyCard(p: NewsletterProperty, idx: number): string {
   const img = p.imageUrl || PLACEHOLDER_IMAGES[idx % PLACEHOLDER_IMAGES.length];
   const badgeHtml = p.badge
     ? `<tr><td style="background:${p.badge === "ZNÍŽENÁ CENA" ? "#1C1917" : "#E0882C"};padding:6px 18px;height:28px;line-height:1;"><span style="font-family:'Montserrat',Arial,Helvetica,sans-serif;font-size:9px;font-weight:800;color:#FFFFFF;letter-spacing:2.5px;text-transform:uppercase;">${esc(p.badge)}</span></td></tr>`
     : `<tr><td style="height:28px;padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>`;
 
-  const meta = [p.area ? `<strong>${esc(String(p.area))}</strong>` : null, p.rooms ? `<strong>${esc(String(p.rooms))}</strong>` : null]
+  const meta = [formatArea(p.area), formatRooms(p.rooms)]
     .filter(Boolean)
     .join("&nbsp;·&nbsp;");
 

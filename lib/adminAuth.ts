@@ -27,29 +27,61 @@ function isAdminEmail(email: string): boolean {
   return adminEmails().includes(email.toLowerCase())
 }
 
-// Resolve the access token in the cookie to the logged-in user's email.
+// Resolve the logged-in user's email from the cookies. Tries the access token
+// first; if it's missing or expired, falls back to the refresh token — the same
+// silent refresh middleware does — so admin API routes keep working during a
+// long session instead of 401-ing once the ~1h access token lapses (middleware
+// only refreshes on /admin navigation, not on /api calls).
 async function getEmailFromToken(): Promise<string | null> {
-  const token = (await cookies()).get('sb-access-token')?.value
-  if (!token) return null
+  const store = await cookies()
+  const token = store.get('sb-access-token')?.value
+  const refreshToken = store.get('sb-refresh-token')?.value
 
-  const cached = userCache.get(token)
-  if (cached && cached.expires > Date.now()) return cached.email
-
-  try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-      headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY },
-    })
-    if (!res.ok) {
-      userCache.set(token, { email: null, expires: Date.now() + CACHE_TTL_MS })
-      return null
+  if (token) {
+    const cached = userCache.get(token)
+    if (cached && cached.expires > Date.now()) {
+      if (cached.email) return cached.email
+    } else {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY },
+        })
+        if (res.ok) {
+          const user = await res.json()
+          const email = user?.email ? (user.email as string) : null
+          userCache.set(token, { email, expires: Date.now() + CACHE_TTL_MS })
+          if (email) return email
+        } else {
+          userCache.set(token, { email: null, expires: Date.now() + CACHE_TTL_MS })
+        }
+      } catch {
+        // fall through to refresh
+      }
     }
-    const user = await res.json()
-    const email = user?.email ? (user.email as string) : null
-    userCache.set(token, { email, expires: Date.now() + CACHE_TTL_MS })
-    return email
-  } catch {
-    return null
   }
+
+  // Access token missing/expired — try to resolve the email via the refresh token.
+  if (refreshToken) {
+    const cached = userCache.get(refreshToken)
+    if (cached && cached.expires > Date.now()) return cached.email
+    try {
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        const email = data?.user?.email ? (data.user.email as string) : null
+        userCache.set(refreshToken, { email, expires: Date.now() + CACHE_TTL_MS })
+        return email
+      }
+    } catch {
+      // give up below
+    }
+  }
+
+  return null
 }
 
 // Any authenticated user (admin OR maklér). Returns null when not logged in.

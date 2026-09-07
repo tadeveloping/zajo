@@ -33,7 +33,12 @@ export function SentNewsletters({ issues }: { issues: IssueRow[] }) {
     try {
       const res = await fetch(`/api/issues/${row.id}`, { cache: 'no-store' })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Nepodarilo sa načítať')
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          throw new Error('Vaše prihlásenie vypršalo. Obnovte stránku (F5) a skúste znova.')
+        }
+        throw new Error(data.error || 'Nepodarilo sa načítať')
+      }
       setOpen(data)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Chyba')
