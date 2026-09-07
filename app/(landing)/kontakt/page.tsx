@@ -97,6 +97,12 @@ export default function KontaktPage() {
     return new URLSearchParams(window.location.search).get(key) || null
   }
 
+  // Maklér's personal contact link: /kontakt?m=<slug> assigns the lead to them.
+  function getMaklerSlug() {
+    if (typeof window === 'undefined') return null
+    return new URLSearchParams(window.location.search).get('m') || null
+  }
+
   function formatViewingDate(iso: string) {
     if (!iso) return ''
     const [y, m, d] = iso.split('-')
@@ -134,6 +140,7 @@ export default function KontaktPage() {
           utm_source: getUtm('utm_source'),
           utm_campaign: getUtm('utm_campaign'),
           newsletter_opt: nlSuhlas,
+          makler_slug: getMaklerSlug(),
         }),
       })
       if (!res.ok) {

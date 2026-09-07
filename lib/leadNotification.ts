@@ -10,10 +10,14 @@ interface LeadNotificationData {
   score?: string | null // for cally
   leadId: string
   crmUrl: string
+  // When the lead is assigned to a specific maklér (personal contact link),
+  // notify them. Unassigned leads fall back to LEAD_NOTIFICATION_EMAIL (Tomáš).
+  notifyEmail?: string | null
+  assigneeName?: string | null
 }
 
 export async function sendLeadNotification(data: LeadNotificationData) {
-  const notificationEmail = process.env.LEAD_NOTIFICATION_EMAIL
+  const notificationEmail = data.notifyEmail || process.env.LEAD_NOTIFICATION_EMAIL
   if (!notificationEmail) return
 
   const isHot = data.score === 'HOT' ||
@@ -32,6 +36,7 @@ export async function sendLeadNotification(data: LeadNotificationData) {
         <tr><td style="padding:8px 0;color:#8A8279">Email</td><td style="padding:8px 0">${data.email || '—'}</td></tr>
         <tr><td style="padding:8px 0;color:#8A8279">Typ</td><td style="padding:8px 0">${data.type}</td></tr>
         <tr><td style="padding:8px 0;color:#8A8279">Zdroj</td><td style="padding:8px 0">${data.source}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8279">Priradené</td><td style="padding:8px 0">${data.assigneeName || 'Nepriradené (zdieľané)'}</td></tr>
         ${data.score ? `<tr><td style="padding:8px 0;color:#8A8279">Skóre</td><td style="padding:8px 0;font-weight:700;color:${data.score === 'HOT' ? '#ef4444' : data.score === 'WARM' ? '#f97316' : '#60a5fa'}">${data.score}</td></tr>` : ''}
         ${data.message ? `<tr><td style="padding:8px 0;color:#8A8279;vertical-align:top">Správa</td><td style="padding:8px 0">${data.message}</td></tr>` : ''}
       </table>

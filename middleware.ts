@@ -12,8 +12,23 @@ const tokenCache = new Map<string, { valid: boolean; expires: number }>()
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || ''
 
-  if (hostname.startsWith('kontakt.') && request.nextUrl.pathname === '/') {
-    return NextResponse.rewrite(new URL('/kontakt', request.url))
+  // kontakt.zajoreality.sk → the contact form. Preserve the query string so a
+  // maklér's personal link (?m=<slug>) survives the rewrite. Also treat a single
+  // clean path segment as a maklér slug (kontakt.zajoreality.sk/jan → ?m=jan),
+  // for prettier shareable links.
+  if (hostname.startsWith('kontakt.')) {
+    const path = request.nextUrl.pathname
+    if (path === '/') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/kontakt'
+      return NextResponse.rewrite(url)
+    }
+    if (/^\/[a-z0-9-]+$/.test(path) && path !== '/kontakt') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/kontakt'
+      if (!url.searchParams.get('m')) url.searchParams.set('m', path.slice(1))
+      return NextResponse.rewrite(url)
+    }
   }
 
   if (!request.nextUrl.pathname.startsWith('/admin')) {

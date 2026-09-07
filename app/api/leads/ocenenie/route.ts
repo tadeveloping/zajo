@@ -4,8 +4,9 @@ import { leadOceneniaSchema } from '@/lib/validators'
 import { sendLeadNotification } from '@/lib/leadNotification'
 import { leadConfirmationEmail } from '@/lib/emailTemplates'
 import { resend, FROM_EMAIL } from '@/lib/resend'
-import { getAdminUser, unauthorized } from '@/lib/adminAuth'
+import { getSessionUser, unauthorized } from '@/lib/adminAuth'
 import { withNewsletterStatus } from '@/lib/leads'
+import { withAssignee } from '@/lib/makleri'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -21,13 +22,17 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-  if (!(await getAdminUser())) return unauthorized()
-  const { data, error } = await supabaseAdmin
-    .from('leads_ocenenie')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const session = await getSessionUser()
+  if (!session) return unauthorized()
+  let query = supabaseAdmin.from('leads_ocenenie').select('*').order('created_at', { ascending: false })
+  if (session.role !== 'admin') {
+    query = session.maklerId
+      ? query.or(`assigned_to.eq.${session.maklerId},assigned_to.is.null`)
+      : query.is('assigned_to', null)
+  }
+  const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(await withNewsletterStatus(data))
+  return NextResponse.json(await withAssignee(await withNewsletterStatus(data)))
 }
 
 export async function POST(req: Request) {

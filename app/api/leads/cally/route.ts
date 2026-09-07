@@ -3,7 +3,8 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { leadCallySchema } from '@/lib/validators'
 import { sendLeadNotification } from '@/lib/leadNotification'
 import { resend, FROM_EMAIL } from '@/lib/resend'
-import { getAdminUser, unauthorized } from '@/lib/adminAuth'
+import { getSessionUser, unauthorized } from '@/lib/adminAuth'
+import { withAssignee, maklerIdBySlug, maklerEmailById } from '@/lib/makleri'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -19,13 +20,17 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-  if (!(await getAdminUser())) return unauthorized()
-  const { data, error } = await supabaseAdmin
-    .from('leads_cally')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const session = await getSessionUser()
+  if (!session) return unauthorized()
+  let query = supabaseAdmin.from('leads_cally').select('*').order('created_at', { ascending: false })
+  if (session.role !== 'admin') {
+    query = session.maklerId
+      ? query.or(`assigned_to.eq.${session.maklerId},assigned_to.is.null`)
+      : query.is('assigned_to', null)
+  }
+  const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json(await withAssignee(data))
 }
 
 export async function POST(req: Request) {
@@ -38,10 +43,14 @@ export async function POST(req: Request) {
   const parsed = leadCallySchema.safeParse(body)
   if (!parsed.success)
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400, headers: CORS_HEADERS })
-  const { newsletter_opt, ...insertData } = parsed.data
+  const { newsletter_opt, makler_slug, ...insertData } = parsed.data
+
+  // Personal contact link: /kontakt?m=<slug> auto-assigns the lead to that maklér.
+  const assignedTo = await maklerIdBySlug(makler_slug)
+
   const { data, error } = await supabaseAdmin
     .from('leads_cally')
-    .insert(insertData)
+    .insert({ ...insertData, assigned_to: assignedTo })
     .select()
     .single()
   if (error)
@@ -50,10 +59,15 @@ export async function POST(req: Request) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'
   const crmUrl = `${appUrl}/admin/crm`
 
+  // Route the notification: assigned lead → that maklér; unassigned → default (Tomáš).
+  const [{ assignee_name }] = await withAssignee([data])
+  const notifyEmail = assignedTo ? await maklerEmailById(assignedTo) : null
+
   await sendLeadNotification({
     name: data.name, phone: data.phone, email: data.email,
     source: data.source ?? 'cally', type: 'cally',
     message: data.sprava, score: data.score, leadId: data.id, crmUrl,
+    notifyEmail, assigneeName: assignee_name,
   }).catch(err => console.error('lead notification failed', err))
 
   if (newsletter_opt && data.email) {

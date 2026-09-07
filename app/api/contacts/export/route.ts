@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase";
-import { getAdminUser, unauthorized } from "@/lib/adminAuth";
+import { getAdminOnlyUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ function csvCell(v: unknown): string {
 }
 
 export async function GET() {
-  if (!(await getAdminUser())) return unauthorized();
+  if (!(await getAdminOnlyUser())) return unauthorized();
   const { data, error } = await supabaseAdmin
     .from("contacts")
     .select("*")

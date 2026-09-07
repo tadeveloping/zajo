@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { getAdminUser, unauthorized } from '@/lib/adminAuth'
+import { getAdminOnlyUser, unauthorized } from '@/lib/adminAuth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -14,7 +14,7 @@ interface EventRow {
 }
 
 export async function GET(req: Request) {
-  if (!(await getAdminUser())) return unauthorized()
+  if (!(await getAdminOnlyUser())) return unauthorized()
 
   const range = new URL(req.url).searchParams.get('range') || '30d'
   const days = RANGE_DAYS[range] ?? 30

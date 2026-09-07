@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getSessionUser } from "@/lib/adminAuth";
 import { LogoutButton } from "./components/LogoutButton";
 import { NewLeadsCard } from "./components/NewLeadsCard";
+import { MaklerLinkCard } from "./components/MaklerLinkCard";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -28,6 +30,64 @@ async function getStats() {
 }
 
 export default async function AdminPage() {
+  const session = await getSessionUser();
+  const isAdmin = session?.role === "admin";
+
+  // A maklér gets a leads-first dashboard with their personal link — no
+  // subscriber / newsletter data (admin-only).
+  if (session && !isAdmin) {
+    let slug: string | null = null;
+    if (session.maklerId) {
+      const { data } = await supabaseAdmin.from("makleri").select("slug").eq("id", session.maklerId).maybeSingle();
+      slug = (data as { slug: string } | null)?.slug ?? null;
+    }
+    return (
+      <div className="min-h-screen" style={{ background: "#f6f7f9" }}>
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+          <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 pb-5 border-b border-[#e5e7eb]">
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-v3.png" alt="Zajo Reality" style={{ height: 42, width: "auto", display: "block" }} />
+              <div style={{ width: 1, height: 32, background: "#e5e7eb" }} />
+              <h1 style={{ fontSize: 16, fontWeight: 700, color: "#6b7280", margin: 0 }}>Maklér</h1>
+            </div>
+            <nav className="flex flex-wrap gap-2 items-center">
+              <NavLink href="/admin/crm" icon="👥">Moje leady</NavLink>
+              <LogoutButton />
+            </nav>
+          </header>
+
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Vitajte{session.name ? `, ${session.name}` : ""}!</h2>
+            <p className="text-muted text-sm mt-1">Tu sú vaše leady a váš kontaktný link.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <Link href="/admin/crm" className="block">
+              <NewLeadsCard />
+            </Link>
+            {slug ? (
+              <MaklerLinkCard slug={slug} />
+            ) : (
+              <div style={{ background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 14, padding: 18, fontSize: 13, color: "#9a3412" }}>
+                Váš kontaktný link ešte nie je nastavený. Požiadajte administrátora o doplnenie.
+              </div>
+            )}
+          </div>
+
+          <Link
+            href="/admin/crm"
+            className="block text-center py-4 rounded-xl text-white font-bold"
+            style={{ background: "linear-gradient(135deg, #E8711A, #F5923D)", boxShadow: "0 4px 16px rgba(232,113,26,0.3)" }}
+          >
+            Otvoriť CRM →
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Admin dashboard.
   let stats = { total: 0, subscribed: 0, issuesCount: 0, recent: [] as Array<{ id: string; subject: string; sent_at: string; recipient_count: number }> };
   let dbError: string | null = null;
   try {
@@ -60,6 +120,7 @@ export default async function AdminPage() {
           {/* Nav */}
           <nav className="flex flex-wrap gap-2 items-center">
             <NavLink href="/admin/crm" icon="👥">CRM</NavLink>
+            <NavLink href="/admin/makleri" icon="🧑‍💼">Tím</NavLink>
             <NavLink href="/admin/kontakty" icon="📋">Kontakty</NavLink>
             <NavLink href="/admin/newsletter-ponuky" icon="🏠">Ponuky</NavLink>
             <NavLink href="/admin/funnel" icon="📊">Návštevnosť</NavLink>

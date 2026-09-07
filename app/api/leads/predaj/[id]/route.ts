@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { updateLeadStatusSchema } from '@/lib/validators'
-import { getAdminUser, unauthorized } from '@/lib/adminAuth'
+import { requireAdmin } from '@/lib/adminAuth'
+import { guardLeadWrite } from '@/lib/leadAccess'
 import { withNewsletterStatus } from '@/lib/leads'
+import { withAssignee } from '@/lib/makleri'
 
 export const runtime = 'nodejs'
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  if (!(await getAdminUser())) return unauthorized()
+  const guard = await guardLeadWrite('leads_predaj', params.id)
+  if (guard instanceof NextResponse) return guard
   let body: unknown
   try {
     body = await req.json()
@@ -25,11 +28,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     .single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   const [withStatus] = await withNewsletterStatus([data])
-  return NextResponse.json(withStatus)
+  const [withName] = await withAssignee([withStatus])
+  return NextResponse.json(withName)
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
-  if (!(await getAdminUser())) return unauthorized()
+  const auth = await requireAdmin()
+  if (auth instanceof NextResponse) return auth
   const { error } = await supabaseAdmin.from('leads_predaj').delete().eq('id', params.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true })

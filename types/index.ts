@@ -56,6 +56,32 @@ export interface Issue {
 export type LeadStatus = 'novy' | 'kontaktovany' | 'stretnutie' | 'v_procese' | 'uzavrety'
 export type LeadScore = 'HOT' | 'WARM' | 'COLD'
 
+export type Role = 'admin' | 'makler'
+
+export interface Makler {
+  id: string
+  email: string
+  name: string
+  slug: string
+  active: boolean
+  created_at: string
+}
+
+// Fields every lead row shares once assignment was added. Enriched server-side
+// with `assignee_name` (resolved from `assigned_to`) so the CRM can show the
+// owner without shipping the whole makléri list to non-admins.
+export interface LeadOwnership {
+  assigned_to?: string | null
+  assignee_name?: string | null
+}
+
+export interface SessionUser {
+  email: string
+  role: Role
+  maklerId: string | null
+  name: string | null
+}
+
 export interface LeadPredaj {
   id: string
   created_at: string
@@ -72,6 +98,8 @@ export interface LeadPredaj {
   utm_source: string | null
   utm_campaign: string | null
   newsletter_prihlaseny?: boolean
+  assigned_to?: string | null
+  assignee_name?: string | null
 }
 
 export interface LeadOcenenie {
@@ -91,6 +119,8 @@ export interface LeadOcenenie {
   utm_source: string | null
   utm_campaign: string | null
   newsletter_prihlaseny?: boolean
+  assigned_to?: string | null
+  assignee_name?: string | null
 }
 
 export interface LeadCally {
@@ -110,4 +140,6 @@ export interface LeadCally {
   source: string | null
   utm_source: string | null
   utm_campaign: string | null
+  assigned_to?: string | null
+  assignee_name?: string | null
 }

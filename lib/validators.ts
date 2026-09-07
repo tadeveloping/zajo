@@ -104,11 +104,43 @@ export const leadCallySchema = z.object({
   utm_source: z.string().optional().nullable(),
   utm_campaign: z.string().optional().nullable(),
   newsletter_opt: z.boolean().optional().default(false),
+  // Personal-link slug: when a lead comes through a maklér's own contact link,
+  // it is auto-assigned to that maklér. Not stored directly — resolved to an id.
+  makler_slug: z.string().max(40).optional().nullable(),
 })
 
 export const updateLeadStatusSchema = z.object({
   status: z.enum(['novy', 'kontaktovany', 'stretnutie', 'v_procese', 'uzavrety']),
   notes: z.string().optional().nullable(),
+})
+
+// Slug for a maklér's personal contact link: lowercase letters, digits, dashes.
+const slugField = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(2)
+  .max(40)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug môže obsahovať len malé písmená, číslice a pomlčky')
+
+export const maklerCreateSchema = z.object({
+  email: z.string().email().transform(e => e.toLowerCase()),
+  name: z.string().min(1).max(120),
+  slug: slugField,
+  active: z.boolean().optional().default(true),
+})
+
+export const maklerUpdateSchema = z.object({
+  email: z.string().email().transform(e => e.toLowerCase()).optional(),
+  name: z.string().min(1).max(120).optional(),
+  slug: slugField.optional(),
+  active: z.boolean().optional(),
+})
+
+// Reassign / claim a lead. `assigned_to` = maklér id, or null to return it to
+// the shared pool.
+export const assignLeadSchema = z.object({
+  assigned_to: z.string().uuid().nullable(),
 })
 
 export const trackEventSchema = z.object({

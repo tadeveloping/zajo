@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { load } from "cheerio";
 import { supabaseAdmin } from "@/lib/supabase";
-import { getAdminUser, unauthorized } from "@/lib/adminAuth";
+import { getAdminOnlyUser, unauthorized } from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -201,7 +201,7 @@ async function scrapeListing(url: string): Promise<{
 
 // ── GET ────────────────────────────────────────────────────────────────────
 export async function GET() {
-  if (!(await getAdminUser())) return unauthorized();
+  if (!(await getAdminOnlyUser())) return unauthorized();
   const { data, error } = await supabaseAdmin
     .from("newsletter_properties")
     .select("*")
@@ -216,7 +216,7 @@ export async function GET() {
 
 // ── POST ───────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
-  if (!(await getAdminUser())) return unauthorized();
+  if (!(await getAdminOnlyUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();
@@ -283,7 +283,7 @@ export async function POST(req: Request) {
 
 // ── DELETE ─────────────────────────────────────────────────────────────────
 export async function DELETE(req: Request) {
-  if (!(await getAdminUser())) return unauthorized();
+  if (!(await getAdminOnlyUser())) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();
