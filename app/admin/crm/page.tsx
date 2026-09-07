@@ -640,21 +640,50 @@ function StatBox({ label, value, sub, tone, info }: { label: string; value: numb
 }
 
 // Small "i" icon with a click-to-toggle explanation. Works on touch (tap) as well
-// as mouse; closes on outside click or Escape.
+// as mouse; closes on outside click or Escape. The bubble is positioned relative
+// to the VIEWPORT (not the card it sits in) and clamped to stay fully on-screen —
+// a card near the left edge (common in a 2-col mobile grid) would otherwise push
+// an absolutely-positioned bubble off the left side of the screen.
 function InfoDot({ text }: { text: string }) {
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
+  const bubbleRef = useRef<HTMLDivElement>(null)
+
+  const BUBBLE_WIDTH = 224 // px, matches w-56
+  const MARGIN = 8
+
+  function toggle() {
+    if (open) {
+      setOpen(false)
+      return
+    }
+    const rect = btnRef.current?.getBoundingClientRect()
+    if (rect) {
+      const left = Math.min(
+        Math.max(rect.right - BUBBLE_WIDTH, MARGIN),
+        window.innerWidth - BUBBLE_WIDTH - MARGIN
+      )
+      setCoords({ top: rect.bottom + 6, left })
+    }
+    setOpen(true)
+  }
 
   useEffect(() => {
     if (!open) return
     function onDown(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (btnRef.current?.contains(target)) return
+      if (bubbleRef.current?.contains(target)) return
+      setOpen(false)
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') setOpen(false)
     }
     document.addEventListener('mousedown', onDown)
     document.addEventListener('keydown', onKey)
+    window.addEventListener('scroll', () => setOpen(false), { passive: true })
+    window.addEventListener('resize', () => setOpen(false))
     return () => {
       document.removeEventListener('mousedown', onDown)
       document.removeEventListener('keydown', onKey)
@@ -662,26 +691,29 @@ function InfoDot({ text }: { text: string }) {
   }, [open])
 
   return (
-    <div className="relative flex-shrink-0" ref={ref}>
+    <>
       <button
+        ref={btnRef}
         type="button"
         aria-label="Vysvetlenie"
-        onClick={() => setOpen(o => !o)}
-        className={`w-4 h-4 rounded-full border text-[10px] font-bold leading-none flex items-center justify-center transition ${
+        onClick={toggle}
+        className={`w-4 h-4 rounded-full border text-[10px] font-bold leading-none flex items-center justify-center transition flex-shrink-0 ${
           open ? 'bg-accent text-white border-accent' : 'border-border text-muted hover:border-accent hover:text-accent'
         }`}
       >
         i
       </button>
-      {open && (
+      {open && coords && (
         <div
+          ref={bubbleRef}
           role="tooltip"
-          className="absolute right-0 top-6 z-30 w-56 max-w-[70vw] rounded-lg border border-border bg-white p-3 text-xs leading-relaxed text-gray-700 shadow-xl"
+          style={{ position: 'fixed', top: coords.top, left: coords.left, width: BUBBLE_WIDTH }}
+          className="z-50 max-w-[calc(100vw-16px)] rounded-lg border border-border bg-white p-3 text-xs leading-relaxed text-gray-700 shadow-xl"
         >
           {text}
         </div>
       )}
-    </div>
+    </>
   )
 }
 
