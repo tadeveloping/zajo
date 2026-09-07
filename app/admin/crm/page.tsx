@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { LeadPredaj, LeadOcenenie, LeadCally, LeadStatus, LeadScore, Role } from '@/types'
 
@@ -444,11 +444,16 @@ export default function CrmPage() {
 
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-        <StatBox label="Kampaň: Predaj" value={predajLeads.length} sub={`${newCounts.predaj} nových`} tone="text-green-600" />
-        <StatBox label="Kampaň: Ocenenie" value={oceneniaLeads.length} sub={`${newCounts.ocenenie} nových`} tone="text-yellow-600" />
-        <StatBox label="Kontakt formulár" value={callyLeads.length} sub={`${newCounts.kontakt} nových`} tone="text-purple-600" />
-        <StatBox label="HOT leady" value={hotCount} tone="text-red-600" />
-        <StatBox label="Nepriradené" value={unassignedCount} tone="text-gray-700" />
+        <StatBox label="Kampaň: Predaj" value={predajLeads.length} sub={`${newCounts.predaj} nových`} tone="text-green-600"
+          info={'Leady z kampaňového formulára Predaj (napr. z reklamy na Facebooku/Instagrame). Sú nepriradené, kým si ich niekto nevezme.'} />
+        <StatBox label="Kampaň: Ocenenie" value={oceneniaLeads.length} sub={`${newCounts.ocenenie} nových`} tone="text-yellow-600"
+          info={'Leady z kampaňového formulára Ocenenie. Tiež nepriradené (zdieľané), kým si ich niekto nevezme.'} />
+        <StatBox label="Kontakt formulár" value={callyLeads.length} sub={`${newCounts.kontakt} nových`} tone="text-purple-600"
+          info={'Leady z kontaktného formulára. Ak prišli cez osobný link makléra, priradia sa mu automaticky.'} />
+        <StatBox label="HOT leady" value={hotCount} tone="text-red-600"
+          info={'Najhorúcejšie leady — chcú konať čo najskôr (napr. obhliadka alebo predaj/kúpa do 3 mesiacov). Volať prednostne.'} />
+        <StatBox label="Nepriradené" value={unassignedCount} tone="text-gray-700"
+          info={'Leady bez konkrétneho makléra — zdieľaný fond. Ktorýkoľvek maklér si ich môže vziať tlačidlom Vziať si.'} />
       </div>
 
       {/* Origin note */}
@@ -458,7 +463,7 @@ export default function CrmPage() {
       </div>
 
       {/* Tab bar */}
-      <div className="flex gap-1 mb-4 border-b border-border overflow-x-auto">
+      <div className="flex gap-1 mb-4 border-b border-border overflow-x-auto overflow-y-hidden">
         {(['vsetky', 'predaj', 'ocenenie', 'kontakt'] as Tab[]).map(t => (
           <button
             key={t}
@@ -621,12 +626,61 @@ export default function CrmPage() {
   )
 }
 
-function StatBox({ label, value, sub, tone }: { label: string; value: number; sub?: string; tone: string }) {
+function StatBox({ label, value, sub, tone, info }: { label: string; value: number; sub?: string; tone: string; info?: string }) {
   return (
     <div className="bg-panel border border-border rounded-xl p-4 shadow-sm">
-      <div className="text-muted text-[11px] uppercase tracking-widest font-semibold">{label}</div>
+      <div className="flex items-start justify-between gap-1">
+        <div className="text-muted text-[11px] uppercase tracking-widest font-semibold">{label}</div>
+        {info && <InfoDot text={info} />}
+      </div>
       <div className={`text-2xl font-bold mt-1 ${tone}`}>{value}</div>
       {sub && <div className="text-muted text-xs mt-0.5">{sub}</div>}
+    </div>
+  )
+}
+
+// Small "i" icon with a click-to-toggle explanation. Works on touch (tap) as well
+// as mouse; closes on outside click or Escape.
+function InfoDot({ text }: { text: string }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  return (
+    <div className="relative flex-shrink-0" ref={ref}>
+      <button
+        type="button"
+        aria-label="Vysvetlenie"
+        onClick={() => setOpen(o => !o)}
+        className={`w-4 h-4 rounded-full border text-[10px] font-bold leading-none flex items-center justify-center transition ${
+          open ? 'bg-accent text-white border-accent' : 'border-border text-muted hover:border-accent hover:text-accent'
+        }`}
+      >
+        i
+      </button>
+      {open && (
+        <div
+          role="tooltip"
+          className="absolute right-0 top-6 z-30 w-56 max-w-[70vw] rounded-lg border border-border bg-white p-3 text-xs leading-relaxed text-gray-700 shadow-xl"
+        >
+          {text}
+        </div>
+      )}
     </div>
   )
 }
