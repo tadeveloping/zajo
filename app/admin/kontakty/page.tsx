@@ -12,6 +12,7 @@ export default function KontaktyPage() {
   const [query, setQuery] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Contact | null>(null);
+  const [confirmResubscribe, setConfirmResubscribe] = useState<Contact | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
@@ -39,8 +40,19 @@ export default function KontaktyPage() {
     );
   }, [contacts, query]);
 
-  async function toggleSubscribed(c: Contact) {
-    const next = !c.subscribed;
+  // Turning someone OFF (unsubscribe) is one click. Turning someone back ON
+  // (re-subscribe) needs a deliberate confirmation — you must have a fresh
+  // consent from that person; it must not happen by accident. Every change is
+  // recorded server-side in the consent log.
+  function toggleSubscribed(c: Contact) {
+    if (!c.subscribed) {
+      setConfirmResubscribe(c);
+      return;
+    }
+    applySubscribed(c, false);
+  }
+
+  async function applySubscribed(c: Contact, next: boolean) {
     setContacts((prev) => prev.map((x) => (x.id === c.id ? { ...x, subscribed: next } : x)));
     const res = await fetch(`/api/contacts/${c.id}`, {
       method: "PATCH",
@@ -159,6 +171,33 @@ export default function KontaktyPage() {
           </div>
         )}
       </div>
+
+      {confirmResubscribe && (
+        <Dialog onClose={() => setConfirmResubscribe(null)}>
+          <div className="text-lg font-bold mb-2">Znovu prihlásiť na odber?</div>
+          <div className="text-muted text-sm mb-4">
+            {confirmResubscribe.name} ({confirmResubscribe.email})
+          </div>
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-md p-3 text-xs mb-6 leading-relaxed">
+            Prihláste späť len ak máte od tejto osoby <strong>nový súhlas</strong> so
+            zasielaním ponúk. Zmena sa zaznamená do histórie súhlasov.
+          </div>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setConfirmResubscribe(null)}
+              className="px-4 py-2 rounded-md border border-border hover:border-accent text-sm"
+            >
+              Zrušiť
+            </button>
+            <button
+              onClick={() => { applySubscribed(confirmResubscribe, true); setConfirmResubscribe(null); }}
+              className="px-4 py-2 rounded-md bg-accent hover:bg-accentHover text-white text-sm font-semibold"
+            >
+              Mám súhlas, prihlásiť
+            </button>
+          </div>
+        </Dialog>
+      )}
 
       {showAdd && <AddPanel onClose={() => setShowAdd(false)} onAdded={load} />}
 

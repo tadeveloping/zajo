@@ -7,6 +7,7 @@ import { resend, FROM_EMAIL } from '@/lib/resend'
 import { getSessionUser, unauthorized } from '@/lib/adminAuth'
 import { withNewsletterStatus } from '@/lib/leads'
 import { withAssignee } from '@/lib/makleri'
+import { logConsent } from '@/lib/consent'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -74,6 +75,7 @@ export async function POST(req: Request) {
           { name: data.name, email: data.email, phone: data.phone ?? null, source: 'ocenenie_form', subscribed: true },
           { onConflict: 'email' }
         )
+        await logConsent({ email: data.email!, name: data.name, action: 'opt_in', source: 'ocenenie_form', actor: 'self' })
         const { data: newsletterProps } = await supabaseAdmin
           .from('newsletter_properties').select('*').order('position')
         const properties = (newsletterProps ?? []).map((row: { title?: string | null; price?: string | null; location?: string | null; area?: string | null; image_url?: string | null; url: string }) => ({

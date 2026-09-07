@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { contactSchema } from "@/lib/validators";
 import { getAdminOnlyUser, unauthorized } from "@/lib/adminAuth";
+import { logConsent } from "@/lib/consent";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,7 +18,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  if (!(await getAdminOnlyUser())) return unauthorized();
+  const admin = await getAdminOnlyUser();
+  if (!admin) return unauthorized();
   let body: unknown;
   try {
     body = await req.json();
@@ -52,5 +54,9 @@ export async function POST(req: Request) {
     .select()
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if ((subscribed ?? true) && data?.email) {
+    await logConsent({ email: data.email, name: data.name, action: "opt_in", source: "manual_admin", actor: admin.email });
+  }
   return NextResponse.json({ contact: data });
 }

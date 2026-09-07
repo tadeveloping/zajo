@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { resend, FROM_EMAIL } from "@/lib/resend";
 import { subscribeSchema } from "@/lib/validators";
 import { newsletterWelcomeEmail } from "@/lib/emailTemplates";
+import { logConsent } from "@/lib/consent";
 
 export const runtime = "nodejs";
 
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
   if (insertErr) {
     return NextResponse.json({ error: insertErr.message }, { status: 500, headers: CORS });
   }
+
+  await logConsent({ email, name, action: "opt_in", source: "newsletter_page", actor: "self" });
 
   try {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://zajo-five.vercel.app'

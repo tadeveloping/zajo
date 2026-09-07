@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase";
+import { logConsent } from "@/lib/consent";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,10 @@ export default async function Unsubscribe({
       .maybeSingle();
     if (error) status = "error";
     else if (!data) status = "notfound";
-    else status = "ok";
+    else {
+      status = "ok";
+      await logConsent({ email, action: "opt_out", source: "unsubscribe_link", actor: "self" });
+    }
   }
 
   return (
