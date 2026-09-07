@@ -13,6 +13,7 @@ export default function KontaktyPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<Contact | null>(null);
   const [confirmResubscribe, setConfirmResubscribe] = useState<Contact | null>(null);
+  const [historyContact, setHistoryContact] = useState<Contact | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
@@ -156,7 +157,13 @@ export default function KontaktyPage() {
                     <td className="px-4 py-3 text-muted text-xs">
                       {new Date(c.created_at).toLocaleDateString("sk-SK")}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right whitespace-nowrap">
+                      <button
+                        onClick={() => setHistoryContact(c)}
+                        className="text-muted hover:text-accent text-xs mr-3"
+                      >
+                        História
+                      </button>
                       <button
                         onClick={() => setConfirmDelete(c)}
                         className="text-muted hover:text-red-600 text-xs"
@@ -197,6 +204,10 @@ export default function KontaktyPage() {
             </button>
           </div>
         </Dialog>
+      )}
+
+      {historyContact && (
+        <ConsentHistory contact={historyContact} onClose={() => setHistoryContact(null)} />
       )}
 
       {showAdd && <AddPanel onClose={() => setShowAdd(false)} onAdded={load} />}
@@ -307,6 +318,96 @@ function AddPanel({ onClose, onAdded }: { onClose: () => void; onAdded: () => vo
             {saving ? "Ukladám..." : "Pridať"}
           </button>
         </form>
+      </div>
+    </div>
+  );
+}
+
+interface ConsentEvent {
+  id: string;
+  action: "opt_in" | "opt_out";
+  source: string | null;
+  actor: string | null;
+  consent_text: string | null;
+  created_at: string;
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  kontakt_form: "Kontaktný formulár",
+  predaj_form: "Formulár Predaj",
+  ocenenie_form: "Formulár Ocenenie",
+  newsletter_page: "Newsletter stránka",
+  unsubscribe_link: "Odhlasovací link",
+  manual_admin: "Ručne (admin)",
+};
+
+function ConsentHistory({ contact, onClose }: { contact: Contact; onClose: () => void }) {
+  const [events, setEvents] = useState<ConsentEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`/api/consent?email=${encodeURIComponent(contact.email)}`, { cache: "no-store" });
+        const data = await res.json();
+        setEvents(data.events ?? []);
+      } catch {
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [contact.email]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60" />
+      <div
+        className="relative w-full max-w-md bg-panel border-l border-border h-full p-4 sm:p-6 overflow-y-auto shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-start mb-1">
+          <h2 className="text-xl font-bold text-gray-900">História súhlasov</h2>
+          <button onClick={onClose} className="text-muted hover:text-gray-900 text-lg">✕</button>
+        </div>
+        <div className="text-muted text-sm mb-6">{contact.name} · {contact.email}</div>
+
+        {loading ? (
+          <div className="text-muted text-sm py-4">Načítavam…</div>
+        ) : events.length === 0 ? (
+          <div className="text-muted text-sm py-4 bg-panel2 border border-border rounded-md px-3">
+            Zatiaľ žiadny záznam. História sa zaznamenáva od zavedenia záznamu súhlasov —
+            staršie prihlásenia tu ešte nemusia byť.
+          </div>
+        ) : (
+          <ol className="relative border-l-2 border-border ml-2 space-y-5">
+            {events.map((e) => {
+              const isIn = e.action === "opt_in";
+              return (
+                <li key={e.id} className="ml-4">
+                  <span
+                    className={`absolute -left-[9px] w-4 h-4 rounded-full border-2 border-white ${isIn ? "bg-green-500" : "bg-gray-400"}`}
+                  />
+                  <div className={`text-sm font-semibold ${isIn ? "text-green-700" : "text-gray-600"}`}>
+                    {isIn ? "✓ Prihlásený na odber" : "✕ Odhlásený z odberu"}
+                  </div>
+                  <div className="text-xs text-muted mt-0.5">
+                    {new Date(e.created_at).toLocaleString("sk-SK")}
+                  </div>
+                  <div className="text-xs text-soft mt-1">
+                    Zdroj: {e.source ? SOURCE_LABELS[e.source] ?? e.source : "—"}
+                    {e.actor && e.actor !== "self" && (
+                      <> · vykonal: {e.actor}</>
+                    )}
+                  </div>
+                  {isIn && e.consent_text && (
+                    <div className="text-[11px] text-muted mt-1 italic leading-relaxed">„{e.consent_text}"</div>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        )}
       </div>
     </div>
   );

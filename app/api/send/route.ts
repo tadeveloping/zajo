@@ -40,6 +40,10 @@ export async function POST(req: Request) {
 
   let sent = 0;
   const failures: string[] = [];
+  // Snapshot of who actually received this issue, stored on the issue so the
+  // admin can later see exactly whom it went to (the subscriber list changes
+  // over time, so a point-in-time record is the only reliable answer).
+  const recipients: Array<{ email: string; name: string | null }> = [];
 
   for (let i = 0; i < contacts.length; i += BATCH) {
     const slice = contacts.slice(i, i + BATCH);
@@ -58,6 +62,7 @@ export async function POST(req: Request) {
             failures.push(`${c.email}: ${result.error.message}`);
           } else {
             sent++;
+            recipients.push({ email: c.email, name: c.name ?? null });
           }
         } catch (e) {
           failures.push(`${c.email}: ${e instanceof Error ? e.message : "unknown"}`);
@@ -73,6 +78,7 @@ export async function POST(req: Request) {
     subject,
     html_content: archiveHtml,
     recipient_count: sent,
+    recipients,
   });
 
   return NextResponse.json({

@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/adminAuth";
 import { LogoutButton } from "./components/LogoutButton";
 import { NewLeadsCard } from "./components/NewLeadsCard";
 import { MaklerLinkCard } from "./components/MaklerLinkCard";
+import { SentNewsletters } from "./components/SentNewsletters";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -190,45 +191,7 @@ export default async function AdminPage() {
             borderRadius: '14px', overflow: 'hidden',
             boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
           }}>
-            {stats.recent.length === 0 ? (
-              <div style={{ padding: '48px', textAlign: 'center', color: '#9ca3af', fontSize: '14px' }}>
-                Zatiaľ žiadne odoslané newslettre.
-              </div>
-            ) : (
-              <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', minWidth: 480 }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#f9fafb' }}>
-                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Predmet</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'left', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Dátum</th>
-                    <th style={{ padding: '12px 20px', textAlign: 'right', fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#9ca3af' }}>Príjemcovia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recent.map((i, idx) => (
-                    <tr key={i.id} style={{
-                      borderBottom: idx < stats.recent.length - 1 ? '1px solid #f0f1f3' : 'none',
-                      transition: 'background 150ms',
-                    }}>
-                      <td style={{ padding: '14px 20px', color: '#111827', fontWeight: 500 }}>{i.subject}</td>
-                      <td style={{ padding: '14px 20px', color: '#9ca3af', fontFamily: 'monospace', fontSize: '13px' }}>
-                        {new Date(i.sent_at).toLocaleString("sk-SK")}
-                      </td>
-                      <td style={{ padding: '14px 20px', textAlign: 'right' }}>
-                        <span style={{
-                          display: 'inline-block', padding: '3px 10px',
-                          background: 'rgba(232,113,26,0.1)', border: '1px solid rgba(232,113,26,0.25)',
-                          borderRadius: '20px', color: '#E8711A', fontSize: '12px', fontWeight: 700,
-                        }}>
-                          {i.recipient_count}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              </div>
-            )}
+            <SentNewsletters issues={stats.recent} />
           </div>
         </section>
 
